@@ -13,7 +13,7 @@ const LoginPage: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className='container'>
+                <div className='container bg-red-500 h-screen'>
                     <InputCustom
                         label="Username"
                         labelPlacement="floating"
