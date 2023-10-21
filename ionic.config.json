@@ -1,7 +1,8 @@
 {
-  "name": "MadinaInventoryApp",
+  "name": "inventory-app-fe",
   "integrations": {
     "capacitor": {}
   },
-  "type": "react-vite"
+  "type": "react-vite",
+  "id": "c62dadb1"
 }

@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
-  appName: 'MadinaInventoryApp',
+  appName: 'inventory-app-fe',
   webDir: 'dist',
   server: {
     androidScheme: 'https'
