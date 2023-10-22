@@ -1,19 +1,23 @@
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import {
   IonApp,
+  IonFooter,
   IonIcon,
   IonLabel,
+  IonPage,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
   IonTabs,
+  IonTitle,
+  IonToolbar,
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ellipse, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
+import Tab1 from './pages/Stok';
+import Tab2 from './pages/Penjualan';
+import Tab3 from './pages/History';
 import Login from './pages/Login';
 
 /* Core CSS required for Ionic components to work properly */
@@ -34,51 +38,53 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-
+import { useEffect, useState } from 'react';
+import { useAuth } from './context/auth';
+import { routes } from './router'
+import { Navigation } from './components';
 setupIonicReact();
-
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
+const App: React.FC = () => {
+  const { loginState } = useAuth();
+  const UrlGetter = () => {
+    const url = window.location.href;
+    const lastSlashIndex = url.lastIndexOf('/');
+    const lastSegment = url.substring(lastSlashIndex + 1).toLowerCase();
+    console.log('Last segment:', lastSegment);
+    return lastSegment;
+  }
+  // if (loginState && UrlGetter() === 'login') {
+  //   window.location.href = "/home";
+  // }
+  return (
+    <IonApp>
+      <IonReactRouter>
         <IonRouterOutlet>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-          <Route exact path="/tab1">
-            <Tab1 />
-          </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/tab1" />
-          </Route>
+          <IonPage>
+            <Switch>
+              {routes.map((route, index) => (
+                <Route
+                  key={index}
+                  path={route.path}
+                  exact={route.exact}
+
+                >
+                  <route.component />
+                </Route>
+              ))}
+              {
+                loginState ? null : <Redirect to="/login" />
+              }
+            </Switch>
+            <IonFooter translucent={true}>
+              <IonToolbar>
+                <Navigation />
+              </IonToolbar>
+            </IonFooter>
+          </IonPage>
         </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="login" href="/Login">
-            <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Tab 3</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+      </IonReactRouter>
+    </IonApp>
+  )
+}
 
 export default App;
