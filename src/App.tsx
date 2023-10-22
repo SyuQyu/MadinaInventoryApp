@@ -52,9 +52,9 @@ const App: React.FC = () => {
     console.log('Last segment:', lastSegment);
     return lastSegment;
   }
-  // if (loginState && UrlGetter() === 'login') {
-  //   window.location.href = "/home";
-  // }
+  if (loginState && UrlGetter() === 'login') {
+    window.location.href = "/home";
+  }
   return (
     <IonApp>
       <IonReactRouter>
