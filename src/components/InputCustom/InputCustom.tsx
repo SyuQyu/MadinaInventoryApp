@@ -1,16 +1,30 @@
 import React from 'react';
 import { IonInput } from '@ionic/react';
-
-function InputBox({name, label, labelPlacement, fill, placeholder, value, type, onIonChange = () => { }, ...props }: Props) {
+import './InputCustom.css';
+function InputBox({ name, label, labelPlacement, fill, placeholder, value, type, icons, onIonChange = () => { }, ...props }: Props) {
     return (
         <>
-            <IonInput type={type} name={name} label={label} labelPlacement={labelPlacement} fill={fill} value={value} placeholder={placeholder} onIonChange={onIonChange} {...props} />
+            {
+                icons ? (
+                    <div className='flex flex-col w-full relative'>
+                        <IonInput className="custom" type={type} name={name} label={label} labelPlacement={labelPlacement} fill={fill} value={value} placeholder={placeholder} onIonChange={onIonChange} {...props} />
+                        <div className='absolute top-5 right-5'>
+                            {icons}
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <IonInput className="custom" type={type} name={name} label={label} labelPlacement={labelPlacement} fill={fill} value={value} placeholder={placeholder} onIonChange={onIonChange} {...props} />
+                    </>
+                )
+            }
         </>
     );
 }
 export default InputBox;
 
 type Props = {
+    icons?: any,
     name?: string,
     label?: string,
     labelPlacement: any,
