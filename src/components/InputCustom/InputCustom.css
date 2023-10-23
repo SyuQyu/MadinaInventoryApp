@@ -1,0 +1,15 @@
+ion-input.custom {
+    --highlight-color: grey;
+    --padding-end: 48px !important;
+}
+ion-input.custom:focus {
+    --outline: none;
+    
+}
+
+ion-input.custom.ios .input-bottom .helper-text,
+ion-input.custom.ios .input-bottom .counter,
+ion-input.custom.md .input-bottom .helper-text,
+ion-input.custom.md .input-bottom .counter {
+    color: green;
+}

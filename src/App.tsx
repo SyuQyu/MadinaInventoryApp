@@ -15,11 +15,6 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ellipse, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Stok';
-import Tab2 from './pages/penjualan/Penjualan';
-import Tab3 from './pages/History';
-import Login from './pages/Login';
-
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
