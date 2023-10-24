@@ -7,7 +7,9 @@ import DetailStok from '../pages/Stok/Detail';
 import UpdateStok from '../pages/Stok/Update';
 import Penjualan from '../pages/penjualan/Penjualan';
 import StokIn from '../pages/penjualan/StokIn';
+import StokOut from '../pages/penjualan/StokOut';
 import History from '../pages/History';
+import Checkout from '../pages/penjualan/Checkout';
 export const routes = [
     {
         path: '/login',
@@ -45,6 +47,14 @@ export const routes = [
     {
         path: '/penjualan/stock-in',
         component: StokIn
+    },
+    {
+        path: '/penjualan/stock-out',
+        component: StokOut
+    },
+    {
+        path: '/penjualan/checkout/:id',
+        component: Checkout
     },
     {
         path: '/history',

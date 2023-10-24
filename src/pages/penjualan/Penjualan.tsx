@@ -20,7 +20,7 @@ const Tab2: React.FC = () => {
               </p>
             </div>
           </IonRouterLink>
-          <IonRouterLink routerLink="/home" className='text-white w-full md:p-6 p-4 bg-[#280822] rounded-xl'>
+          <IonRouterLink routerLink="/penjualan/stock-out" className='text-white w-full md:p-6 p-4 bg-[#280822] rounded-xl'>
             <div className='w-full flex flex-col justify-between text-right items-end py-5 gap-4'>
               <h1 className='font-bold  text-3xl md:text-4xl'>
                 Stock Out <IoLogInOutline className='ml-5 float-right w-8 h-8 md:w-10 md:h-10' />

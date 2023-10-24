@@ -1,11 +1,17 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { ExploreContainer, InputCustom, ListItemBox } from '../../components';
+import { CustomFilter, CustomSelect, ExploreContainer, InputCustom, ListItemBox } from '../../components';
 import '../../theme/pages/Tab1.css';
 import { useState } from 'react';
 import { AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
 import { PiTrashSimpleLight } from 'react-icons/pi'
 const Tab1: React.FC = () => {
   const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('');
+
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(event.target.value);
+};
+
   return (
     <IonContent fullscreen={false}>
       <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col'>
@@ -22,8 +28,9 @@ const Tab1: React.FC = () => {
           icons={<AiOutlineSearch className='w-5 h-5 text-[#280822]' />}
           onIonChange={(e: CustomEvent) => setSearch(e.detail.value!)}
         />
-        <div className='w-full flex flex-row justify-between items-center mt-5'>
-
+        <div className='w-full flex flex-row  gap-10 justify-between items-center mt-5'>
+          <CustomFilter />
+          <CustomSelect onChange={onChange} />
         </div>
         <div className='w-full flex flex-row justify-end items-center mt-5 gap-2'>
           <AiOutlinePlus className="w-5 h-5 text-black float-right" />
