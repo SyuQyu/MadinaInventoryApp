@@ -1,5 +1,5 @@
 {
-  "name": "inventory-app-fe",
+  "name": "madina-inventory-app",
   "private": true,
   "version": "0.0.1",
   "scripts": {
@@ -50,5 +50,5 @@
     "vite": "^4.3.9",
     "vitest": "^0.32.2"
   },
-  "description": "An Ionic project"
+  "description": "Aplikasi untuk mengelola data barang masuk dan keluar"
 }
