@@ -5,7 +5,7 @@ import Login from '../pages/Login';
 import Stok from '../pages/Stok/Stok';
 import DetailStok from '../pages/Stok/Detail';
 import UpdateStok from '../pages/Stok/Update';
-import Penjualan from '../pages/penjualan/Penjualan';
+import Transaksi from '../pages/penjualan/Transaksi';
 import StokIn from '../pages/penjualan/StokIn';
 import StokOut from '../pages/penjualan/StokOut';
 import History from '../pages/History';
@@ -40,22 +40,22 @@ export const routes = [
         component: Stok
     },
     {
-        path: '/penjualan',
+        path: '/transaksi',
         exact: true,
-        component: Penjualan
+        component: Transaksi
     },
-    {
-        path: '/penjualan/stock-in',
-        component: StokIn
-    },
-    {
-        path: '/penjualan/stock-out',
-        component: StokOut
-    },
-    {
-        path: '/penjualan/checkout/:id',
-        component: Checkout
-    },
+    // {
+    //     path: '/penjualan/stock-in',
+    //     component: StokIn
+    // },
+    // {
+    //     path: '/penjualan/stock-out',
+    //     component: StokOut
+    // },
+    // {
+    //     path: '/penjualan/checkout/:id',
+    //     component: Checkout
+    // },
     {
         path: '/history',
         exact: true,

@@ -34,20 +34,20 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { useEffect, useState } from 'react';
-import { useAuth } from './context/auth';
+import  useAuth  from './context/auth';
 import { routes } from './router'
 import { Navigation } from './components';
 setupIonicReact();
 const App: React.FC = () => {
-  const { loginState } = useAuth();
+  const { isLoggedIn, token } = useAuth();
   const UrlGetter = () => {
     const url = window.location.href;
     const lastSlashIndex = url.lastIndexOf('/');
     const lastSegment = url.substring(lastSlashIndex + 1).toLowerCase();
-    console.log('Last segment:', lastSegment);
     return lastSegment;
   }
-  if (loginState && UrlGetter() === 'login') {
+  console.log(isLoggedIn, token, UrlGetter());
+  if (isLoggedIn && token && UrlGetter() === 'login') {
     window.location.href = "/home";
   }
   return (
@@ -67,7 +67,7 @@ const App: React.FC = () => {
                 </Route>
               ))}
               {
-                loginState ? null : <Redirect to="/login" />
+                isLoggedIn ? null : <Redirect to="/login" />
               }
             </Switch>
             <IonFooter translucent={true}>

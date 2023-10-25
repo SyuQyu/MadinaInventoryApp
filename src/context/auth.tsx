@@ -1,45 +1,40 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { create } from 'zustand';
 
-interface AuthContextType {
-    loginState: boolean;
-    login: () => void;
+type AuthState = {
+    token: string | null;
+    isLoggedIn: boolean;
+    login: (email: string, password: string) => Promise<void>;
     logout: () => void;
-}
-
-export const AuthContext = createContext<AuthContextType>({
-    loginState: false,
-    login: () => { },
-    logout: () => { },
-});
-export const useAuth = () => useContext(AuthContext);
-
-const AuthContextProvider: any = ({ children }: any) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    // Check if the user is already logged in using localStorage
-    useEffect(() => {
-        const storedLoginState = localStorage.getItem('isLoggedIn');
-        if (storedLoginState === 'true') {
-            setIsLoggedIn(true);
-        }
-    }, []);
-
-    const loginState = isLoggedIn;
-    const login = () => {
-        setIsLoggedIn(true);
-        localStorage.setItem('isLoggedIn', 'true');
-    };
-
-    const logout = () => {
-        setIsLoggedIn(false);
-        localStorage.removeItem('isLoggedIn');
-    };
-
-    return (
-        <AuthContext.Provider value={{ loginState, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
 };
 
-export default AuthContextProvider;
+const useAuth = create<AuthState>((set) => ({
+    token: sessionStorage.getItem('token'),
+    isLoggedIn: localStorage.getItem('isLoggedIn') === 'true' ? true : false,
+    login: async (email, password) => {
+        const response = await fetch('https://inventory-app.kaladwipa.com/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+        
+        console.log("called");
+        const { data } = await response.json();
+        const token = data.token.token;
+        if (response.ok) {
+            console.log(token);
+            localStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('token', token);
+            set({ token, isLoggedIn: true });
+        } else {
+            throw new Error('Login failed');
+        }
+    },
+    logout: () => {
+        sessionStorage.removeItem('token');
+        set({ token: null, isLoggedIn: false });
+    },
+}));
+
+export default useAuth;
