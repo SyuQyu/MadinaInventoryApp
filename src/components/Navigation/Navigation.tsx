@@ -5,7 +5,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { Route, Redirect } from 'react-router';
 import { HiOutlineHome, HiOutlineQueueList, HiOutlineShoppingBag } from "react-icons/hi2";
 import { GoHistory } from "react-icons/go";
-
+import { TbTransfer } from "react-icons/tb";
 function Tabs() {
     return (
         <>
@@ -23,9 +23,9 @@ function Tabs() {
                     </IonRouterLink>
                 </li>
                 <li className="w-full">
-                    <IonRouterLink routerLink="/penjualan" className='flex flex-col gap-10 justify-between items-center' style={{ color: 'white' }}>
-                        <HiOutlineShoppingBag className='w-full h-5 sm:h-6 md:h-8 mb-2' />
-                        <p className='text-xs md:text-md font-bold text-white'>Penjualan</p>
+                    <IonRouterLink routerLink="/transaksi" className='flex flex-col gap-10 justify-between items-center' style={{ color: 'white' }}>
+                        <TbTransfer className='w-full h-5 sm:h-6 md:h-8 mb-2 ' />
+                        <p className='text-xs md:text-md font-bold'>Transaksi</p>
                     </IonRouterLink>
                 </li>
                 <li className="w-full">
