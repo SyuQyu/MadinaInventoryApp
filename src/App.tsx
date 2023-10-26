@@ -34,9 +34,10 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { useEffect, useState } from 'react';
-import  useAuth  from './context/auth';
+import useAuth from './context/auth';
 import { routes } from './router'
 import { Navigation } from './components';
+import LoginPage from './pages/Login';
 setupIonicReact();
 const App: React.FC = () => {
   const { isLoggedIn, token } = useAuth();
@@ -56,25 +57,42 @@ const App: React.FC = () => {
         <IonRouterOutlet>
           <IonPage>
             <Switch>
-              {routes.map((route, index) => (
-                <Route
-                  key={index}
-                  path={route.path}
-                  exact={route.exact}
-
-                >
-                  <route.component />
-                </Route>
-              ))}
               {
-                isLoggedIn ? null : <Redirect to="/login" />
+                !isLoggedIn && token === null ? (
+                  <>
+                    <Route path={'/login'} exact>
+                      <LoginPage />
+                    </Route>
+                    <Redirect to="/login" />
+                  </>
+                ) : (
+                  <>
+                    {
+                      routes.map((route, index) => (
+                        <Route
+                          key={index}
+                          path={route.path}
+                          exact={route.exact}
+
+                        >
+                          <route.component />
+                        </Route>
+                      ))
+                    }
+                    <Redirect to="/home" />
+                  </>
+                )
               }
             </Switch>
-            <IonFooter translucent={true}>
-              <IonToolbar>
-                <Navigation />
-              </IonToolbar>
-            </IonFooter>
+            {
+              isLoggedIn && token !== null ? (
+                <IonFooter translucent={true}>
+                  <IonToolbar>
+                    <Navigation />
+                  </IonToolbar>
+                </IonFooter>
+              ) : null
+            }
           </IonPage>
         </IonRouterOutlet>
       </IonReactRouter>

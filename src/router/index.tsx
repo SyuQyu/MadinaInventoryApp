@@ -11,11 +11,11 @@ import StokOut from '../pages/penjualan/StokOut';
 import History from '../pages/History';
 import Checkout from '../pages/penjualan/Checkout';
 export const routes = [
-    {
-        path: '/login',
-        exact: true,
-        component: Login
-    },
+    // {
+    //     path: '/login',
+    //     exact: true,
+    //     component: Login
+    // },
     {
         path: '/home',
         exact: true,
