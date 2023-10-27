@@ -2,12 +2,13 @@ import { IonRouterLink } from "@ionic/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 
-const ListItemBox = ({ itemName, qty, tipe, merk, harga, detailId, withLink = true }: props) => {
+const ListItemBox = ({ kode, itemName, qty, tipe, merk, harga, detailId, withLink = true }: props) => {
     return (
         withLink ? (
             <IonRouterLink routerLink={`stok/detail/${detailId}`} className="w-full">
                 <div className="flex flex-row justify-between items-center gap-2 p-2 w-full bg-[#EFEFEF] rounded-md shadow-md">
                     <div className="flex flex-col justify-between items-start gap-2">
+                        <p className="text-black font-thin text-xs">{kode}</p>
                         <p className="text-black font-bold text-sm">{itemName}</p>
                         <div className="flex flex-row justify-start items-start gap-2">
                             <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Qty {qty}</p>
@@ -25,6 +26,7 @@ const ListItemBox = ({ itemName, qty, tipe, merk, harga, detailId, withLink = tr
             <div className="w-full">
                 <div className="flex flex-row justify-between items-center gap-2 p-2 w-full bg-[#EFEFEF] rounded-md shadow-md">
                     <div className="flex flex-col justify-between items-start gap-2">
+                        <p className="text-black font-bold text-sm">{kode}</p>
                         <p className="text-black font-bold text-sm">{itemName}</p>
                         <div className="flex flex-row justify-start items-start gap-2">
                             <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Qty {qty}</p>
@@ -45,11 +47,12 @@ const ListItemBox = ({ itemName, qty, tipe, merk, harga, detailId, withLink = tr
 export default ListItemBox;
 
 type props = {
+    kode: string,
     itemName: string,
-    qty: string,
+    qty: number,
     tipe: string,
     merk: string,
-    harga: string,
-    detailId: string
+    harga: number,
+    detailId: number,
     withLink?: boolean | true;
 }

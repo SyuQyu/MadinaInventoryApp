@@ -58,7 +58,7 @@ const App: React.FC = () => {
           <IonPage>
             <Switch>
               {
-                !isLoggedIn && token === null ? (
+                !isLoggedIn || token === null ? (
                   <>
                     <Route path={'/login'} exact>
                       <LoginPage />

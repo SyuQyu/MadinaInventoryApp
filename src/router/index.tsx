@@ -4,12 +4,13 @@ import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Stok from '../pages/Stok/Stok';
 import DetailStok from '../pages/Stok/Detail';
-import UpdateStok from '../pages/Stok/Update';
+import UpdateItem from '../pages/Stok/UpdateItem';
 import Transaksi from '../pages/penjualan/Transaksi';
 import StokIn from '../pages/penjualan/StokIn';
 import StokOut from '../pages/penjualan/StokOut';
 import History from '../pages/History';
 import Checkout from '../pages/penjualan/Checkout';
+import AddItem from '../pages/Stok/AddItem';
 export const routes = [
     // {
     //     path: '/login',
@@ -32,12 +33,11 @@ export const routes = [
     },
     {
         path: '/stok/update/:id',
-        component: UpdateStok
+        component: UpdateItem
     },
     {
-        path: '/stok',
-        exact: true,
-        component: Stok
+        path: '/stok/create',
+        component: AddItem
     },
     {
         path: '/transaksi',

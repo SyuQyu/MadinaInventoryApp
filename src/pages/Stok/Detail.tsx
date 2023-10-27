@@ -1,6 +1,13 @@
 import { IonContent, IonRouterLink } from "@ionic/react";
 import { IoIosArrowBack } from 'react-icons/io'
+import useItemStore from "../../context/item";
+import { useParams } from "react-router";
+import { useEffect } from "react";
 const DetailStok = () => {
+    const { id } = useParams<{ id: string }>();
+    const { getItemById } = useItemStore();
+
+    const item = getItemById(parseInt(id));
     return (
         <IonContent fullscreen={false}>
             <div className='w-full h-full flex flex-col'>
@@ -19,13 +26,13 @@ const DetailStok = () => {
                 </header>
                 <div className="w-full h-[200vh] flex flex-col gap-3 rounded-t-[4rem] shadow-2xl border-t-4 border-[#280822] pt-10 px-10">
                     <p className="text-md">
-                        a122345
+                        {item?.code}
                     </p>
                     <p className="text-xl font-bold">
-                        CERAMIC 1
+                        {item?.name}
                     </p>
                     <p className="text-lg">
-                        Brand 1
+                        {item?.brand.name}
                     </p>
                     <p className="text-md">
                         64x64
@@ -35,17 +42,17 @@ const DetailStok = () => {
                             Jenis 1
                         </p>
                         <p className="text-sm">
-                            Tipe 1
+                            {item?.item_type.name}
                         </p>
                     </div>
                     <p className="text-md">
-                        Rp.120.000
+                        Rp. {item?.price}
                     </p>
                     <p className="text-md">
-                        12/05/20023
+                        {item?.created_at}
                     </p>
                     <p className="text-md text-justify">
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                        {item?.description}
                     </p>
                 </div>
                 <div className="w-full h-[50px] bg-white text-xs text-white">
