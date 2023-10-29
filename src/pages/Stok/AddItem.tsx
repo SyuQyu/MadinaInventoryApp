@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { InputCustom } from "../../components";
+import React, { useEffect, useState } from "react";
+import { CreateableCustomSelect, InputCustom } from "../../components";
 import { IonContent, IonRouterLink } from "@ionic/react";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
-import useItemStore from "../../context/item";
+import useItem from "../../context/item";
 import useAuth from "../../context/auth";
+import useBrand from "../../context/brand";
+import useItemType from "../../context/itemType";
 interface Stock {
     code: string;
     name: string;
@@ -17,9 +19,18 @@ interface Stock {
     jenis_type_id: number;
 }
 
+interface Option {
+    readonly label: string;
+    readonly value: number;
+}
+
+
 const AddItem = () => {
-    const { createItem } = useItemStore();
+    const { createItem } = useItem();
     const { isLoggedIn, token } = useAuth();
+    const { addBrand, brands, fetchBrands } = useBrand();
+    const { addItemType, itemTypes, fetchItemTypes } = useItemType();
+    const [valueBrands, setValueBrands] = useState();
     const initialStock: Stock = {
         code: "",
         name: "",
@@ -53,6 +64,13 @@ const AddItem = () => {
         setStocks(list);
     };
 
+    const handleInputChangeSelect = (name: any, value: any, index: any) => {
+        const list: any = [...stocks];
+        list[index][name] = value;
+        setStocks(list);
+        console.log(stocks, name, value, index, 'data stocks')
+    }
+
     const handleAddStock = () => {
         setStocks([...stocks, {
             code: "",
@@ -77,10 +95,39 @@ const AddItem = () => {
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         console.log(stocks);
-        stocks?.map((stock) => {
-            createItem(stock, token);
+        stocks?.map((stock: any) => {
+            createItem({
+                code: stock.code,
+                name: stock.name,
+                price: stock.price,
+                size: stock.ukuran,
+                stock: stock.stock,
+                stock_min: stock.stock_min,
+                brand_id: stock.brand_id?.value,
+                item_type_id: stock.item_type_id?.value,
+                jenis_type_id: stock.jenis_type_id,
+                description: stock.description,
+            }, token);
         });
     };
+
+
+    const [loading, setLoading] = useState(true);
+
+    const fetch = async () => {
+        await fetchBrands();
+        await fetchItemTypes();
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetch();
+        console.log(itemTypes, brands);
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <IonContent fullscreen={false} className="pb-10">
@@ -154,7 +201,7 @@ const AddItem = () => {
                             value={stock.ukuran}
                             onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
                         />
-                        <InputCustom
+                        {/* <InputCustom
                             label="ID Brand"
                             labelPlacement="floating"
                             placeholder="ID Brand"
@@ -163,7 +210,15 @@ const AddItem = () => {
                             name="brand_id"
                             value={stock.brand_id}
                             onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
-                        />
+                        /> */}
+                        <CreateableCustomSelect
+                            name={"brand_id"}
+                            data={brands}
+                            value={stocks[index].brand_id}
+                            onChange={handleInputChangeSelect}
+                            index={index}
+                            apiCall={addBrand}
+                            placeHolder="Pilih Merek" />
                         <InputCustom
                             label="ID Jenis Barang"
                             labelPlacement="floating"
@@ -174,7 +229,7 @@ const AddItem = () => {
                             value={stock.jenis_type_id}
                             onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
                         />
-                        <InputCustom
+                        {/* <InputCustom
                             label="ID Tipe Barang"
                             labelPlacement="floating"
                             placeholder="ID Tipe Barang"
@@ -183,7 +238,15 @@ const AddItem = () => {
                             name="item_type_id"
                             value={stock.item_type_id}
                             onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
-                        />
+                        /> */}
+                        <CreateableCustomSelect
+                            name={"item_type_id"}
+                            data={itemTypes}
+                            value={stocks[index].item_type_id}
+                            onChange={handleInputChangeSelect}
+                            index={index}
+                            apiCall={addItemType}
+                            placeHolder="Pilih Item Type" />
                         <InputCustom
                             label="Deskripsi"
                             labelPlacement="floating"

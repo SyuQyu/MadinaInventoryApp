@@ -35,7 +35,7 @@ const DetailStok = () => {
                         {item?.brand.name}
                     </p>
                     <p className="text-md">
-                        64x64
+                        {item?.size}
                     </p>
                     <div className="flex flex-row justify-start gap-4 items-center">
                         <p className="text-sm">

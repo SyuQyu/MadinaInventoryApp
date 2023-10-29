@@ -7,6 +7,7 @@ type Item = {
     description: string | null;
     price: number;
     stock: number;
+    size: string | null;
     stock_min: number;
     item_type_id: number;
     brand_id: number;
@@ -32,8 +33,8 @@ type ItemStore = {
     items: Item[];
     meta: Meta;
     createItem: (item: any, token: string | null) => void;
-    updateItem: (id: number, item: Item) => void;
-    deleteItem: (id: number) => void;
+    updateItem: (id: number, item: any, token: string | null) => void;
+    deleteItem: (id: number, token: string | null) => void;
     fetchItems: () => Promise<void>;
     getItemById: (id: number) => Item | undefined;
 };
@@ -71,14 +72,41 @@ const useItemStore = create<ItemStore>((set, get) => ({
         }
         
     },
-    updateItem: (id, item) =>
-        set((state) => ({
-            items: state.items.map((i) => (i.id === id ? item : i)),
-        })),
-    deleteItem: (id) =>
-        set((state) => ({
-            items: state.items.filter((i) => i.id !== id),
-        })),
+    updateItem: async (id, item, token) => {
+        try {
+            const response = await fetch(`https://inventory-app.kaladwipa.com/items/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(item),
+            });
+            const updatedItem = await response.json();
+            console.log(updatedItem, 'updatedItem', item, 'item');
+            set((state) => ({
+                items: state.items.map((i) => (i.id === id ? updatedItem : i)),
+            }));
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    deleteItem: async (id, token) => {
+        try {
+            await fetch(`https://inventory-app.kaladwipa.com/items/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            set((state) => ({
+                items: state.items.filter((i) => i.id !== id),
+            }));
+        } catch (error) {
+            console.error(error);
+        }
+    },
     fetchItems: async () => {
         try {
             const response = await fetch('https://inventory-app.kaladwipa.com/items');

@@ -33,6 +33,7 @@ const StokOut: React.FC = () => {
                     <CustomSelect onChange={onChange} />
                 </div>
                 <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
+                    {/* <ListItemBox withLink={false} itemName={'barang1'} qty={'10'} tipe={'riot'} merk={'marga emas'} harga={'100.000'} detailId={'1'} />
                     <ListItemBox withLink={false} itemName={'barang1'} qty={'10'} tipe={'riot'} merk={'marga emas'} harga={'100.000'} detailId={'1'} />
                     <ListItemBox withLink={false} itemName={'barang1'} qty={'10'} tipe={'riot'} merk={'marga emas'} harga={'100.000'} detailId={'1'} />
                     <ListItemBox withLink={false} itemName={'barang1'} qty={'10'} tipe={'riot'} merk={'marga emas'} harga={'100.000'} detailId={'1'} />
@@ -41,8 +42,7 @@ const StokOut: React.FC = () => {
                     <ListItemBox withLink={false} itemName={'barang1'} qty={'10'} tipe={'riot'} merk={'marga emas'} harga={'100.000'} detailId={'1'} />
                     <ListItemBox withLink={false} itemName={'barang1'} qty={'10'} tipe={'riot'} merk={'marga emas'} harga={'100.000'} detailId={'1'} />
                     <ListItemBox withLink={false} itemName={'barang1'} qty={'10'} tipe={'riot'} merk={'marga emas'} harga={'100.000'} detailId={'1'} />
-                    <ListItemBox withLink={false} itemName={'barang1'} qty={'10'} tipe={'riot'} merk={'marga emas'} harga={'100.000'} detailId={'1'} />
-                    <ListItemBox withLink={false} itemName={'barang1'} qty={'10'} tipe={'riot'} merk={'marga emas'} harga={'100.000'} detailId={'1'} />
+                    <ListItemBox withLink={false} itemName={'barang1'} qty={'10'} tipe={'riot'} merk={'marga emas'} harga={'100.000'} detailId={'1'} /> */}
                 </div>
             </div>
         </IonContent>

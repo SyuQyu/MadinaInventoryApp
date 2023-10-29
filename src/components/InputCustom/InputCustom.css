@@ -1,6 +1,7 @@
 ion-input.custom {
     --highlight-color: grey;
     --padding-end: 48px !important;
+    z-index: 1;
 }
 ion-input.custom:focus {
     --outline: none;

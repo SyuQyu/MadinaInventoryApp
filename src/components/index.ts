@@ -5,6 +5,7 @@ import CustomCard from './CustomCard/CustomCard'
 import ListItemBox from './ListItemBox/ListItemBox'
 import CustomSelect from './CustomSelect/CustomSelect'
 import CustomFilter from './CustomFilter/CustomFilter'
+import CreateableCustomSelect from './CreateableCustomSelect/CreateableCustomSelect'
 export {
     InputCustom,
     ExploreContainer,
@@ -12,5 +13,6 @@ export {
     CustomCard,
     ListItemBox,
     CustomSelect,
-    CustomFilter
+    CustomFilter,
+    CreateableCustomSelect
 }
