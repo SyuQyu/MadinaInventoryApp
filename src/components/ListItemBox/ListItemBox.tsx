@@ -3,7 +3,8 @@ import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb"
 import InputCustom from "../InputCustom/InputCustom";
-const ListItemBox = ({ kode, itemName, qty, tipe, merk, harga, detailId, withLink = true, onClick = () => { }, quantityItem, context }: props) => {
+import { PiTrashSimpleLight } from "react-icons/pi";
+const ListItemBox = ({ kode, itemName, qty, tipe, merk, harga, detailId, withLink = true, onClick = () => { }, quantityItem, deletedOnClick }: props) => {
     return (
         withLink ? (
             <div className="flex flex-row justify-between items-center gap-2 p-2 w-full bg-[#EFEFEF] rounded-md shadow-md">
@@ -28,7 +29,7 @@ const ListItemBox = ({ kode, itemName, qty, tipe, merk, harga, detailId, withLin
             </div>
         ) : (
             <div className="w-full">
-                <div className="flex flex-row justify-between items-center gap-2 p-2 w-full bg-[#EFEFEF] rounded-md shadow-md">
+                <div className="relative flex flex-row justify-between items-center gap-2 p-2 w-full bg-[#EFEFEF] rounded-md shadow-md">
                     <div className="flex flex-col justify-between items-start gap-2">
                         <p className="text-black font-thin text-xs">{kode}</p>
                         <p className="text-black font-bold text-sm">{itemName}</p>
@@ -49,6 +50,13 @@ const ListItemBox = ({ kode, itemName, qty, tipe, merk, harga, detailId, withLin
                             <AiOutlinePlus className="mr-1 w-4 h-4" />
                         </button>
                     </div>
+                    {
+                        deletedOnClick ? (
+                            <button className="absolute top-0 right-0 pt-2 pr-2" onClick={deletedOnClick}>
+                                <PiTrashSimpleLight className="w-5 h-5" style={{color: 'red'}}/>
+                            </button>
+                        ) : null
+                    }
                 </div>
             </div>
         )
@@ -68,5 +76,5 @@ type props = {
     withLink?: boolean | true;
     onClick?: (type: string, id: number) => void;
     quantityItem?: number;
-    context?: any;
+    deletedOnClick?: any;
 }

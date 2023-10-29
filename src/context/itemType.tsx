@@ -9,9 +9,9 @@ type ItemType = {
 
 type ItemTypeStore = {
     itemTypes: ItemType[];
-    addItemType: (itemType: ItemType, token: string) => any;
-    updateItemType: (id: number, updatedItemType: ItemType, token: string) => void;
-    deleteItemType: (id: number, token: string) => void;
+    addItemType: (itemType: ItemType, token: string | null) => any;
+    updateItemType: (id: number, updatedItemType: ItemType, token: string | null) => void;
+    deleteItemType: (id: number, token: string | null) => void;
     fetchItemTypes: () => Promise<void>;
 };
 

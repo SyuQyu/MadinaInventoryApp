@@ -2,10 +2,8 @@ import { create } from 'zustand';
 
 type Transaction = {
     id: number;
-    item_id: number;
-    user_id: number;
-    qty: number;
-    type: string;
+    items: selectedItems[];
+    payment_method: string;
     note: string;
     created_at: string;
     updated_at: string;
@@ -34,10 +32,11 @@ type TransactionStore = {
     items: Item[];
     selectedItems: selectedItems[];
     setSelectedItem: (item: selectedItems) => void;
+    getSelectedItemById: (id: number) => selectedItems | null;
     deleteSelectedItem: (id: number) => void;
-    addTransaction: (transaction: Transaction, token: string) => void;
-    updateTransaction: (id: number, transaction: Transaction, token: string) => void;
-    deleteTransaction: (id: number, token: string) => void;
+    addTransaction: (transaction: any, token: string | null) => void;
+    updateTransaction: (id: number, transaction: Transaction, token: string | null) => void;
+    deleteTransaction: (id: number, token: string | null) => void;
     fetchTransactions: () => Promise<void>;
 };
 
@@ -54,7 +53,7 @@ type Meta = {
 };
 
 type selectedItems = {
-    idItem: number;
+    id: number;
     qty: number;
 
 }
@@ -95,7 +94,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
     setSelectedItem: (item) => {
         console.log(item, get().selectedItems);
         set((state) => {
-            const existingItemIndex = state.selectedItems.findIndex((i) => i.idItem === item.idItem);
+            const existingItemIndex = state.selectedItems.findIndex((i) => i.id === item.id);
             if (existingItemIndex !== -1) {
                 const updatedItems = [...state.selectedItems];
                 updatedItems[existingItemIndex].qty += item.qty;
@@ -106,35 +105,40 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
         });
     },
     getSelectedItemById: (id: number) => {
-        const selectedItem = get().selectedItems.find((item) => item.idItem === id);
+        const selectedItem = get().selectedItems.find((item) => item.id === id);
         return selectedItem || null;
     },
-    deleteSelectedItem: (id) => {
-        set((state) => ({
-            items: state.items.filter((i) => i.id !== id),
-        }));
+    deleteSelectedItem: (id: number) => {
+        set((state) => {
+            const updatedItems = state.selectedItems.filter((item) => item.id !== id);
+            return { selectedItems: updatedItems };
+        });
     },
-    addTransaction: async (transaction) => {
+    addTransaction: async (transaction, token) => {
         try {
+            console.log(transaction, 'transaction')
             const response = await fetch('https://inventory-app.kaladwipa.com/transactions', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(transaction)
             });
             const newTransaction = await response.json();
+            console.log(newTransaction, 'newTransaction')
             set((state) => ({ transactions: [...state.transactions, newTransaction] }));
         } catch (error) {
             console.error('Error adding transaction:', error);
         }
     },
-    updateTransaction: async (id, transaction) => {
+    updateTransaction: async (id, transaction, token) => {
         try {
             const response = await fetch(`https://inventory-app.kaladwipa.com/transactions/${id}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(transaction)
             });
@@ -146,10 +150,13 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             console.error('Error updating transaction:', error);
         }
     },
-    deleteTransaction: async (id) => {
+    deleteTransaction: async (id, token) => {
         try {
             const response = await fetch(`https://inventory-app.kaladwipa.com/transactions/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
             const data = await response.json();
             set((state) => ({

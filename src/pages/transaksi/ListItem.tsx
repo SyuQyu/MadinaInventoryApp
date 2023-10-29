@@ -12,7 +12,7 @@ const ListItem: React.FC = () => {
     const { items, meta, fetchItems } = useItemStore();
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState('');
-    const { setSelectedItem } = useTransactionStore();
+    const { setSelectedItem, getSelectedItemById } = useTransactionStore();
     // const [quantityItem, setQuantityItem] = useState([{
     //     id: 0,
     //     quantity: 0
@@ -32,9 +32,9 @@ const ListItem: React.FC = () => {
 
     const onClick = (type: string, id: number) => {
         if (type === 'plus') {
-            setSelectedItem({idItem: id, qty: 1})
+            setSelectedItem({id: id, qty: 1})
         } else if (type === 'minus') {
-            setSelectedItem({idItem: id, qty: 1})
+            setSelectedItem({id: id, qty: -1})
         }
     }
 
@@ -76,7 +76,7 @@ const ListItem: React.FC = () => {
                         items.map((item, index) =>
                         (
                             <React.Fragment key={index}>
-                                <ListItemBox onClick={onClick} withLink={false} kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
+                                <ListItemBox onClick={onClick} withLink={false} quantityItem={getSelectedItemById(item.id)?.qty} kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
                             </React.Fragment>
                         )
                         )
