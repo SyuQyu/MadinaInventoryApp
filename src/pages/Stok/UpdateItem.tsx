@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CreateableCustomSelect, InputCustom } from "../../components";
-import { IonContent, IonRouterLink } from "@ionic/react";
+import { IonContent, IonRouterLink, IonToast } from "@ionic/react";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 import useAuth from "../../context/auth";
 import useItem from "../../context/item";
@@ -37,6 +37,7 @@ const UpdateStok = () => {
     const { id } = useParams<{ id: string }>();
     const [stock, setStock] = useState(initialStock);
     const { getItemById, updateItem } = useItem();
+    const [success, setSuccess] = useState(false);
     const { isLoggedIn, token } = useAuth();
     const { addBrand, brands, fetchBrands } = useBrand();
     const { addItemType, itemTypes, fetchItemTypes } = useItemType();
@@ -66,7 +67,7 @@ const UpdateStok = () => {
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         console.log(stock);
-        updateItem(parseInt(id), {
+        const updated: any = updateItem(parseInt(id), {
             code: stock.code === "" ? data?.code : stock.code,
             name: stock.name === "" ? data?.name : stock.name,
             price: stock.price === 0 ? data?.price : stock.price,
@@ -78,8 +79,12 @@ const UpdateStok = () => {
             jenis_type_id: stock.jenis_type_id === 0 ? data?.jenis_type_id : stock.jenis_type_id,
             description: stock.description === "" ? data?.description : stock.description,
         }, token);
+
+        if (updated) {
+            setSuccess(true);
+        }
     };
-    
+
     useEffect(() => {
         fetch();
         console.log(itemTypes, brands);
@@ -179,6 +184,7 @@ const UpdateStok = () => {
                         /> */}
                     <CreateableCustomSelect
                         name={"brand_id"}
+                        label="Pilih Merek"
                         data={brands}
                         value={stock.brand_id === 0 ? data?.brand_id : stock.brand_id}
                         onChange={handleInputChangeSelect}
@@ -207,6 +213,7 @@ const UpdateStok = () => {
                         /> */}
                     <CreateableCustomSelect
                         name={"item_type_id"}
+                        label="Pilih Tipe Item"
                         data={itemTypes}
                         value={stock.item_type_id === 0 ? data?.item_type_id : stock.item_type_id}
                         onChange={handleInputChangeSelect}
@@ -235,6 +242,14 @@ const UpdateStok = () => {
                 <div className="md:h-[20px] h-[5px] text-[1px] text-white">
                     test
                 </div>
+                <IonToast
+                    isOpen={success}
+                    position="top"
+                    onDidDismiss={() => setSuccess(false)}
+                    message="Item berhasil diupdate"
+                    duration={5000}
+                    color="success"
+                />
             </div>
         </IonContent>
     );

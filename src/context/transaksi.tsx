@@ -31,6 +31,7 @@ type TransactionStore = {
     meta: Meta;
     items: Item[];
     selectedItems: selectedItems[];
+    deleteAllSelectedItems: () => void;
     setSelectedItem: (item: selectedItems) => void;
     getSelectedItemById: (id: number) => selectedItems | null;
     deleteSelectedItem: (id: number) => void;
@@ -104,6 +105,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             }
         });
     },
+    
     getSelectedItemById: (id: number) => {
         const selectedItem = get().selectedItems.find((item) => item.id === id);
         return selectedItem || null;
@@ -113,6 +115,9 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             const updatedItems = state.selectedItems.filter((item) => item.id !== id);
             return { selectedItems: updatedItems };
         });
+    },
+    deleteAllSelectedItems: () => {
+        set({ selectedItems: [] });
     },
     addTransaction: async (transaction, token) => {
         try {
@@ -128,6 +133,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             const newTransaction = await response.json();
             console.log(newTransaction, 'newTransaction')
             set((state) => ({ transactions: [...state.transactions, newTransaction] }));
+            return true;
         } catch (error) {
             console.error('Error adding transaction:', error);
         }
@@ -146,6 +152,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             set((state) => ({
                 transactions: state.transactions.map((t) => (t.id === id ? data : t)),
             }));
+            return true;
         } catch (error) {
             console.error('Error updating transaction:', error);
         }
@@ -162,6 +169,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             set((state) => ({
                 transactions: state.transactions.filter((t) => t.id !== id),
             }));
+            return true;
         } catch (error) {
             console.error('Error deleting transaction:', error);
         }

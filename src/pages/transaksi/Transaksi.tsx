@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import { CustomFilter, CustomSelect, ExploreContainer, InputCustom, ListItemBox } from '../../components';
 import '../../theme/pages/Tab1.css';
 import { useEffect, useState } from 'react';
@@ -7,14 +7,16 @@ import { PiTrashSimpleLight } from 'react-icons/pi'
 import useItemStore from '../../context/item';
 import useTransaksiStore from '../../context/transaksi';
 import React from 'react';
+import { CustomBasicSelect } from '../../components';
 import useAuth from '../../context/auth';
 const Transaksi: React.FC = () => {
   const { items, meta, fetchItems } = useItemStore();
   const { token } = useAuth();
-  const { setSelectedItem, getSelectedItemById, selectedItems, deleteSelectedItem, fetchTransactions, transactions, addTransaction } = useTransaksiStore();
+  const { setSelectedItem, getSelectedItemById, selectedItems, deleteSelectedItem, fetchTransactions, transactions, addTransaction, deleteAllSelectedItems } = useTransaksiStore();
   const [note, setNote] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('tunai');
   const [sort, setSort] = useState('');
+  const [success, setSuccess] = useState(false);
   const [quantityItem, setQuantityItem] = useState(0);
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(event.target.value);
@@ -39,8 +41,25 @@ const Transaksi: React.FC = () => {
   const filteredItems = items.filter(item => selectedIds.includes(item.id));
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    await addTransaction({ items: selectedItems, payment_method: paymentMethod, note: note }, token)
+    const response: any = addTransaction({ items: selectedItems, payment_method: paymentMethod, note: note }, token)
+    if (response) {
+      setSuccess(true);
+      setPaymentMethod('');
+      setNote('');
+      deleteAllSelectedItems();
+    }
+
   }
+
+  const pembayaran = [
+    { value: 'tunai', label: 'Tunai' },
+    { value: 'non-tunai', label: 'Non Tunai' }
+  ];
+
+  const handleInputChangeSelect = (value: any) => {
+    setPaymentMethod(value.value);
+  }
+
   useEffect(() => {
     fetch();
     console.log(items, transactions)
@@ -70,15 +89,13 @@ const Transaksi: React.FC = () => {
             )
           }
         </div>
-        <InputCustom
-          label="Payment Method"
-          labelPlacement="floating"
-          placeholder="Payment Method"
-          fill="outline"
-          type="text"
+        <CustomBasicSelect
+          label="Pilih Tipe Pembayaran"
+          name={"tipe_pembayaran"}
+          data={pembayaran}
           value={paymentMethod}
-          onIonChange={(e: CustomEvent) => setPaymentMethod(e.detail.value!)}
-        />
+          onChange={handleInputChangeSelect}
+          placeHolder="Pilih Tipe Pembayaran" />
         <div className='mb-4' />
         <InputCustom
           label="Note"
@@ -92,7 +109,18 @@ const Transaksi: React.FC = () => {
         <button onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSubmit(e)} className='w-full bg-[#280822] text-white rounded-xl py-2 px-4 mt-4'>
           submit
         </button>
+        <div className="w-full h-[50px] bg-white text-xs text-white">
+          y
+        </div>
       </div>
+      <IonToast
+        isOpen={success}
+        position="top"
+        onDidDismiss={() => setSuccess(false)}
+        message="Transaksi berhasil dibuat"
+        duration={5000}
+        color="success"
+      />
     </IonContent>
   );
 };

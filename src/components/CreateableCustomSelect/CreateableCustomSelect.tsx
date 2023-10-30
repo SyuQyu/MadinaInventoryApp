@@ -17,18 +17,20 @@ type props = {
     name: string;
     index?: number;
     onChange: any;
+    label?: string;
 }
 
 
 const colourStyles: StylesConfig = {
-    control: (styles) => ({ ...styles, backgroundColor: 'white', padding: '10px 0px' }),
-    option: (styles) => ({ ...styles, backgroundColor: 'white', color: 'black', ':hover': { backgroundColor: '#dfdfdf' } }),
-    placeholder: (styles) => ({ ...styles, color: 'black' }),
+    container: (styles) => ({ ...styles, backgroundColor: 'white', width: '100%' }),
+    control: (styles) => ({ ...styles, backgroundColor: 'white', padding: '10px 0px', width: '100%', outline: 'none' }),
+    option: (styles) => ({ ...styles, backgroundColor: 'white', width: '100%', color: 'black', ':hover': { backgroundColor: '#dfdfdf' } }),
+    placeholder: (styles) => ({ ...styles, color: 'gray', width: '100%' }),
 };
 
-export default function CreateableCustomSelect({ data, value, setValue, apiCall, placeHolder, name, index, onChange = () => { } }: props) {
+export default function CreateableCustomSelect({ data, value, setValue, apiCall, placeHolder, name, index, onChange = () => { }, label }: props) {
     const { addBrand } = useBrandStore();
-    const {  token } = useAuth();
+    const { token } = useAuth();
     const createOption = (label: string, id: number) => ({
         label,
         value: id,
@@ -74,19 +76,39 @@ export default function CreateableCustomSelect({ data, value, setValue, apiCall,
     // }, [data]);
 
     return (
-        <CreatableSelect
-            menuPortalTarget={document.body}
-            menuPosition={'fixed'}
-            isClearable
-            placeholder={placeHolder}
-            isDisabled={isLoading}
-            isLoading={isLoading}
-            onChange={onChangeData}
-            onCreateOption={handleCreate}
-            options={options}
-            value={value}
-            styles={colourStyles}
-            name={name}
-        />
+        label ? (
+            <div className='flex flex-col gap-1 justify-between items-start w-full' style={{width: '100%'}}>
+                <p className='m-0 w-full'>{label}</p>
+                <CreatableSelect
+                    menuPortalTarget={document.body}
+                    menuPosition={'fixed'}
+                    isClearable
+                    placeholder={placeHolder}
+                    isDisabled={isLoading}
+                    isLoading={isLoading}
+                    onChange={onChangeData}
+                    onCreateOption={handleCreate}
+                    options={options}
+                    value={value}
+                    styles={colourStyles}
+                    name={name}
+                />
+            </div>
+        ) : (
+            <CreatableSelect
+                menuPortalTarget={document.body}
+                menuPosition={'fixed'}
+                isClearable
+                placeholder={placeHolder}
+                isDisabled={isLoading}
+                isLoading={isLoading}
+                onChange={onChangeData}
+                onCreateOption={handleCreate}
+                options={options}
+                value={value}
+                styles={colourStyles}
+                name={name}
+            />
+        )
     );
 };

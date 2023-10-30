@@ -67,6 +67,7 @@ const useItemStore = create<ItemStore>((set, get) => ({
             console.log(createdItem, 'createdItem', item, 'item');
             set((state) => ({ items: [...state.items, createdItem] }));
             // set((state) => ({ items: [...state.items, item] }))
+            return true;
         } catch (error) {
             console.error(error);
         }
@@ -87,6 +88,7 @@ const useItemStore = create<ItemStore>((set, get) => ({
             set((state) => ({
                 items: state.items.map((i) => (i.id === id ? updatedItem : i)),
             }));
+            return true;
         } catch (error) {
             console.error(error);
         }
@@ -103,6 +105,7 @@ const useItemStore = create<ItemStore>((set, get) => ({
             set((state) => ({
                 items: state.items.filter((i) => i.id !== id),
             }));
+            return true;
         } catch (error) {
             console.error(error);
         }

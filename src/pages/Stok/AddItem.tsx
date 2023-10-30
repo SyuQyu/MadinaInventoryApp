@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { CreateableCustomSelect, InputCustom } from "../../components";
-import { IonContent, IonRouterLink } from "@ionic/react";
+import { IonContent, IonRouterLink, IonToast } from "@ionic/react";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
+import { useHistory } from 'react-router-dom';
 import useItem from "../../context/item";
 import useAuth from "../../context/auth";
 import useBrand from "../../context/brand";
@@ -26,10 +27,12 @@ interface Option {
 
 
 const AddItem = () => {
+    const history = useHistory();
     const { createItem } = useItem();
     const { isLoggedIn, token } = useAuth();
     const { addBrand, brands, fetchBrands } = useBrand();
     const { addItemType, itemTypes, fetchItemTypes } = useItemType();
+    const [success, setSuccess] = useState(false);
     const [valueBrands, setValueBrands] = useState();
     const initialStock: Stock = {
         code: "",
@@ -62,6 +65,7 @@ const AddItem = () => {
         const list: any = [...stocks];
         list[index][name] = value;
         setStocks(list);
+        console.log(value)
     };
 
     const handleInputChangeSelect = (name: any, value: any, index: any) => {
@@ -95,20 +99,28 @@ const AddItem = () => {
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         console.log(stocks);
-        stocks?.map((stock: any) => {
-            createItem({
-                code: stock.code,
-                name: stock.name,
-                price: stock.price,
-                size: stock.ukuran,
-                stock: stock.stock,
-                stock_min: stock.stock_min,
-                brand_id: stock.brand_id?.value,
-                item_type_id: stock.item_type_id?.value,
-                jenis_type_id: stock.jenis_type_id,
-                description: stock.description,
-            }, token);
+        const data = stocks?.map((stock: any) => {
+            const created = createItem(
+                {
+                    code: stock.code,
+                    name: stock.name,
+                    price: stock.price,
+                    size: stock.ukuran,
+                    stock: stock.stock,
+                    stock_min: stock.stock_min,
+                    brand_id: stock.brand_id?.value,
+                    item_type_id: stock.item_type_id?.value,
+                    jenis_type_id: stock.jenis_type_id,
+                    description: stock.description,
+                },
+                token
+            );
+
+            return created;
         });
+        if (data) {
+            setSuccess(true);
+        }
     };
 
 
@@ -136,14 +148,14 @@ const AddItem = () => {
                     <h1 className='text-2xl font-extrabold text-[#280822]'>Barang Masuk</h1>
                 </header>
                 {stocks.map((stock, index) => (
-                    <div key={index} className="flex flex-col gap-4">
+                    <div key={index} className="flex flex-col gap-4 w-full">
                         <div className="flex flex-row gap-2 justify-start items-center">
                             <h2 className='text-lg font-extrabold text-[#280822]'>Form {index + 1}</h2>
                             <button onClick={() => handleRemoveStock(index)}><AiFillMinusCircle className="w-5 h-5 text-red-500" /></button>
                         </div>
                         <InputCustom
                             label="Kode"
-                            labelPlacement="floating"
+                            labelPlacement="fixed"
                             placeholder="Kode"
                             type="text"
                             fill="outline"
@@ -153,7 +165,7 @@ const AddItem = () => {
                         />
                         <InputCustom
                             label="Nama"
-                            labelPlacement="floating"
+                            labelPlacement="fixed"
                             placeholder="Nama"
                             type="text"
                             fill="outline"
@@ -163,7 +175,7 @@ const AddItem = () => {
                         />
                         <InputCustom
                             label="Harga"
-                            labelPlacement="floating"
+                            labelPlacement="fixed"
                             placeholder="Harga"
                             type="number"
                             fill="outline"
@@ -173,7 +185,7 @@ const AddItem = () => {
                         />
                         <InputCustom
                             label="Stok"
-                            labelPlacement="floating"
+                            labelPlacement="fixed"
                             placeholder="Stok"
                             type="number"
                             fill="outline"
@@ -183,7 +195,7 @@ const AddItem = () => {
                         />
                         <InputCustom
                             label="Stok Minimum"
-                            labelPlacement="floating"
+                            labelPlacement="fixed"
                             placeholder="Stok Minimum"
                             type="number"
                             fill="outline"
@@ -193,7 +205,7 @@ const AddItem = () => {
                         />
                         <InputCustom
                             label="Ukuran"
-                            labelPlacement="floating"
+                            labelPlacement="fixed"
                             placeholder="Ukuran"
                             type="text"
                             fill="outline"
@@ -203,7 +215,7 @@ const AddItem = () => {
                         />
                         {/* <InputCustom
                             label="ID Brand"
-                            labelPlacement="floating"
+                            labelPlacement="fixed"
                             placeholder="ID Brand"
                             type="number"
                             fill="outline"
@@ -212,6 +224,7 @@ const AddItem = () => {
                             onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
                         /> */}
                         <CreateableCustomSelect
+                            label="Pilih Merek"
                             name={"brand_id"}
                             data={brands}
                             value={stocks[index].brand_id}
@@ -221,7 +234,7 @@ const AddItem = () => {
                             placeHolder="Pilih Merek" />
                         <InputCustom
                             label="ID Jenis Barang"
-                            labelPlacement="floating"
+                            labelPlacement="fixed"
                             placeholder="ID Jenis Barang"
                             type="number"
                             fill="outline"
@@ -231,7 +244,7 @@ const AddItem = () => {
                         />
                         {/* <InputCustom
                             label="ID Tipe Barang"
-                            labelPlacement="floating"
+                            labelPlacement="fixed"
                             placeholder="ID Tipe Barang"
                             type="number"
                             fill="outline"
@@ -240,6 +253,7 @@ const AddItem = () => {
                             onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
                         /> */}
                         <CreateableCustomSelect
+                            label="Pilih Tipe Item"
                             name={"item_type_id"}
                             data={itemTypes}
                             value={stocks[index].item_type_id}
@@ -249,7 +263,7 @@ const AddItem = () => {
                             placeHolder="Pilih Item Type" />
                         <InputCustom
                             label="Deskripsi"
-                            labelPlacement="floating"
+                            labelPlacement="fixed"
                             placeholder="Deskripsi"
                             type="text"
                             fill="outline"
@@ -271,6 +285,16 @@ const AddItem = () => {
                 <div className="md:h-[20px] h-[5px] text-[1px] text-white">
                     test
                 </div>
+                {
+                    <IonToast
+                        isOpen={success}
+                        position="top"
+                        onDidDismiss={() => setSuccess(false)}
+                        message="Item berhasil ditambahkan"
+                        duration={5000}
+                        color="success"
+                    />
+                }
             </div>
         </IonContent>
     );

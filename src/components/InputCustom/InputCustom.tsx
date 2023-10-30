@@ -13,9 +13,10 @@ function InputBox({ disabled = false, name, label, labelPlacement, fill, placeho
                         </div>
                     </div>
                 ) : (
-                    <>
-                        <IonInput className="custom" {...props} disabled={disabled} type={type} name={name} label={label} labelPlacement={labelPlacement} fill={fill} value={value} placeholder={placeholder} onIonChange={onIonChange} />
-                    </>
+                    <div className='flex flex-col gap-1 justify-between items-start w-full'>
+                        <p className='m-0'>{label}</p>
+                        <IonInput className="custom" {...props} disabled={disabled} type={type} name={name} fill={fill} value={value} placeholder={placeholder} onIonChange={onIonChange} />
+                    </div>
                 )
             }
         </>

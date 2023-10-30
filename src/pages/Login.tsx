@@ -37,7 +37,7 @@ const LoginPage: React.FC = () => {
                         value={password}
                         onIonChange={(e: CustomEvent) => setPassword(e.detail.value!)}
                     />
-                    <button onClick={handleLogin} className='bg-red-500 rounded-lg w-full py-2 px-10'>
+                    <button onClick={handleLogin} className='bg-red-500 rounded-lg w-full py-2 px-10 text-white'>
                         {/* <IonRouterLink routerLink="/home" className='text-white bg-red'></IonRouterLink> */}
                         Login
                     </button>

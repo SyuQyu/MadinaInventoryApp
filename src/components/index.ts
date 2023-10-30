@@ -6,6 +6,7 @@ import ListItemBox from './ListItemBox/ListItemBox'
 import CustomSelect from './CustomSelect/CustomSelect'
 import CustomFilter from './CustomFilter/CustomFilter'
 import CreateableCustomSelect from './CreateableCustomSelect/CreateableCustomSelect'
+import CustomBasicSelect from './CustomBasicSelect/CUstomBasicSelect'
 export {
     InputCustom,
     ExploreContainer,
@@ -14,5 +15,7 @@ export {
     ListItemBox,
     CustomSelect,
     CustomFilter,
-    CreateableCustomSelect
+    CreateableCustomSelect,
+    CustomBasicSelect
+
 }
