@@ -4,7 +4,7 @@ import { MdOutlineModeEditOutline } from "react-icons/md";
 import { BiDownArrowAlt, BiUpArrowAlt } from 'react-icons/bi'
 import InputCustom from "../InputCustom/InputCustom";
 import { PiTrashSimpleLight } from "react-icons/pi";
-const ListItemBox = ({ note, userName, createdAt, detail, paymentMethod, kode, itemName, qty, tipe, merk, harga, detailId, withLink = true, onClick = () => { }, quantityItem, deletedOnClick, histroy = false }: props) => {
+const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userName, createdAt, detail, paymentMethod, kode, itemName, qty, tipe, merk, harga, detailId, withLink = true, onClick = () => { }, quantityItem, deletedOnClick, histroy = false }: props) => {
     return (
         withLink ? (
             histroy ? (
@@ -45,6 +45,11 @@ const ListItemBox = ({ note, userName, createdAt, detail, paymentMethod, kode, i
                 </div>
             ) : (
                 <div className="flex flex-row justify-between items-center gap-2 p-2 w-full bg-[#EFEFEF] rounded-md shadow-md">
+                    {
+                        deleteData ? (
+                            <input id="brand-checkbox" type="checkbox" value={detailId} className="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={handleChangeDelete} />
+                        ) : null
+                    }
                     <IonRouterLink routerLink={`/stok/detail/${detailId}`} className="text-black w-full">
                         <div className="flex flex-col justify-between items-start gap-2">
                             <p className="text-black font-thin text-xs">{kode}</p>
@@ -104,6 +109,8 @@ const ListItemBox = ({ note, userName, createdAt, detail, paymentMethod, kode, i
 export default ListItemBox;
 
 type props = {
+    handleChangeDelete?: (e: any) => void;
+    deleteData?: boolean
     note?: string;
     userName?: string;
     paymentMethod?: string;

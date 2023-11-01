@@ -40,6 +40,7 @@ type TransactionStore = {
     deleteTransaction: (id: number, token: string | null) => void;
     fetchTransactions: () => Promise<void>;
     transactionDetails: (id: number) => any;
+    fetchTransactionsWithParams: ({ page, limit, payment, user, type, sort }: any) => Promise<void>;
 };
 
 type Meta = {
@@ -217,6 +218,66 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             set({ transactions: itemsData, meta: data.meta });
         } catch (error) {
             console.error('Error fetching transactions:', error);
+        }
+    },
+    fetchTransactionsWithParams: async ({ page, limit, payment, user, type, sort }) => {
+        try {
+            let params;
+            if (page) {
+                params = new URLSearchParams({ page: page });
+            } 
+            if (limit) {
+                params = new URLSearchParams({ limit: limit });
+            }
+            if (payment) {
+                params = new URLSearchParams({ payment: payment });
+            }
+            if (user) {
+                params = new URLSearchParams({ user: user });
+            }
+            if (type) {
+                params = new URLSearchParams({ type: type });
+            }
+            if (sort) {
+                params = new URLSearchParams({ sort: sort });
+            }
+
+            const url = `https://inventory-app.kaladwipa.com/transactions?${params?.toString()}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            const itemsData = await Promise.all(data?.data?.map(async (item: any) => {
+                const details = await Promise.all(item.details.map(async (detail: any) => {
+                    const itemResponse = await fetch(`https://inventory-app.kaladwipa.com/items/${detail.item_id}`);
+                    const itemData = await itemResponse.json();
+                    const brandResponse = await fetch(`https://inventory-app.kaladwipa.com/brands/${itemData.brand_id}`);
+                    const brandData = await brandResponse.json();
+                    const itemTypeIdResponse = await fetch(`https://inventory-app.kaladwipa.com/item-types/${itemData.item_type_id}`);
+                    const itemTypeIdData = await itemTypeIdResponse.json();
+                    return {
+                        ...detail,
+                        item: {
+                            ...itemData,
+                            brand: brandData.name,
+                            item_type: itemTypeIdData.name,
+                        },
+                        // created_at: new Date(item.created_at).toLocaleDateString(),
+                        // updated_at: new Date(item.updated_at).toLocaleDateString(),
+                    };
+                }));
+                const userResponse = await fetch(`https://inventory-app.kaladwipa.com/users/${item.user_id}`)
+                const userData = await userResponse.json();
+                return {
+                    ...item,
+                    user_name: userData.name,
+                    details,
+                    created_at: new Date(item.created_at).toLocaleDateString(),
+                    updated_at: new Date(item.updated_at).toLocaleDateString(),
+                };
+            }));
+            console.log(itemsData, 'fetch with params');
+            set({ transactions: itemsData, meta: data.meta });
+        } catch (error) {
+            console.error(error);
         }
     },
 }));

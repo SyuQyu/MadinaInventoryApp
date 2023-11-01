@@ -8,15 +8,18 @@ import useItemStore from '../../context/item';
 import useTransactionStore from '../../context/transaksi';
 import React from 'react';
 const History: React.FC = () => {
-  const { items, meta, fetchItems } = useItemStore();
+  const { items, meta, fetchItems, fetchItemsWithParams } = useItemStore();
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('');
-  const { fetchTransactions, transactions } = useTransactionStore();
+  const { fetchTransactions, transactions, fetchTransactionsWithParams } = useTransactionStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSort(event.target.value);
+    fetchTransactionsWithParams({
+      sort: event.target.value
+    });
   };
   const fetch = async () => {
     await fetchTransactions();
@@ -30,16 +33,6 @@ const History: React.FC = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const filteredItems = transactions?.filter((item: any) => item?.note?.toLowerCase().includes(search.toLowerCase()));
   let currentItems = filteredItems?.slice(indexOfFirstItem, indexOfLastItem);
-
-  if (sort === 'A - Z') {
-    currentItems = currentItems?.sort((a: any, b: any) => a.note.localeCompare(b.note));
-  } else if (sort === 'Z - A') {
-    currentItems = currentItems?.sort((a: any, b: any) => b.note.localeCompare(a.note));
-  } else if (sort === 'Price High - Low') {
-    currentItems = currentItems?.sort((a: any, b: any) => b.total_price - a.total_price);
-  } else if (sort === 'Price Low - High') {
-    currentItems = currentItems?.sort((a: any, b: any) => a.total_price - b.total_price);
-  }
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -73,7 +66,20 @@ const History: React.FC = () => {
         </div>
 
         <div className='w-full flex flex-row  gap-10 justify-between items-center mt-5'>
-          <CustomFilter />
+          <CustomSelect onChange={onChange} options={[
+            {
+              value: '',
+              label: 'Filter'
+            },
+            {
+              value: 'in',
+              label: 'Stock In'
+            },
+            {
+              value: 'out',
+              label: 'Stock Out'
+            },
+          ]} />
           <CustomSelect onChange={onChange} />
         </div>
         <div className='w-full flex flex-row justify-end items-center mt-5 gap-2'>

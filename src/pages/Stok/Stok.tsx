@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import { CustomFilter, CustomSelect, ExploreContainer, InputCustom, ListItemBox } from '../../components';
 import '../../theme/pages/Tab1.css';
 import { useEffect, useState } from 'react';
@@ -8,9 +8,11 @@ import useItemStore from '../../context/item';
 import useFilterStore from '../../context/filter';
 import React from 'react';
 import FilterContent from './FilterContent';
+import useAuth from '../../context/auth';
 const Tab1: React.FC = () => {
   const { brandSelected, typeSelected, clearData } = useFilterStore();
-  const { items, meta, fetchItems, fetchItemsWithParams } = useItemStore();
+  const { token } = useAuth();
+  const { items, meta, fetchItems, fetchItemsWithParams, deleteItem } = useItemStore();
   const { brand, type } = useFilterStore();
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('');
@@ -19,8 +21,12 @@ const Tab1: React.FC = () => {
   const [openFilter, setOpenFilter] = useState(false);
   const [searchType, setSearchType] = useState('');
   const [searchBrand, setSearchBrand] = useState('');
+  const [deleteData, setDeleteData] = useState(false);
+  const [selectedDeleteData, setSelectedDeleteData] = useState([] as any);
+  const [success, setSuccess] = useState(false);
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(event.target.value);
+    fetchItemsWithParams(1, 10, '', '', event.target.value);
   };
   const fetch = async () => {
     await fetchItems();
@@ -68,6 +74,32 @@ const Tab1: React.FC = () => {
     console.log(brandSelected.length > 0, typeSelected.length > 0)
   }
 
+  const handleChangeDelete = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setSelectedDeleteData([...selectedDeleteData, value])
+    console.log(selectedDeleteData);
+  }
+
+  const handleOpenDeleteData = async () => {
+    setDeleteData(!deleteData)
+    console.log(deleteData)
+    if (selectedDeleteData.length > 0) {
+      if (deleteData) {
+        console.log('delete')
+        const result = selectedDeleteData.map((item: any) => {
+          const res = deleteItem(item, token)
+          return res;
+        })
+
+        await Promise.all(result)
+        if (result) {
+          setSelectedDeleteData([])
+          setSuccess(true)
+        }
+      }
+    }
+  }
+
   return (
     <IonContent fullscreen={false}>
       <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col'>
@@ -112,7 +144,7 @@ const Tab1: React.FC = () => {
                   <IonRouterLink routerLink={`stok/create`} className="text-black">
                     <AiOutlinePlus className="w-5 h-5 text-black float-right" />
                   </IonRouterLink>
-                  <PiTrashSimpleLight className="w-5 h-5 text-black float-right" />
+                  <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 cursor-pointer text-black float-right" />
                 </div>
               </div>
               <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
@@ -120,25 +152,70 @@ const Tab1: React.FC = () => {
                   currentItems.map((item, index) =>
                   (
                     <React.Fragment key={index}>
-                      <ListItemBox kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
+                      <ListItemBox handleChangeDelete={handleChangeDelete} deleteData={deleteData} kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
                     </React.Fragment>
                   )
                   )
                 }
               </div>
               <div className="flex justify-center items-center mt-5">
-                <ul className="flex">
+                {/* <ul className="flex">
                   {pageNumbers.map((number) => (
                     <li key={number} className={`mx-1 ${number === currentPage ? 'text-blue-500' : 'text-black'}`}>
                       <button onClick={() => paginate(number)}>{number}</button>
                     </li>
                   ))}
-                </ul>
+                </ul> */}
+                <nav aria-label="Page navigation example">
+                  <ul className="flex items-center -space-x-px h-8 text-sm">
+                    <li>
+                      <a href="#" className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 ">
+                        <span className="sr-only">Previous</span>
+                        <svg className="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
+                        </svg>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ">1</a>
+                    </li>
+                    <li>
+                      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ">2</a>
+                    </li>
+                    <li>
+                      <a href="#" aria-current="page" className="z-10 flex items-center justify-center px-3 h-8 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
+                    </li>
+                    <li>
+                      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ">4</a>
+                    </li>
+                    <li>
+                      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ">5</a>
+                    </li>
+                    <li>
+                      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ">
+                        <span className="sr-only">Next</span>
+                        <svg className="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                        </svg>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </>
           )
         }
       </div>
+      {
+        <IonToast
+          isOpen={success}
+          position="top"
+          onDidDismiss={() => setSuccess(false)}
+          message="Item berhasil dihapus"
+          duration={5000}
+          color="success"
+        />
+      }
     </IonContent >
   );
 };
