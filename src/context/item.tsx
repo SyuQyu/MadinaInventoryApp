@@ -37,6 +37,7 @@ type ItemStore = {
     deleteItem: (id: number, token: string | null) => void;
     fetchItems: () => Promise<void>;
     getItemById: (id: number) => Item | undefined;
+    fetchItemsWithParams: (page: number, limit: number, brands: string, types: string, sort: string) => Promise<void>;
 };
 
 const useItemStore = create<ItemStore>((set, get) => ({
@@ -71,7 +72,7 @@ const useItemStore = create<ItemStore>((set, get) => ({
         } catch (error) {
             console.error(error);
         }
-        
+
     },
     updateItem: async (id, item, token) => {
         try {
@@ -133,6 +134,44 @@ const useItemStore = create<ItemStore>((set, get) => ({
     },
     getItemById: (id) => {
         return get().items.find((item) => item.id === id);
+    },
+    fetchItemsWithParams: async (page, limit, brands, types, sort) => {
+        try {
+            let url = `https://inventory-app.kaladwipa.com/items`;
+            if (page) {
+                url += `?page=${page}`;
+            }
+            if (limit) {
+                url += `${page ? '&' : '?'}limit=${limit}`;
+            }
+            if (brands) {
+                url += `${page || limit ? '&' : '?'}brands=${brands}`;
+            }
+            if (types) {
+                url += `${page || limit || brands ? '&' : '?'}types=${types}`;
+            }
+            if (sort) {
+                url += `${page || limit || brands || types ? '&' : '?'}sort=${sort}`;
+            }
+            console.log(page, limit, brands, types, sort, 'params')
+            const response = await fetch(url);
+            const items = await response.json();
+            const itemsData = await Promise.all(items?.data?.map(async (item: Item) => {
+                const brand = await fetch(`https://inventory-app.kaladwipa.com/brands/${item.brand_id}`);
+                const itemTypeId = await fetch(`https://inventory-app.kaladwipa.com/item-types/${item.item_type_id}`);
+                return {
+                    ...item,
+                    brand: await brand.json(),
+                    item_type: await itemTypeId.json(),
+                    created_at: new Date(item.created_at).toLocaleDateString(),
+                    updated_at: new Date(item.updated_at).toLocaleDateString(),
+                };
+            }));
+            console.log(itemsData, 'fetch with params');
+            set({ items: itemsData, meta: items.meta });
+        } catch (error) {
+            console.error(error);
+        }
     },
 }));
 

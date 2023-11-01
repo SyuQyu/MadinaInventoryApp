@@ -6,18 +6,11 @@ import Stok from '../pages/Stok/Stok';
 import DetailStok from '../pages/Stok/Detail';
 import UpdateItem from '../pages/Stok/UpdateItem';
 import Transaksi from '../pages/transaksi/Transaksi';
-import StokIn from '../pages/transaksi/StokIn';
-import StokOut from '../pages/transaksi/StokOut';
-import History from '../pages/History';
-import Checkout from '../pages/transaksi/Checkout';
+import History from '../pages/History/History';
+import DetailHistory from '../pages/History/Detail';
 import AddItem from '../pages/Stok/AddItem';
 import ListItem from '../pages/transaksi/ListItem';
 export const routes = [
-    // {
-    //     path: '/login',
-    //     exact: true,
-    //     component: Login
-    // },
     {
         path: '/home',
         exact: true,
@@ -49,21 +42,13 @@ export const routes = [
         path: '/transaksi/list-item',
         component: ListItem
     },
-    // {
-    //     path: '/penjualan/stock-in',
-    //     component: StokIn
-    // },
-    // {
-    //     path: '/penjualan/stock-out',
-    //     component: StokOut
-    // },
-    // {
-    //     path: '/penjualan/checkout/:id',
-    //     component: Checkout
-    // },
     {
         path: '/history',
         exact: true,
         component: History
+    },
+    {
+        path: '/history/detail/:id',
+        component: DetailHistory
     }
 ];

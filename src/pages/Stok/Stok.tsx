@@ -5,14 +5,20 @@ import { useEffect, useState } from 'react';
 import { AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
 import { PiTrashSimpleLight } from 'react-icons/pi'
 import useItemStore from '../../context/item';
+import useFilterStore from '../../context/filter';
 import React from 'react';
+import FilterContent from './FilterContent';
 const Tab1: React.FC = () => {
-  const { items, meta, fetchItems } = useItemStore();
+  const { brandSelected, typeSelected, clearData } = useFilterStore();
+  const { items, meta, fetchItems, fetchItemsWithParams } = useItemStore();
+  const { brand, type } = useFilterStore();
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-
+  const [openFilter, setOpenFilter] = useState(false);
+  const [searchType, setSearchType] = useState('');
+  const [searchBrand, setSearchBrand] = useState('');
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(event.target.value);
   };
@@ -42,6 +48,25 @@ const Tab1: React.FC = () => {
     console.log(name, value);
     setSearch(value);
   };
+  // const handleInputChangeFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   console.log(name, value);
+  //   setSearchBrand(value);
+  // };
+
+  const handleOpenFilter = () => {
+    setOpenFilter(!openFilter)
+    console.log('ruuned')
+  }
+
+  const resetFilter = () => {
+    setSearchType('');
+    setSearchBrand('');
+    setSort('');
+    fetch();
+    clearData();
+    console.log(brandSelected.length > 0, typeSelected.length > 0)
+  }
 
   return (
     <IonContent fullscreen={false}>
@@ -63,37 +88,58 @@ const Tab1: React.FC = () => {
         </div>
 
         <div className='w-full flex flex-row  gap-10 justify-between items-center mt-5'>
-          <CustomFilter />
+          <CustomFilter onClick={handleOpenFilter} value={openFilter} onChange={onChange} />
           <CustomSelect onChange={onChange} />
         </div>
-        <div className='w-full flex flex-row justify-end items-center mt-5 gap-2'>
-          <IonRouterLink routerLink={`stok/create`} className="text-black">
-            <AiOutlinePlus className="w-5 h-5 text-black float-right" />
-          </IonRouterLink>
-          <PiTrashSimpleLight className="w-5 h-5 text-black float-right" />
-        </div>
-        <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
-          {
-            currentItems.map((item, index) =>
-            (
-              <React.Fragment key={index}>
-                <ListItemBox kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
-              </React.Fragment>
-            )
-            )
-          }
-        </div>
-        <div className="flex justify-center items-center mt-5">
-          <ul className="flex">
-            {pageNumbers.map((number) => (
-              <li key={number} className={`mx-1 ${number === currentPage ? 'text-blue-500' : 'text-black'}`}>
-                <button onClick={() => paginate(number)}>{number}</button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {
+          openFilter ? (
+            <div className='mt-4 px-4'>
+              <FilterContent valueOpener={openFilter} setValueOpener={setOpenFilter} handleInputChange={() => handleOpenFilter} />
+            </div>
+          ) : (
+            <>
+              <div className='w-full flex flex-row justify-between items-center mt-5 gap-2'>
+                {
+                  brandSelected.length > 0 || typeSelected.length > 0 ? (
+                    <div className="cursor-pointer relative w-full flex-col justify-center items-center gap-2 h-full">
+                      <div onClick={resetFilter} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg text-center focus:outline-none flex flex-row w-1/2 justify-center items-center p-1">
+                        Clear Filter
+                      </div>
+                    </div>
+                  ) : null
+                }
+                <div className='w-full flex flex-row justify-end items-center gap-2'>
+                  <IonRouterLink routerLink={`stok/create`} className="text-black">
+                    <AiOutlinePlus className="w-5 h-5 text-black float-right" />
+                  </IonRouterLink>
+                  <PiTrashSimpleLight className="w-5 h-5 text-black float-right" />
+                </div>
+              </div>
+              <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
+                {
+                  currentItems.map((item, index) =>
+                  (
+                    <React.Fragment key={index}>
+                      <ListItemBox kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
+                    </React.Fragment>
+                  )
+                  )
+                }
+              </div>
+              <div className="flex justify-center items-center mt-5">
+                <ul className="flex">
+                  {pageNumbers.map((number) => (
+                    <li key={number} className={`mx-1 ${number === currentPage ? 'text-blue-500' : 'text-black'}`}>
+                      <button onClick={() => paginate(number)}>{number}</button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )
+        }
       </div>
-    </IonContent>
+    </IonContent >
   );
 };
 

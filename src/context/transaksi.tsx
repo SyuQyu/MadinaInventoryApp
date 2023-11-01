@@ -27,7 +27,7 @@ type Item = {
 };
 
 type TransactionStore = {
-    transactions: Transaction[];
+    transactions: any;
     meta: Meta;
     items: Item[];
     selectedItems: selectedItems[];
@@ -39,6 +39,7 @@ type TransactionStore = {
     updateTransaction: (id: number, transaction: Transaction, token: string | null) => void;
     deleteTransaction: (id: number, token: string | null) => void;
     fetchTransactions: () => Promise<void>;
+    transactionDetails: (id: number) => any;
 };
 
 type Meta = {
@@ -105,7 +106,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             }
         });
     },
-    
+
     getSelectedItemById: (id: number) => {
         const selectedItem = get().selectedItems.find((item) => item.id === id);
         return selectedItem || null;
@@ -150,12 +151,17 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             });
             const data = await response.json();
             set((state) => ({
-                transactions: state.transactions.map((t) => (t.id === id ? data : t)),
+                transactions: state.transactions.map((t: any) => (t.id === id ? data : t)),
             }));
             return true;
         } catch (error) {
             console.error('Error updating transaction:', error);
         }
+    },
+    transactionDetails: (id) => {
+        const detailTransaction = get().transactions.find((item: any) => item.id === id);
+        console.log(detailTransaction, 'detailTransaction');
+        return detailTransaction || null;
     },
     deleteTransaction: async (id, token) => {
         try {
@@ -167,7 +173,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             });
             const data = await response.json();
             set((state) => ({
-                transactions: state.transactions.filter((t) => t.id !== id),
+                transactions: state.transactions.filter((t: any) => t.id !== id),
             }));
             return true;
         } catch (error) {
@@ -178,7 +184,37 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
         try {
             const response = await fetch('https://inventory-app.kaladwipa.com/transactions');
             const data = await response.json();
-            set({ transactions: data.data, meta: data.meta });
+            const itemsData = await Promise.all(data?.data?.map(async (item: any) => {
+                const details = await Promise.all(item.details.map(async (detail: any) => {
+                    const itemResponse = await fetch(`https://inventory-app.kaladwipa.com/items/${detail.item_id}`);
+                    const itemData = await itemResponse.json();
+                    const brandResponse = await fetch(`https://inventory-app.kaladwipa.com/brands/${itemData.brand_id}`);
+                    const brandData = await brandResponse.json();
+                    const itemTypeIdResponse = await fetch(`https://inventory-app.kaladwipa.com/item-types/${itemData.item_type_id}`);
+                    const itemTypeIdData = await itemTypeIdResponse.json();
+                    return {
+                        ...detail,
+                        item: {
+                            ...itemData,
+                            brand: brandData.name,
+                            item_type: itemTypeIdData.name,
+                        },
+                        // created_at: new Date(item.created_at).toLocaleDateString(),
+                        // updated_at: new Date(item.updated_at).toLocaleDateString(),
+                    };
+                }));
+                const userResponse = await fetch(`https://inventory-app.kaladwipa.com/users/${item.user_id}`)
+                const userData = await userResponse.json();
+                return {
+                    ...item,
+                    user_name: userData.name,
+                    details,
+                    created_at: new Date(item.created_at).toLocaleDateString(),
+                    updated_at: new Date(item.updated_at).toLocaleDateString(),
+                };
+            }));
+            console.log(itemsData);
+            set({ transactions: itemsData, meta: data.meta });
         } catch (error) {
             console.error('Error fetching transactions:', error);
         }
