@@ -6,12 +6,15 @@ import useItemStore from "../../context/item";
 import { useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import useItemTypeStore from "../../context/itemType";
+import { PiTrashSimpleLight } from "react-icons/pi";
+import useAuth from "../../context/auth";
 
 export default function FilterContent({ valueOpener, setValueOpener, handleChangeOpen = () => { } }: any) {
-    const { brand, type, setBrand, setType, selectedBrand, selectedType, brandSelected, typeSelected, clearData } = useFilterStore();
-    const { fetchBrands, brands } = useBrandStore();
+    const { brand, type: types, setBrand, setType, selectedBrand, selectedType, brandSelected, typeSelected, removeSelectedBrand, removeSelectedType } = useFilterStore();
+    const { token } = useAuth();
+    const { fetchBrands, brands, deleteBrand } = useBrandStore();
     const { fetchItemsWithParams, fetchItems } = useItemStore();
-    const { fetchItemTypes, itemTypes } = useItemTypeStore();
+    const { fetchItemTypes, itemTypes, deleteItemType } = useItemTypeStore();
     const [searchBrand, setSearchBrand] = useState('');
     const [searchType, setSearchType] = useState('');
     const [isChecked, setIsChecked] = useState(false);
@@ -30,20 +33,43 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
         }
     }
 
-    const selectedBrandChecbox = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        selectedBrand(parseInt(e.target.value));
-        console.log(e.target.value);
-    }
+    const selectedBrandChecbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = e.target;
+        if (checked) {
+            selectedBrand(parseInt(value));
+        } else {
+            removeSelectedBrand(parseInt(value));
+        }
+    };
     const selectedItemsChecbox = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        selectedType(parseInt(e.target.value));
-        console.log(e.target.value);
+        const { value, checked } = e.target;
+        if (checked) {
+            selectedType(parseInt(value));
+        } else {
+            removeSelectedType(parseInt(value));
+        }
     }
 
     const handleOpen = (type: string) => {
-        if (type === "brand") {
-            setOpen({ ...open, brand: !open.brand });
-        } else if (type === "type") {
-            setOpen({ ...open, type: !open.type });
+        console.log(brand, types, 'data handleopen')
+        if (brand && type === "brand") {
+            console.log('masuk sini brand')
+            setOpen({ ...open, brand: true });
+        } else if (types && type === "type") {
+            console.log('masuk sini type')
+            setOpen({ ...open, type: true });
+        }
+    }
+    const handleClose = (type: string) => {
+        console.log(open.brand && brand, 'data handleopen')
+        if (brand && type === "brand") {
+            setBrand(false);
+            console.log('masuk sini brand')
+            setOpen({ ...open, brand: false });
+        } else if (type && type === "type") {
+            setType(false);
+            console.log('masuk sini type')
+            setOpen({ ...open, type: false });
         }
     }
 
@@ -66,6 +92,14 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
 
     const filteredItems = itemTypes?.filter(item => item?.name?.toLowerCase().includes(searchType.toLowerCase()));
     const filteredBrand = brands?.filter(item => item?.name?.toLowerCase().includes(searchBrand.toLowerCase()));
+
+    const handleDelete = (type: string, id: number) => async () => {
+        if (type === "brand") {
+            await deleteBrand(id, token);
+        } else if (type === "type") {
+            await deleteItemType(id, token);
+        }
+    }
     return (
         <div>
             {
@@ -84,7 +118,7 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
             {
                 open.brand && brand ? (
                     <>
-                        <button className="w-full text-black" onClick={() => handleOpen('brand')}>
+                        <button className="w-full text-black" onClick={() => handleClose('brand')}>
                             <div className="w-full text-black flex flex-row gap-1 items-center">
                                 <IoIosArrowBack className="w-3 h-3" />
                                 <p className="text-sm">
@@ -108,19 +142,31 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                             <div className="flex flex-col justify-start items-start gap-2 w-full mt-2">
                                 {
                                     filteredBrand?.map((brand: any, index: number) => (
-                                        <div key={index} className="flex flex-row justify-start items-start gap-2">
-                                            <input id={`brand-${index}`} type="checkbox" value={brand.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedBrandChecbox} />
-                                            <p className="text-black">{brand.name}</p>
-                                        </div>
+                                        brandSelected.includes(brand.id) ?
+                                            <div key={index} className="flex flex-row justify-between w-full items-start gap-2">
+                                                <div className="flex flex-row justify-start items-center gap-2 w-full">
+                                                    <input id={`brand-${index}`} type="checkbox" value={brand.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedBrandChecbox} checked />
+                                                    <p className="text-black">{brand.name}</p>
+                                                </div>
+                                                <PiTrashSimpleLight onClick={handleDelete('brand', brand.id)} className="w-5 h-5 cursor-pointer text-black float-right" />
+                                            </div>
+                                            :
+                                            <div key={index} className="flex flex-row justify-between w-full items-start gap-2">
+                                                <div className="flex flex-row justify-start items-center gap-2 w-full">
+                                                    <input id={`brand-${index}`} type="checkbox" value={brand.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedBrandChecbox} />
+                                                    <p className="text-black">{brand.name}</p>
+                                                </div>
+                                                <PiTrashSimpleLight onClick={handleDelete('brand', brand.id)} className="w-5 h-5 cursor-pointer text-black float-right" />
+                                            </div>
                                     ))
                                 }
                             </div>
                         </div>
                     </>
 
-                ) : open.type && type ? (
+                ) : open.type && types ? (
                     <>
-                        <button className="w-full text-black" onClick={() => handleOpen('type')}>
+                        <button className="w-full text-black" onClick={() => handleClose('type')}>
                             <div className="w-full text-black flex flex-row gap-1 items-center">
                                 <IoIosArrowBack className="w-3 h-3" />
                                 <p className="text-sm">
@@ -144,10 +190,22 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                             <div className="flex flex-col justify-start items-start gap-2 w-full mt-2">
                                 {
                                     filteredItems?.map((itemType: any, index: number) => (
-                                        <div key={index} className="flex flex-row justify-start items-start gap-2">
-                                            <input id={`itemType-${index}`} type="checkbox" value={itemType.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedItemsChecbox} />
-                                            <p className="text-black">{itemType.name}</p>
-                                        </div>
+                                        typeSelected.includes(itemType.id) ?
+                                            <div key={index} className="flex flex-row justify-between w-full items-start gap-2">
+                                                <div className="flex flex-row justify-start items-center gap-2 w-full">
+                                                    <input id={`itemType-${index}`} type="checkbox" value={itemType.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedItemsChecbox} checked />
+                                                    <p className="text-black">{itemType.name}</p>
+                                                </div>
+                                                <PiTrashSimpleLight onClick={handleDelete('type', itemType.id)} className="w-5 h-5 cursor-pointer text-black float-right" />
+                                            </div>
+                                            :
+                                            <div key={index} className="flex flex-row justify-between w-full items-start gap-2">
+                                                <div className="flex flex-row justify-start items-center gap-2 w-full">
+                                                    <input id={`itemType-${index}`} type="checkbox" value={itemType.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedItemsChecbox} />
+                                                    <p className="text-black">{itemType.name}</p>
+                                                </div>
+                                                <PiTrashSimpleLight onClick={handleDelete('type', itemType.id)} className="w-5 h-5 cursor-pointer text-black float-right" />
+                                            </div>
                                     ))
                                 }
                             </div>
@@ -158,14 +216,14 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                         <div className="flex flex-row justify-start items-center w-full cursor-pointer">
                             <input id="brand-checkbox" type="checkbox" value="" className="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={handleChange} />
                             <button className="cursor-pointer flex flex-row justify-between items-center pl-2 w-full" onClick={() => handleOpen('brand')}>
-                                <label htmlFor="brand-checkbox" className="cursor-pointer text-left w-full py-3 ml-2 text-sm font-medium text-gray-900 ">Brand</label>
+                                <label className="cursor-pointer text-left w-full py-3 ml-2 text-sm font-medium text-gray-900 ">Brand</label>
                                 <MdKeyboardArrowRight className="w-5 h-5 text-black" />
                             </button>
                         </div>
                         <div className="flex flex-row justify-start items-center w-full cursor-pointer">
                             <input id="type-checkbox" type="checkbox" value="" className="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={handleChange} />
                             <button className="cursor-pointer flex flex-row justify-between items-center pl-2 w-full" onClick={() => handleOpen('type')}>
-                                <label htmlFor="type-checkbox" className="cursor-pointer text-left w-full py-3 ml-2 text-sm font-medium text-gray-900 ">Type</label>
+                                <label className="cursor-pointer text-left w-full py-3 ml-2 text-sm font-medium text-gray-900 ">Type</label>
                                 <MdKeyboardArrowRight className="w-5 h-5 text-black" />
                             </button>
                         </div>

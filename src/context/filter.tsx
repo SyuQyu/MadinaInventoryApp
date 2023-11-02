@@ -11,6 +11,8 @@ type FilterState = {
     setType: (stateSended: boolean) => void;
     clearFilter: () => void;
     clearData: () => void;
+    removeSelectedBrand: (id: number) => void;
+    removeSelectedType: (id: number) => void;
 };
 
 const useFilter = create<FilterState>((set, get) => ({
@@ -36,9 +38,17 @@ const useFilter = create<FilterState>((set, get) => ({
         console.log(id, get().brandSelected)
         set((state) => ({ brandSelected: [...state.brandSelected, id] }));
     },
+    removeSelectedBrand: (id) => {
+        console.log(id, get().brandSelected)
+        set((state) => ({ brandSelected: state.brandSelected.filter((dataId) => dataId !== id) }));
+    },
     selectedType: (id) => {
         console.log(id, get().typeSelected)
         set((state) => ({ typeSelected: [...state.typeSelected, id] }));
+    },
+    removeSelectedType: (id) => {
+        console.log(id, get().typeSelected)
+        set((state) => ({ typeSelected: state.typeSelected.filter((dataId) => dataId !== id) }));
     },
 }));
 

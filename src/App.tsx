@@ -40,14 +40,14 @@ import { Navigation } from './components';
 import LoginPage from './pages/Login';
 setupIonicReact();
 const App: React.FC = () => {
-  const { isLoggedIn, token } = useAuth();
+  const { isLoggedIn, token, dataUser } = useAuth();
   const UrlGetter = () => {
     const url = window.location.href;
     const lastSlashIndex = url.lastIndexOf('/');
     const lastSegment = url.substring(lastSlashIndex + 1).toLowerCase();
     return lastSegment;
   }
-  console.log(isLoggedIn, token, UrlGetter());
+  console.log(isLoggedIn, token, dataUser, UrlGetter());
   if (isLoggedIn && token && UrlGetter() === 'login') {
     window.location.href = "/home";
   }

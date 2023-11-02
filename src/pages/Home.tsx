@@ -4,7 +4,9 @@ import { CustomCard } from '../components';
 import { MdOutlineSsidChart } from "react-icons/md";
 import { PiHandCoinsDuotone } from 'react-icons/pi';
 import { ImStack } from 'react-icons/im';
+import useAuth from '../context/auth';
 const Home: React.FC = () => {
+    const { isLoggedIn, token, dataUser } = useAuth();
     return (
         <IonContent>
             <div className='md:px-10 md:py-10 px-2 py-5'>
@@ -16,7 +18,7 @@ const Home: React.FC = () => {
                         <div className='w-1/4 md:w-[10%] h-full flex justify-end'>
                             <img src="/images/logo.png" alt="logo" className='w-full h-full object-contain' />
                         </div>
-                        <p className='font-semibold md:text-xl text-md'>Selamat datang! User1</p>
+                        <p className='font-semibold md:text-xl text-md'>Selamat datang! {dataUser?.name}</p>
                     </div>
                 </div>
                 <div className='flex flex-wrap justify-between items-center md:gap-2 gap-1 mt-5'>

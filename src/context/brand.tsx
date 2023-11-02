@@ -23,7 +23,7 @@ type BrandStore = {
     meta: Meta;
     addBrand: (brand: string, token: string) => any;
     updateBrand: (id: number, updatedBrand: string, token: string) => void;
-    deleteBrand: (id: number, token: string) => void;
+    deleteBrand: (id: number, token: string | null) => void;
     fetchBrands: () => Promise<void>;
 };
 
