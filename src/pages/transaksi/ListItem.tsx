@@ -171,9 +171,9 @@ const ListItem: React.FC = () => {
                                     )
                                 }
                             </div>
-                            <div className="flex justify-center items-center mt-5">
-                                {
-                                    meta?.first_page !== meta?.last_page ? (
+                            {
+                                meta?.first_page !== meta?.last_page ? (
+                                    <div className="flex justify-center items-center mt-5">
                                         <nav aria-label="Page navigation example">
                                             <ul className="flex items-center -space-x-px h-8 text-sm">
                                                 <li>
@@ -199,8 +199,9 @@ const ListItem: React.FC = () => {
                                                 </li>
                                             </ul>
                                         </nav>
-                                    ) : null}
-                            </div>
+                                    </div>
+                                ) : null
+                            }
                         </>
                     )
                 }

@@ -5,6 +5,10 @@ import { BiDownArrowAlt, BiUpArrowAlt } from 'react-icons/bi'
 import InputCustom from "../InputCustom/InputCustom";
 import { PiTrashSimpleLight } from "react-icons/pi";
 const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userName, createdAt, detail, paymentMethod, kode, itemName, qty, tipe, merk, harga, detailId, withLink = true, onClick = () => { }, quantityItem, deletedOnClick, histroy = false }: props) => {
+    let inItems = detail?.filter((item: any) => item?.type === 'in');
+    let outItems = detail?.filter((item: any) => item?.type === 'out');
+    let totalIn = inItems?.reduce((acc: any, item: { qty: any; }) => acc + item.qty, 0);
+    let totalOut = outItems?.reduce((acc: any, item: { qty: any; }) => acc + item.qty, 0);
     return (
         withLink ? (
             histroy ? (
@@ -19,6 +23,22 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
                             </div>
                             <div className="flex flex-col justify-center gap-4 items-center">
                                 {
+                                    totalIn !== 0 ? (
+                                        <div className="flex items-center justify-center gap-0.5">
+                                            <BiUpArrowAlt className="w-5 h-5 text-green-500" />
+                                            <p>{totalIn}</p>
+                                        </div>
+                                    ) : null
+                                }
+                                {
+                                    totalOut !== 0 ? (
+                                        <div className="flex items-center justify-center gap-0.5">
+                                            <BiDownArrowAlt className="w-5 h-5 text-red-500" />
+                                            <p>{totalOut}</p>
+                                        </div>
+                                    ) : null
+                                }
+                                {/* {
                                     detail?.map((item: any, index: any) => (
                                         <div key={index}>
                                             {
@@ -36,7 +56,7 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
                                             }
                                         </div>
                                     ))
-                                }
+                                } */}
                             </div>
                         </div>
                     </IonRouterLink>

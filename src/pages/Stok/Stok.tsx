@@ -203,14 +203,7 @@ const Tab1: React.FC = () => {
                   )
                 }
               </div>
-              <div className="flex justify-center items-center mt-5">
-                {/* <ul className="flex">
-                  {pageNumbers.map((number) => (
-                    <li key={number} className={`mx-1 ${number === currentPage ? 'text-blue-500' : 'text-black'}`}>
-                      <button onClick={() => paginate(number)}>{number}</button>
-                    </li>
-                  ))}
-                </ul> */}
+              <div className={clsx("justify-center items-center mt-5", meta?.first_page !== meta?.last_page ? 'flex' : 'hidden')}>
                 {
                   meta?.first_page !== meta?.last_page ? (
                     <nav aria-label="Page navigation example">
