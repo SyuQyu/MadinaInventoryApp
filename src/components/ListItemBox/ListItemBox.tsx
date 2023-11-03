@@ -12,7 +12,7 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
     return (
         withLink ? (
             histroy ? (
-                <div className=" flex flex-row gap-2 p-2 w-full justify-center items-center bg-[#EFEFEF] rounded-md shadow-md">
+                <div className="flex flex-row gap-2 p-2 w-full justify-center items-center bg-[#EFEFEF] rounded-md shadow-md">
                     <div>
                         {
                             deleteData ? (
@@ -22,18 +22,25 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
                     </div>
                     <div className="flex flex-col justify-between items-start gap-2 p-2 w-full">
                         <IonRouterLink router-direction={'forward'} routerLink={`/history/detail/${detailId}`} className="text-black w-full">
-                            <div className=" flex flex-row justify-between items-center w-full">
+                            <div className="flex flex-row justify-between items-center w-full">
                                 <div className="flex flex-col justify-between items-start gap-2">
-                                    <p className="text-black font-thin text-xs">{note}</p>
-                                    <p className="text-black font-bold text-sm">{paymentMethod}</p>
-                                    <p className="text-black font-bold text-xs">Total {harga?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
+                                    <p className="text-black font-thin text-xs">
+                                        {detail && detail.length > 0 && (
+                                          <>
+                                              <span>{detail[0]?.item?.name}</span>
+                                              {detail.length > 1 && (
+                                                <span> & {detail.length - 1} barang lainnya</span>
+                                              )}
+                                          </>
+                                        )}
+                                    </p>
                                     <p className="text-black font-thin text-xs">{createdAt}</p>
                                 </div>
                                 <div className="flex flex-col justify-between gap-4 items-center">
                                     {
                                         totalIn !== 0 ? (
                                             <div className="flex items-center justify-between gap-0.5">
-                                                <BsBoxArrowInDown className="w-5 h-5 text-green-500" />
+                                                <BsBoxArrowInUp className="w-5 h-5 text-green-500" />
                                                 <p>{totalIn}</p>
                                             </div>
                                         ) : null
@@ -41,8 +48,8 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
                                     {
                                         totalOut !== 0 ? (
                                             <div className="flex items-center justify-between gap-0.5">
-                                                <BsBoxArrowInUp className="w-5 h-5 text-red-500" />
-                                                <p>{Math.abs(totalOut)}</p>
+                                                <BsBoxArrowInDown className="w-5 h-5 text-red-500" />
+                                                <p>{totalOut}</p>
                                             </div>
                                         ) : null
                                     }
@@ -68,7 +75,7 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
                                 </div>
                             </div>
                         </IonRouterLink>
-                        <div className="w-full h-0.5 rounded-full bg-gray-500"></div>
+                        <div className="w-full h-0.5 border-dashed border-2 border-slate-300"></div>
                         <p className="text-gray-500/80 font-normal text-xs">Dibuat oleh {userName}</p>
                     </div>
                 </div>

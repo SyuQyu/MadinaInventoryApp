@@ -98,7 +98,7 @@ const History: React.FC = () => {
     <IonContent fullscreen={false}>
       <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col'>
         <header className='mb-6'>
-          <h1 className='text-2xl font-extrabold text-[#280822]'>Stok Barang Toko</h1>
+          <h1 className='text-2xl font-extrabold text-[#280822]'>Histori Stok</h1>
         </header>
         <div className='w-full py-2 px-5 rounded-md flex flex-row justify-between items-center bg-[#EFEFEF]'>
           <input
@@ -146,7 +146,9 @@ const History: React.FC = () => {
                   createdAt={item?.created_at}
                   detail={item?.details}
                   paymentMethod={item?.payment_method}
-                  harga={item?.total_price} detailId={item?.id} />
+                  harga={item?.total_price}
+                  detailId={item?.id}
+                />
               </React.Fragment>
             )
             )

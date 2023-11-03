@@ -11,6 +11,11 @@ const DetailStok = () => {
     const { fetchTransactions, transactions, transactionDetails, setSelectedItem } = useTransactionStore();
 
     const item = transactionDetails(parseInt(id));
+    const formattedPaymentMethod = item?.payment_method
+      ?.replace('-', ' ')
+      ?.split(' ')
+      ?.map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+      ?.join(' ');
 
     const reInsertSelectedItem = () => {
         item?.details.map((item: any) => setSelectedItem({ id: item.item_id, qty: item.qty }))
@@ -39,25 +44,34 @@ const DetailStok = () => {
                     </div>
                     <h1 className='text-2xl font-extrabold text-[#280822]'>Detail Transaksi</h1>
                 </header>
-                <div className="w-full h-[200vh] flex flex-col gap-3 rounded-t-[4rem] shadow-2xl border-t-4 border-[#280822] pt-10 md:px-10 px-5 ">
-                    <p className="text-md">
-                        {item?.note}
-                    </p>
-                    <p className="text-xl font-bold">
-                        Tipe Pembayaran {item?.payment_method?.charAt(0)?.toUpperCase() + item?.payment_method?.slice(1)}
-                    </p>
-                    <p className="text-md">
-                        Total {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}
-                    </p>
-                    <p className="text-md">
-                        Dibuat oleh {item?.user_name}
-                    </p>
-                    <p className="text-md text-justify">
-                        {item?.created_at}
-                    </p>
+                <div className="w-full h-[200vh] flex flex-col gap-3 rounded-t-[4rem] shadow-2xl pt-10 md:px-10 px-5 ">
+                    <dl className="grid grid-cols-3">
+                        <dt className="col-span-full font-bold">Dibuat Oleh</dt>
+                        <dd className="col-span-full">{item?.user_name}</dd>
+
+                        <dt className="col-span-full font-bold">Tipe Pembayaran</dt>
+                        <dd className="col-span-full">
+                            {formattedPaymentMethod}
+                        </dd>
+
+                        <dt className="col-span-full font-bold">Total</dt>
+                        <dd className="col-span-full">
+                            {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}
+                        </dd>
+
+                        <dt className="col-span-full font-bold">Catatan</dt>
+                        <dd className="col-span-full">
+                            {item?.note}
+                        </dd>
+
+                        <dt className="col-span-full font-bold">Tanggal Dibuat</dt>
+                        <dd className="col-span-full">
+                            {item?.created_at}
+                        </dd>
+                    </dl>
                     <div className="w-full h-0.5 rounded-full bg-gray-500"></div>
                     <div className="flex flex-col justify-between items-start gap-2">
-                        <p className="text-md text-justify">
+                        <p className="text-md text-justify font-bold">
                             Detail Barang
                         </p>
                         {
@@ -73,7 +87,7 @@ const DetailStok = () => {
                                                         <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">{item?.item?.item_type}</p>
                                                         <p className="text-gray-500/80 font-normal text-xs">{item?.item?.brand}</p>
                                                     </div>
-                                                    <p className="text-gray-500/80 font-normal text-xs">Total harga {Math.abs(item?.qty)} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
+                                                    <p className="text-gray-500/80 font-normal text-xs">{Math.abs(item?.qty)} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
                                                 </div>
                                                 <div className="flex flex-col items-end justify-center gap-0.5">
                                                     <p className="whitespace-nowrap">Stock In</p>
@@ -92,13 +106,13 @@ const DetailStok = () => {
                                                         <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">{item?.item?.item_type}</p>
                                                         <p className="text-gray-500/80 font-normal text-xs">{item?.item?.brand}</p>
                                                     </div>
-                                                    <p className="text-gray-500/80 font-normal text-xs">Total harga {Math.abs(item?.qty)} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
+                                                    <p className="text-gray-500/80 font-normal text-xs">{Math.abs(item?.qty)} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
                                                 </div>
                                                 <div className="flex flex-col items-end justify-center gap-0.5">
                                                     <p className="whitespace-nowrap">Stock Out</p>
                                                     <div className="flex justify-between items-center gap-0.5">
                                                         <BsBoxArrowInDown className="w-5 h-5 text-red-500" />
-                                                        <p>{Math.abs(item?.qty)}</p>
+                                                        <p>{item?.qty}</p>
                                                     </div>
                                                 </div>
                                             </div>

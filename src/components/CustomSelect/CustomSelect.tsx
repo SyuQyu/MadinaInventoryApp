@@ -8,11 +8,11 @@ const CustomSelect = ({ options = [
     },
     {
         value: 'asc',
-        label: 'ASC'
+        label: 'Terlama'
     },
     {
         value: 'desc',
-        label: 'DESC'
+        label: 'Terbaru'
     },
 ], onChange = () => { }, ...props }: props) => {
     return (
