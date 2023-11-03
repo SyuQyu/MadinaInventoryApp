@@ -75,7 +75,7 @@ const DetailStok = () => {
                                                     </div>
                                                     <p className="text-gray-500/80 font-normal text-xs">Total harga {Math.abs(item?.qty)} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
                                                 </div>
-                                                <div className="flex flex-col items-center justify-center gap-0.5">
+                                                <div className="flex flex-col items-end justify-center gap-0.5">
                                                     <p className="whitespace-nowrap">Stock In</p>
                                                     <div className="flex justify-between items-center gap-0.5">
                                                         <BsBoxArrowInUp className="w-5 h-5 text-green-500" />
@@ -94,7 +94,7 @@ const DetailStok = () => {
                                                     </div>
                                                     <p className="text-gray-500/80 font-normal text-xs">Total harga {Math.abs(item?.qty)} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
                                                 </div>
-                                                <div className="flex flex-col items-center justify-center gap-0.5">
+                                                <div className="flex flex-col items-end justify-center gap-0.5">
                                                     <p className="whitespace-nowrap">Stock Out</p>
                                                     <div className="flex justify-between items-center gap-0.5">
                                                         <BsBoxArrowInDown className="w-5 h-5 text-red-500" />

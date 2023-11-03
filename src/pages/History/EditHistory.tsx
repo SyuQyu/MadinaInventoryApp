@@ -16,7 +16,7 @@ const EditHistory: React.FC = () => {
   const { token } = useAuth();
   const { setSelectedItem, getSelectedItemById, selectedItems, updateTransaction, deleteSelectedItem, fetchTransactions, transactions, addTransaction, deleteAllSelectedItems, transactionDetails } = useTransaksiStore();
   const [note, setNote] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('tunai');
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [sort, setSort] = useState('');
   const [success, setSuccess] = useState(false);
   const [quantityItem, setQuantityItem] = useState(0);
@@ -50,7 +50,8 @@ const EditHistory: React.FC = () => {
   // }
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const response: any = updateTransaction(parseInt(idParams), { items: selectedItems, payment_method: paymentMethod, note: note }, token)
+    console.log(idParams, selectedItems, paymentMethod, note, token, 'edit history')
+    const response: any = updateTransaction(parseInt(idParams), { items: selectedItems, payment_method: paymentMethod !== '' ? paymentMethod : itemDetails?.payment_method, note: note ? note : itemDetails?.note }, token)
     if (response) {
       setSuccess(true);
       fetchTransactions(token)
@@ -67,6 +68,11 @@ const EditHistory: React.FC = () => {
     setPaymentMethod(value.value);
   }
 
+  const handleDeleteAllSelectedItems = () => {
+    deleteAllSelectedItems();
+    fetch();
+  }
+
   useEffect(() => {
     fetch();
   }, [])
@@ -75,7 +81,7 @@ const EditHistory: React.FC = () => {
     <IonContent fullscreen={false}>
       <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col'>
         <header className='mb-6 flex flex-col justify-between items-start gap-1'>
-          <IonRouterLink routerLink={`/history/detail/${idParams}`} onClick={() => deleteAllSelectedItems()} className="w-full text-black">
+          <IonRouterLink routerLink={`/history/detail/${idParams}`} onClick={() => handleDeleteAllSelectedItems()} className="w-full text-black">
             <div className="w-full text-black flex flex-row gap-1 items-center">
               <IoIosArrowBack className="w-4 h-4" />
               <p>
