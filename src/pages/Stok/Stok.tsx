@@ -9,6 +9,7 @@ import useFilterStore from '../../context/filter';
 import React from 'react';
 import FilterContent from './FilterContent';
 import useAuth from '../../context/auth';
+import clsx from 'clsx';
 const Tab1: React.FC = () => {
   const { brandSelected, typeSelected, clearData } = useFilterStore();
   const { token } = useAuth();
@@ -17,16 +18,23 @@ const Tab1: React.FC = () => {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [openFilter, setOpenFilter] = useState(false);
   const [searchType, setSearchType] = useState('');
   const [searchBrand, setSearchBrand] = useState('');
   const [deleteData, setDeleteData] = useState(false);
   const [selectedDeleteData, setSelectedDeleteData] = useState([] as any);
   const [success, setSuccess] = useState(false);
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const onChangeShow = (event: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(event.target.value);
-    fetchItemsWithParams(1, 10, '', '', event.target.value);
+    const parsing = parseInt(event.target.value);
+    setItemsPerPage(parsing);
+    fetchItemsWithParams(1, parsing, '', '', sort);
+  };
+  const onChangeSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(event.target.value);
+    setSort(event.target.value);
+    fetchItemsWithParams(1, itemsPerPage, '', '', event.target.value);
   };
   const fetch = async () => {
     await fetchItems();
@@ -35,18 +43,19 @@ const Tab1: React.FC = () => {
     fetch();
   }, [fetchItems])
 
+  console.log(meta)
   // Pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const filteredItems = items?.filter(item => item?.name?.toLowerCase().includes(search.toLowerCase()));
-  const currentItems = filteredItems?.slice(indexOfFirstItem, indexOfLastItem);
+  // const currentItems = filteredItems?.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  // const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(filteredItems.length / itemsPerPage); i++) {
-    pageNumbers.push(i);
-  }
+  // const pageNumbers = [];
+  // for (let i = 1; i <= Math.ceil(filteredItems.length / itemsPerPage); i++) {
+  //   pageNumbers.push(i);
+  // }
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,6 +88,11 @@ const Tab1: React.FC = () => {
     setSelectedDeleteData([...selectedDeleteData, value])
     console.log(selectedDeleteData);
   }
+  const handleNextPage = (page: number) => {
+    setCurrentPage(page);
+    fetchItemsWithParams(page, itemsPerPage, '', '', sort);
+  };
+
 
   const handleOpenDeleteData = async () => {
     setDeleteData(!deleteData)
@@ -100,6 +114,12 @@ const Tab1: React.FC = () => {
     }
   }
 
+  const pageNumbers = Array.from({ length: meta.last_page }, (_, i) => i + 1)
+    .filter((page) => {
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(meta.last_page, startPage + 4);
+      return page >= startPage && page <= endPage;
+    });
   return (
     <IonContent fullscreen={false}>
       <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col'>
@@ -120,8 +140,8 @@ const Tab1: React.FC = () => {
         </div>
 
         <div className='w-full flex flex-row  gap-10 justify-between items-center mt-5'>
-          <CustomFilter onClick={handleOpenFilter} value={openFilter} onChange={onChange} />
-          <CustomSelect onChange={onChange} />
+          <CustomFilter onClick={handleOpenFilter} value={openFilter} />
+          <CustomSelect onChange={onChangeSort} />
         </div>
         {
           openFilter ? (
@@ -138,7 +158,32 @@ const Tab1: React.FC = () => {
                         Clear Filter
                       </div>
                     </div>
-                  ) : null
+                  ) : (
+                    <div className='md:w-1/4 w-1/2'>
+                      <CustomSelect onChange={onChangeShow} options={[
+                        {
+                          value: '',
+                          label: 'Tampilkan'
+                        },
+                        {
+                          value: '50',
+                          label: '50'
+                        },
+                        {
+                          value: '100',
+                          label: '100'
+                        },
+                        {
+                          value: '200',
+                          label: '200'
+                        },
+                        {
+                          value: meta?.total,
+                          label: 'semua'
+                        },
+                      ]} />
+                    </div>
+                  )
                 }
                 <div className='w-full flex flex-row justify-end items-center gap-2'>
                   <IonRouterLink routerLink={`stok/create`} className="text-black">
@@ -149,7 +194,7 @@ const Tab1: React.FC = () => {
               </div>
               <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
                 {
-                  currentItems.map((item, index) =>
+                  filteredItems.map((item, index) =>
                   (
                     <React.Fragment key={index}>
                       <ListItemBox handleChangeDelete={handleChangeDelete} deleteData={deleteData} kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
@@ -166,41 +211,34 @@ const Tab1: React.FC = () => {
                     </li>
                   ))}
                 </ul> */}
-                <nav aria-label="Page navigation example">
-                  <ul className="flex items-center -space-x-px h-8 text-sm">
-                    <li>
-                      <a href="#" className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 ">
-                        <span className="sr-only">Previous</span>
-                        <svg className="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1 1 5l4 4" />
-                        </svg>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ">1</a>
-                    </li>
-                    <li>
-                      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ">2</a>
-                    </li>
-                    <li>
-                      <a href="#" aria-current="page" className="z-10 flex items-center justify-center px-3 h-8 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
-                    </li>
-                    <li>
-                      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ">4</a>
-                    </li>
-                    <li>
-                      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ">5</a>
-                    </li>
-                    <li>
-                      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ">
-                        <span className="sr-only">Next</span>
-                        <svg className="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4" />
-                        </svg>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
+                {
+                  meta?.first_page !== meta?.last_page ? (
+                    <nav aria-label="Page navigation example">
+                      <ul className="flex items-center -space-x-px h-8 text-sm">
+                        <li>
+                          <p onClick={() => currentPage !== meta?.first_page ? handleNextPage(currentPage - 1) : null} className="flex items-center justify-center px-3 md:h-8 h-6 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 ">
+                            <span className="sr-only">Previous</span>
+                            <svg className="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1 1 5l4 4" />
+                            </svg>
+                          </p>
+                        </li>
+                        {pageNumbers.map((page) => (
+                          <li key={page}>
+                            <p className={clsx('cursor-pointer flex items-center justify-center px-3 md:h-8 h-6 leading-tight ', page === currentPage ? 'text-white bg-[#280822] border-[#280822]' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700')} onClick={() => handleNextPage(page)}>{page}</p>
+                          </li>
+                        ))}
+                        <li>
+                          <p onClick={() => currentPage !== meta?.last_page ? handleNextPage(currentPage + 1) : null} className="flex items-center justify-center px-3 md:h-8 h-6 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ">
+                            <span className="sr-only">Next</span>
+                            <svg className="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                          </p>
+                        </li>
+                      </ul>
+                    </nav>
+                  ) : null}
               </div>
             </>
           )

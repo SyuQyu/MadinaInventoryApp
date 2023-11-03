@@ -23,7 +23,7 @@ const Transaksi: React.FC = () => {
   };
   const fetch = async () => {
     await fetchItems();
-    await fetchTransactions();
+    await fetchTransactions(token);
   }
   const onClick = (type: string, id: number) => {
     if (type === 'plus') {

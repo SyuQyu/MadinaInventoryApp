@@ -7,32 +7,42 @@ import { PiTrashSimpleLight } from 'react-icons/pi'
 import useItemStore from '../../context/item';
 import useTransactionStore from '../../context/transaksi';
 import React from 'react';
+import useAuth from '../../context/auth';
 const History: React.FC = () => {
   const { items, meta, fetchItems, fetchItemsWithParams } = useItemStore();
   const [search, setSearch] = useState('');
+  const { token } = useAuth();
   const [sort, setSort] = useState('');
   const { fetchTransactions, transactions, fetchTransactionsWithParams } = useTransactionStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const [itemsPerPage, setItemsPerPage] = useState(50);
+  const [stockInOut, setStockInOut] = useState('');
+  const onChangeSelectInOut = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSort(event.target.value);
     fetchTransactionsWithParams({
-      sort: event.target.value
+      sort: event.target.value,
+      type: stockInOut,
+      token: token
     });
   };
+
+  const onChangeSelectSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setStockInOut(event.target.value);
+    fetchTransactionsWithParams({
+      sort: sort,
+      type: event.target.value,
+      token: token
+    });
+  }
+  
   const fetch = async () => {
-    await fetchTransactions();
+    await fetchTransactions(token);
   }
   useEffect(() => {
     fetch();
   }, [fetchItems])
 
-  // Pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const filteredItems = transactions?.filter((item: any) => item?.note?.toLowerCase().includes(search.toLowerCase()));
-  let currentItems = filteredItems?.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -66,7 +76,7 @@ const History: React.FC = () => {
         </div>
 
         <div className='w-full flex flex-row  gap-10 justify-between items-center mt-5'>
-          <CustomSelect onChange={onChange} options={[
+          <CustomSelect onChange={onChangeSelectInOut} options={[
             {
               value: '',
               label: 'Filter'
@@ -80,14 +90,14 @@ const History: React.FC = () => {
               label: 'Stock Out'
             },
           ]} />
-          <CustomSelect onChange={onChange} />
+          <CustomSelect onChange={onChangeSelectSort} />
         </div>
         <div className='w-full flex flex-row justify-end items-center mt-5 gap-2'>
           <PiTrashSimpleLight className="w-5 h-5 text-black float-right" />
         </div>
         <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
           {
-            currentItems?.map((item: any, index: any) =>
+            filteredItems?.map((item: any, index: any) =>
             (
               <React.Fragment key={index}>
                 <ListItemBox
@@ -102,15 +112,6 @@ const History: React.FC = () => {
             )
             )
           }
-        </div>
-        <div className="flex justify-center items-center mt-5">
-          <ul className="flex">
-            {pageNumbers.map((number) => (
-              <li key={number} className={`mx-1 ${number === currentPage ? 'text-blue-500' : 'text-black'}`}>
-                <button onClick={() => paginate(number)}>{number}</button>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </IonContent>

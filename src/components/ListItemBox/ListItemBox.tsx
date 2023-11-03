@@ -55,7 +55,7 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
                             <p className="text-black font-thin text-xs">{kode}</p>
                             <p className="text-black font-bold text-sm">{itemName}</p>
                             <div className="flex flex-row justify-start items-start gap-2">
-                                <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Qty {qty}</p>
+                                <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Stok {qty}</p>
                                 <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Tipe {tipe}</p>
                                 <p className="text-gray-500/80 font-normal text-xs">Merk {merk}</p>
                             </div>
@@ -77,7 +77,7 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
                         <p className="text-black font-thin text-xs">{kode}</p>
                         <p className="text-black font-bold text-sm">{itemName}</p>
                         <div className="flex flex-row justify-start items-start gap-2">
-                            <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Qty {qty}</p>
+                            <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Stok {qty}</p>
                             <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Tipe {tipe}</p>
                             <p className="text-gray-500/80 font-normal text-xs">Merk {merk}</p>
                         </div>

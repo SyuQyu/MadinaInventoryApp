@@ -38,9 +38,9 @@ type TransactionStore = {
     addTransaction: (transaction: any, token: string | null) => void;
     updateTransaction: (id: number, transaction: Transaction, token: string | null) => void;
     deleteTransaction: (id: number, token: string | null) => void;
-    fetchTransactions: () => Promise<void>;
+    fetchTransactions: (token: string | null) => Promise<void>;
     transactionDetails: (id: number) => any;
-    fetchTransactionsWithParams: ({ page, limit, payment, user, type, sort }: any) => Promise<void>;
+    fetchTransactionsWithParams: ({ page, limit, payment, user, type, sort, token }: any) => Promise<void>;
 };
 
 type Meta = {
@@ -181,9 +181,14 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             console.error('Error deleting transaction:', error);
         }
     },
-    fetchTransactions: async () => {
+    fetchTransactions: async (token) => {
         try {
-            const response = await fetch('https://inventory-app.kaladwipa.com/transactions');
+            const response = await fetch('https://inventory-app.kaladwipa.com/transactions', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const data = await response.json();
             const itemsData = await Promise.all(data?.data?.map(async (item: any) => {
                 const details = await Promise.all(item.details.map(async (detail: any) => {
@@ -204,7 +209,12 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
                         // updated_at: new Date(item.updated_at).toLocaleDateString(),
                     };
                 }));
-                const userResponse = await fetch(`https://inventory-app.kaladwipa.com/users/${item.user_id}`)
+                const userResponse = await fetch(`https://inventory-app.kaladwipa.com/users/${item.user_id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 const userData = await userResponse.json();
                 return {
                     ...item,
@@ -220,12 +230,12 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             console.error('Error fetching transactions:', error);
         }
     },
-    fetchTransactionsWithParams: async ({ page, limit, payment, user, type, sort }) => {
+    fetchTransactionsWithParams: async ({ page, limit, payment, user, type, sort, token }) => {
         try {
             let params;
             if (page) {
                 params = new URLSearchParams({ page: page });
-            } 
+            }
             if (limit) {
                 params = new URLSearchParams({ limit: limit });
             }
@@ -243,7 +253,12 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             }
 
             const url = `https://inventory-app.kaladwipa.com/transactions?${params?.toString()}`;
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const data = await response.json();
             const itemsData = await Promise.all(data?.data?.map(async (item: any) => {
                 const details = await Promise.all(item.details.map(async (detail: any) => {
@@ -264,7 +279,12 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
                         // updated_at: new Date(item.updated_at).toLocaleDateString(),
                     };
                 }));
-                const userResponse = await fetch(`https://inventory-app.kaladwipa.com/users/${item.user_id}`)
+                const userResponse = await fetch(`https://inventory-app.kaladwipa.com/users/${item.user_id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 const userData = await userResponse.json();
                 return {
                     ...item,

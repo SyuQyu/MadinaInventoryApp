@@ -10,12 +10,15 @@ import useFilterStore from '../../context/filter';
 import React from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
 import FilterContent from './FilterContent';
+import clsx from 'clsx';
 const ListItem: React.FC = () => {
     const { items, meta, fetchItems, fetchItemsWithParams } = useItemStore();
     const { brandSelected, typeSelected, clearData } = useFilterStore();
     const { brand, type } = useFilterStore();
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(50);
     const [openFilter, setOpenFilter] = useState(false);
     const [searchType, setSearchType] = useState('');
     const [searchBrand, setSearchBrand] = useState('');
@@ -24,8 +27,16 @@ const ListItem: React.FC = () => {
     //     id: 0,
     //     quantity: 0
     // }]);
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const onChangeShow = (event: React.ChangeEvent<HTMLSelectElement>) => {
         console.log(event.target.value);
+        const parsing = parseInt(event.target.value);
+        setItemsPerPage(parsing);
+        fetchItemsWithParams(1, parsing, '', '', sort);
+    };
+    const onChangeSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log(event.target.value);
+        setSort(event.target.value);
+        fetchItemsWithParams(1, itemsPerPage, '', '', event.target.value);
     };
     const fetch = async () => {
         await fetchItems();
@@ -36,6 +47,11 @@ const ListItem: React.FC = () => {
     //     list[index][name] = value;
     //     setQuantityItem(list);
     // };
+
+    const handleNextPage = (page: number) => {
+        setCurrentPage(page);
+        fetchItemsWithParams(page, itemsPerPage, '', '', sort);
+    };
 
     const onClick = (type: string, id: number) => {
         if (type === 'plus') {
@@ -57,6 +73,13 @@ const ListItem: React.FC = () => {
         clearData();
         console.log(brandSelected.length > 0, typeSelected.length > 0)
     }
+
+    const pageNumbers = Array.from({ length: meta.last_page }, (_, i) => i + 1)
+        .filter((page) => {
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(meta.last_page, startPage + 4);
+            return page >= startPage && page <= endPage;
+        });
 
     useEffect(() => {
         fetch();
@@ -88,8 +111,8 @@ const ListItem: React.FC = () => {
                     onIonChange={(e: CustomEvent) => setSearch(e.detail.value!)}
                 />
                 <div className='w-full flex flex-row  gap-10 justify-between items-center mt-5'>
-                    <CustomFilter onClick={handleOpenFilter} value={openFilter} onChange={onChange} />
-                    <CustomSelect onChange={onChange} />
+                    <CustomFilter onClick={handleOpenFilter} value={openFilter} />
+                    <CustomSelect onChange={onChangeSort} />
                 </div>
                 {
                     openFilter ? (
@@ -106,7 +129,35 @@ const ListItem: React.FC = () => {
                                                 Clear Filter
                                             </div>
                                         </div>
-                                    ) : null
+                                    ) : (
+                                        <div className='w-full flex flex-row  gap-10 justify-between items-center'>
+                                            <div className='w-1/2 md:block hidden'></div>
+                                            <div className='md:w-1/4 w-1/2 flex justify-end items-end'>
+                                                <CustomSelect onChange={onChangeShow} options={[
+                                                    {
+                                                        value: '',
+                                                        label: 'Tampilkan'
+                                                    },
+                                                    {
+                                                        value: '50',
+                                                        label: '50'
+                                                    },
+                                                    {
+                                                        value: '100',
+                                                        label: '100'
+                                                    },
+                                                    {
+                                                        value: '200',
+                                                        label: '200'
+                                                    },
+                                                    {
+                                                        value: meta?.total,
+                                                        label: 'semua'
+                                                    },
+                                                ]} />
+                                            </div>
+                                        </div>
+                                    )
                                 }
                             </div>
                             <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
@@ -120,11 +171,41 @@ const ListItem: React.FC = () => {
                                     )
                                 }
                             </div>
+                            <div className="flex justify-center items-center mt-5">
+                                {
+                                    meta?.first_page !== meta?.last_page ? (
+                                        <nav aria-label="Page navigation example">
+                                            <ul className="flex items-center -space-x-px h-8 text-sm">
+                                                <li>
+                                                    <p onClick={() => currentPage !== meta?.first_page ? handleNextPage(currentPage - 1) : null} className="flex items-center justify-center px-3 md:h-8 h-6 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 ">
+                                                        <span className="sr-only">Previous</span>
+                                                        <svg className="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1 1 5l4 4" />
+                                                        </svg>
+                                                    </p>
+                                                </li>
+                                                {pageNumbers.map((page) => (
+                                                    <li key={page}>
+                                                        <p className={clsx('cursor-pointer flex items-center justify-center px-3 md:h-8 h-6 leading-tight ', page === currentPage ? 'text-white bg-[#280822] border-[#280822]' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700')} onClick={() => handleNextPage(page)}>{page}</p>
+                                                    </li>
+                                                ))}
+                                                <li>
+                                                    <p onClick={() => currentPage !== meta?.last_page ? handleNextPage(currentPage + 1) : null} className="flex items-center justify-center px-3 md:h-8 h-6 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ">
+                                                        <span className="sr-only">Next</span>
+                                                        <svg className="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4" />
+                                                        </svg>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    ) : null}
+                            </div>
                         </>
                     )
                 }
             </div>
-        </IonContent>
+        </IonContent >
     );
 };
 

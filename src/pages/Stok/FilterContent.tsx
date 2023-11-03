@@ -13,7 +13,7 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
     const { brand, type: types, setBrand, setType, selectedBrand, selectedType, brandSelected, typeSelected, removeSelectedBrand, removeSelectedType } = useFilterStore();
     const { token } = useAuth();
     const { fetchBrands, brands, deleteBrand } = useBrandStore();
-    const { fetchItemsWithParams, fetchItems } = useItemStore();
+    const { fetchItemsWithParams, fetchItems, meta } = useItemStore();
     const { fetchItemTypes, itemTypes, deleteItemType } = useItemTypeStore();
     const [searchBrand, setSearchBrand] = useState('');
     const [searchType, setSearchType] = useState('');
@@ -83,7 +83,7 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
 
     const handleOpenFilter = () => {
         if (brandSelected.length > 0 || typeSelected.length > 0) {
-            fetchItemsWithParams(1, 10, brandSelected.join(","), typeSelected.join(","), '');
+            fetchItemsWithParams(1, meta?.total, brandSelected.join(","), typeSelected.join(","), '');
         } else {
             fetchItems();
         }
