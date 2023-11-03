@@ -29,7 +29,7 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
                                                     </div>
                                                 ) : (
                                                     <div className="flex items-center justify-center gap-0.5">
-                                                        <BiUpArrowAlt className="w-5 h-5 text-red-500" />
+                                                        <BiDownArrowAlt className="w-5 h-5 text-red-500" />
                                                         <p>{item?.qty}</p>
                                                     </div>
                                                 )

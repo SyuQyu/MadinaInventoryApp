@@ -18,23 +18,23 @@ const History: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [stockInOut, setStockInOut] = useState('');
   const onChangeSelectInOut = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setStockInOut(event.target.value);
+    fetchTransactionsWithParams({
+      sort: stockInOut,
+      type: event.target.value,
+      token: token
+    });
+  };
+
+  const onChangeSelectSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSort(event.target.value);
     fetchTransactionsWithParams({
       sort: event.target.value,
       type: stockInOut,
       token: token
     });
-  };
-
-  const onChangeSelectSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setStockInOut(event.target.value);
-    fetchTransactionsWithParams({
-      sort: sort,
-      type: event.target.value,
-      token: token
-    });
   }
-  
+
   const fetch = async () => {
     await fetchTransactions(token);
   }

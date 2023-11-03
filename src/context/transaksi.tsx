@@ -231,6 +231,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
         }
     },
     fetchTransactionsWithParams: async ({ page, limit, payment, user, type, sort, token }) => {
+        console.log({ page, limit, payment, user, type, sort, token }, 'params')
         try {
             let params;
             if (page) {
@@ -245,10 +246,10 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             if (user) {
                 params = new URLSearchParams({ user: user });
             }
-            if (type) {
+            if (type !== '') {
                 params = new URLSearchParams({ type: type });
             }
-            if (sort) {
+            if (sort !== '') {
                 params = new URLSearchParams({ sort: sort });
             }
 
@@ -260,6 +261,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
                 }
             });
             const data = await response.json();
+            console.log(data, url, 'data');
             const itemsData = await Promise.all(data?.data?.map(async (item: any) => {
                 const details = await Promise.all(item.details.map(async (detail: any) => {
                     const itemResponse = await fetch(`https://inventory-app.kaladwipa.com/items/${detail.item_id}`);
