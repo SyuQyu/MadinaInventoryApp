@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import { CustomFilter, CustomSelect, ExploreContainer, InputCustom, ListItemBox } from '../../components';
 import '../../theme/pages/Tab1.css';
 import { useEffect, useState } from 'react';
@@ -9,15 +9,20 @@ import useTransactionStore from '../../context/transaksi';
 import React from 'react';
 import useAuth from '../../context/auth';
 import clsx from 'clsx';
+
 const History: React.FC = () => {
-  const { items , fetchItems, fetchItemsWithParams } = useItemStore();
+  const { items, fetchItems, fetchItemsWithParams } = useItemStore();
   const [search, setSearch] = useState('');
   const { token } = useAuth();
   const [sort, setSort] = useState('');
-  const { fetchTransactions, transactions, fetchTransactionsWithParams, meta } = useTransactionStore();
+  const { fetchTransactions, transactions, fetchTransactionsWithParams, meta, deleteTransaction } = useTransactionStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [stockInOut, setStockInOut] = useState('');
+  const [deleteData, setDeleteData] = useState(false);
+  const [selectedDeleteData, setSelectedDeleteData] = useState([] as any);
+  const [success, setSuccess] = useState(false);
+
   const onChangeSelectInOut = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setStockInOut(event.target.value);
     fetchTransactionsWithParams({
@@ -62,6 +67,33 @@ const History: React.FC = () => {
       return page >= startPage && page <= endPage;
     });
 
+  const handleOpenDeleteData = async () => {
+    setDeleteData(!deleteData)
+    console.log(deleteData)
+    if (selectedDeleteData.length > 0) {
+      if (deleteData) {
+        console.log('delete')
+        const result = selectedDeleteData.map((item: any) => {
+          const res = deleteTransaction(item, token)
+          return res;
+        })
+
+        await Promise.all(result)
+        if (result) {
+          setSelectedDeleteData([])
+          setSuccess(true)
+          fetch();
+        }
+      }
+    }
+  }
+
+  const handleChangeDelete = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setSelectedDeleteData([...selectedDeleteData, value])
+    console.log(selectedDeleteData);
+  }
+
   return (
     <IonContent fullscreen={false}>
       <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col'>
@@ -98,7 +130,7 @@ const History: React.FC = () => {
           <CustomSelect onChange={onChangeSelectSort} />
         </div>
         <div className='w-full flex flex-row justify-end items-center mt-5 gap-2'>
-          <PiTrashSimpleLight className="w-5 h-5 text-black float-right" />
+          <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 text-black float-right cursor-pointer" />
         </div>
         <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
           {
@@ -106,6 +138,8 @@ const History: React.FC = () => {
             (
               <React.Fragment key={index}>
                 <ListItemBox
+                  handleChangeDelete={handleChangeDelete}
+                  deleteData={deleteData}
                   histroy={true}
                   note={item?.note}
                   userName={item?.user_name}
@@ -149,6 +183,16 @@ const History: React.FC = () => {
             ) : null}
         </div>
       </div>
+      {
+        <IonToast
+          isOpen={success}
+          position="top"
+          onDidDismiss={() => setSuccess(false)}
+          message="Item berhasil dihapus"
+          duration={5000}
+          color="success"
+        />
+      }
     </IonContent>
   );
 };

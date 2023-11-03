@@ -24,7 +24,7 @@ const DetailStok = () => {
                     </div>
                     <h1 className='text-2xl font-extrabold text-[#280822]'>Detail Barang</h1>
                 </header>
-                <div className="w-full h-[200vh] flex flex-col gap-3 rounded-t-[4rem] shadow-2xl border-t-4 border-[#280822] pt-10 px-10">
+                <div className="w-full h-[200vh] flex flex-col gap-3 rounded-t-[4rem] shadow-2xl border-t-4 border-[#280822] pt-10 md:px-10 px-5">
                     <p className="text-md">
                         {item?.code}
                     </p>

@@ -96,17 +96,19 @@ const useItemStore = create<ItemStore>((set, get) => ({
     },
     deleteItem: async (id, token) => {
         try {
-            await fetch(`https://inventory-app.kaladwipa.com/items/${id}`, {
+            const res = await fetch(`https://inventory-app.kaladwipa.com/items/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
             });
+            const jsonRes = await res.json()
             set((state) => ({
                 items: state.items.filter((i) => i.id !== id),
             }));
-            return true;
+            console.log(jsonRes);
+            return jsonRes;
         } catch (error) {
             console.error(error);
         }

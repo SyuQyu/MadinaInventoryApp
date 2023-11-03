@@ -10,6 +10,8 @@ import History from '../pages/History/History';
 import DetailHistory from '../pages/History/Detail';
 import AddItem from '../pages/Stok/AddItem';
 import ListItem from '../pages/transaksi/ListItem';
+import ListItemHistory from '../pages/History/ListItem';
+import EditHistory from '../pages/History/EditHistory';
 export const routes = [
     {
         path: '/home',
@@ -49,6 +51,17 @@ export const routes = [
     },
     {
         path: '/history/detail/:id',
+        exact: true,
         component: DetailHistory
-    }
+    },
+    {
+        path: '/history/edit/:id',
+        exact: true,
+        component: EditHistory
+    },
+    {
+        path: '/history/edit/list-item/:id',
+        exact: true,
+        component: ListItemHistory
+    },
 ];

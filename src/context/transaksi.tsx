@@ -36,7 +36,7 @@ type TransactionStore = {
     getSelectedItemById: (id: number) => selectedItems | null;
     deleteSelectedItem: (id: number) => void;
     addTransaction: (transaction: any, token: string | null) => void;
-    updateTransaction: (id: number, transaction: Transaction, token: string | null) => void;
+    updateTransaction: (id: number, transaction: any, token: string | null) => void;
     deleteTransaction: (id: number, token: string | null) => void;
     fetchTransactions: (token: string | null) => Promise<void>;
     transactionDetails: (id: number) => any;
@@ -141,6 +141,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
         }
     },
     updateTransaction: async (id, transaction, token) => {
+        console.log(id, transaction, token, 'update')
         try {
             const response = await fetch(`https://inventory-app.kaladwipa.com/transactions/${id}`, {
                 method: 'PUT',
@@ -151,6 +152,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
                 body: JSON.stringify(transaction)
             });
             const data = await response.json();
+            console.log(response, 'data yes disini')
             set((state) => ({
                 transactions: state.transactions.map((t: any) => (t.id === id ? data : t)),
             }));
@@ -166,13 +168,13 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
     },
     deleteTransaction: async (id, token) => {
         try {
-            const response = await fetch(`https://inventory-app.kaladwipa.com/transactions/${id}`, {
+            const res = await fetch(`https://inventory-app.kaladwipa.com/transactions/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            const data = await response.json();
+            console.log(await res.json(), 'delete')
             set((state) => ({
                 transactions: state.transactions.filter((t: any) => t.id !== id),
             }));

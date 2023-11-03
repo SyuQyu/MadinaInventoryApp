@@ -5,16 +5,21 @@ import { useParams } from "react-router";
 import { useEffect } from "react";
 import { BiUpArrowAlt } from "react-icons/bi";
 import { BsBoxArrowInDown, BsBoxArrowInUp } from "react-icons/bs";
+import { MdOutlineModeEditOutline } from "react-icons/md";
 const DetailStok = () => {
     const { id } = useParams<{ id: string }>();
-    const { fetchTransactions, transactions, transactionDetails } = useTransactionStore();
+    const { fetchTransactions, transactions, transactionDetails, setSelectedItem } = useTransactionStore();
 
     const item = transactionDetails(parseInt(id));
+
+    const reInsertSelectedItem = () => {
+        item?.details.map((item: any) => setSelectedItem({ id: item.item_id, qty: item.qty }))
+    }
     return (
         <IonContent fullscreen={false}>
             <div className='w-full h-full flex flex-col'>
                 <header className='md:px-10 md:py-10 px-2 py-5 flex flex-col w-full justify-between items-start gap-2'>
-                    <div className="flex flex-row justify-between items-center">
+                    <div className="flex flex-row justify-between items-center w-full">
                         <IonRouterLink routerLink={`/history`} className="w-full text-black">
                             <div className="w-full text-black flex flex-row gap-1 items-center">
                                 <IoIosArrowBack className="w-4 h-4" />
@@ -23,15 +28,23 @@ const DetailStok = () => {
                                 </p>
                             </div>
                         </IonRouterLink>
+                        <IonRouterLink routerLink={`/history/edit/${id}`} onClick={reInsertSelectedItem} className="w-full text-black">
+                            <div className="w-full text-black flex flex-row gap-1 items-center justify-end">
+                                <p>
+                                    Update History
+                                </p>
+                                <MdOutlineModeEditOutline className="w-4 h-4" />
+                            </div>
+                        </IonRouterLink>
                     </div>
                     <h1 className='text-2xl font-extrabold text-[#280822]'>Detail Transaksi</h1>
                 </header>
-                <div className="w-full h-[200vh] flex flex-col gap-3 rounded-t-[4rem] shadow-2xl border-t-4 border-[#280822] pt-10 px-10">
+                <div className="w-full h-[200vh] flex flex-col gap-3 rounded-t-[4rem] shadow-2xl border-t-4 border-[#280822] pt-10 md:px-10 px-5 ">
                     <p className="text-md">
                         {item?.note}
                     </p>
                     <p className="text-xl font-bold">
-                        Tipe Pembayaran {item?.payment_method.charAt(0).toUpperCase() + item?.payment_method.slice(1)}
+                        Tipe Pembayaran {item?.payment_method?.charAt(0)?.toUpperCase() + item?.payment_method?.slice(1)}
                     </p>
                     <p className="text-md">
                         Total {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}
@@ -48,7 +61,7 @@ const DetailStok = () => {
                             Detail Barang
                         </p>
                         {
-                            item?.details.map((item: any, index: any) => (
+                            item?.details?.map((item: any, index: any) => (
                                 <div key={index} className="flex flex-col justify-between items-start gap-2 p-2 w-full bg-[#EFEFEF] rounded-md shadow-md">
                                     {
                                         item?.type === 'in' ? (
@@ -57,10 +70,10 @@ const DetailStok = () => {
                                                     <p className="text-black font-thin text-xs">{item?.item?.code}</p>
                                                     <p className="text-black font-bold text-sm">{item?.item?.name}</p>
                                                     <div className="flex flex-row justify-start items-start gap-2">
-                                                        <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Tipe {item?.item?.item_type}</p>
-                                                        <p className="text-gray-500/80 font-normal text-xs">Merk {item?.item?.brand}</p>
+                                                        <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">{item?.item?.item_type}</p>
+                                                        <p className="text-gray-500/80 font-normal text-xs">{item?.item?.brand}</p>
                                                     </div>
-                                                    <p className="text-gray-500/80 font-normal text-xs">Total harga {item?.qty} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
+                                                    <p className="text-gray-500/80 font-normal text-xs">Total harga {Math.abs(item?.qty)} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
                                                 </div>
                                                 <div className="flex flex-col items-center justify-center gap-0.5">
                                                     <p className="whitespace-nowrap">Stock In</p>
@@ -76,16 +89,16 @@ const DetailStok = () => {
                                                     <p className="text-black font-thin text-xs">{item?.item?.code}</p>
                                                     <p className="text-black font-bold text-sm">{item?.item?.name}</p>
                                                     <div className="flex flex-row justify-start items-start gap-2">
-                                                        <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Tipe {item?.item?.item_type}</p>
-                                                        <p className="text-gray-500/80 font-normal text-xs">Merk {item?.item?.brand}</p>
+                                                        <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">{item?.item?.item_type}</p>
+                                                        <p className="text-gray-500/80 font-normal text-xs">{item?.item?.brand}</p>
                                                     </div>
-                                                    <p className="text-gray-500/80 font-normal text-xs">Total harga {item?.qty} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
+                                                    <p className="text-gray-500/80 font-normal text-xs">Total harga {Math.abs(item?.qty)} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
                                                 </div>
                                                 <div className="flex flex-col items-center justify-center gap-0.5">
                                                     <p className="whitespace-nowrap">Stock Out</p>
                                                     <div className="flex justify-between items-center gap-0.5">
                                                         <BsBoxArrowInDown className="w-5 h-5 text-red-500" />
-                                                        <p>{item?.qty}</p>
+                                                        <p>{Math.abs(item?.qty)}</p>
                                                     </div>
                                                 </div>
                                             </div>

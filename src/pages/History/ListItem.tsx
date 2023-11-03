@@ -6,11 +6,12 @@ import { AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
 import { PiTrashSimpleLight } from 'react-icons/pi'
 import useItemStore from '../../context/item';
 import useTransactionStore from '../../context/transaksi';
-import useFilterStore from '../../context/filterTransaksi';
+import useFilterStore from '../../context/filterHistory';
 import React from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
 import FilterContent from './FilterContent';
 import clsx from 'clsx';
+import { useParams } from 'react-router';
 const ListItem: React.FC = () => {
     const { items, meta, fetchItems, fetchItemsWithParams } = useItemStore();
     const { brandSelected, typeSelected, clearData } = useFilterStore();
@@ -23,6 +24,7 @@ const ListItem: React.FC = () => {
     const [searchType, setSearchType] = useState('');
     const [searchBrand, setSearchBrand] = useState('');
     const { setSelectedItem, getSelectedItemById } = useTransactionStore();
+    const { id: idParams } = useParams<{ id: string }>();
     // const [quantityItem, setQuantityItem] = useState([{
     //     id: 0,
     //     quantity: 0
@@ -88,9 +90,9 @@ const ListItem: React.FC = () => {
         <IonContent fullscreen={false}>
             <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col'>
                 <header className='mb-6 flex flex-row justify-between items-center w-full'>
-                    <h1 className='text-2xl font-extrabold text-[#280822]'>Transaksi</h1>
+                    <h1 className='text-2xl font-extrabold text-[#280822]'>List Item</h1>
                     <div className="flex flex-row justify-between items-center">
-                        <IonRouterLink onClick={resetFilter} routerLink={`/transaksi`} className="w-full text-black">
+                        <IonRouterLink onClick={resetFilter} routerLink={`/history/edit/${idParams}`} className="w-full text-black">
                             <div className="w-full text-black flex flex-row gap-1 items-center">
                                 <p>
                                     Done

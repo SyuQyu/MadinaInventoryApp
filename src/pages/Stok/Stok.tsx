@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
 import { PiTrashSimpleLight } from 'react-icons/pi'
 import useItemStore from '../../context/item';
-import useFilterStore from '../../context/filter';
+import useFilterStore from '../../context/filterTransaksi';
 import React from 'react';
 import FilterContent from './FilterContent';
 import useAuth from '../../context/auth';
@@ -25,6 +25,7 @@ const Tab1: React.FC = () => {
   const [deleteData, setDeleteData] = useState(false);
   const [selectedDeleteData, setSelectedDeleteData] = useState([] as any);
   const [success, setSuccess] = useState(false);
+  const [failed, setFailed] = useState(false);
   const onChangeShow = (event: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(event.target.value);
     const parsing = parseInt(event.target.value);
@@ -84,35 +85,48 @@ const Tab1: React.FC = () => {
   }
 
   const handleChangeDelete = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setSelectedDeleteData([...selectedDeleteData, value])
+    const { value, checked } = e.target;
+    setDeleteResults([]);
+    if (checked) {
+      setSelectedDeleteData((prevData: any) => [...prevData, value]);
+    } else {
+      setSelectedDeleteData((prevData: any) => prevData.filter((item: any) => item !== value));
+    }
     console.log(selectedDeleteData);
-  }
+  };
   const handleNextPage = (page: number) => {
     setCurrentPage(page);
     fetchItemsWithParams(page, itemsPerPage, '', '', sort);
   };
 
 
+  const [deleteResults, setDeleteResults] = useState([] as any);
   const handleOpenDeleteData = async () => {
-    setDeleteData(!deleteData)
-    console.log(deleteData)
+    setDeleteData(!deleteData);
+    console.log(deleteData);
     if (selectedDeleteData.length > 0) {
       if (deleteData) {
-        console.log('delete')
-        const result = selectedDeleteData.map((item: any) => {
-          const res = deleteItem(item, token)
-          return res;
-        })
-
-        await Promise.all(result)
-        if (result) {
-          setSelectedDeleteData([])
-          setSuccess(true)
+        console.log('delete');
+        await Promise.all(
+          selectedDeleteData.map(async (item: any) => {
+            const res = await deleteItem(item, token);
+            setDeleteResults([...deleteResults, { id: item, response: res }]);
+            return res;
+          })
+        );
+        if (deleteResults?.every((res: any) => res?.message === 'Barang berhasil dihapus.')) {
+          setSelectedDeleteData([]);
+          console.log(deleteResults)
+          setSuccess(true);
+          fetch();
+        } else if (deleteResults?.every((res: any) => res?.message === 'Barang tidak dapat dihapus karena sudah digunakan.')) {
+          setSelectedDeleteData([]);
+          console.log(deleteResults)
+          setFailed(true);
         }
       }
     }
-  }
+  };
 
   const pageNumbers = Array.from({ length: meta.last_page }, (_, i) => i + 1)
     .filter((page) => {
@@ -238,14 +252,26 @@ const Tab1: React.FC = () => {
         }
       </div>
       {
-        <IonToast
-          isOpen={success}
-          position="top"
-          onDidDismiss={() => setSuccess(false)}
-          message="Item berhasil dihapus"
-          duration={5000}
-          color="success"
-        />
+        success ? (
+          <IonToast
+            isOpen={success}
+            position="top"
+            onDidDismiss={() => setSuccess(false)}
+            message={`Item dengan id ${deleteResults.map((item: any) => item.id)} berhasil dihapus`}
+            duration={5000}
+            color="success"
+          />
+        ) : (
+          <IonToast
+            isOpen={failed}
+            position="top"
+            onDidDismiss={() => setFailed(false)}
+            message={`Item dengan id ${deleteResults.map((item: any) => item.id)} gagal dihapus`}
+            duration={5000}
+            color="danger"
+          />
+        )
+
       }
     </IonContent >
   );
