@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonRouterLink, IonSpinner, IonTitle, IonToolbar } from '@ionic/react';
 import { CustomFilter, CustomSelect, ExploreContainer, InputCustom, ListItemBox } from '../../components';
 import '../../theme/pages/Tab1.css';
 import { useEffect, useState } from 'react';
@@ -23,10 +23,14 @@ const ListItem: React.FC = () => {
     const [searchType, setSearchType] = useState('');
     const [searchBrand, setSearchBrand] = useState('');
     const { setSelectedItem, getSelectedItemById } = useTransactionStore();
-    // const [quantityItem, setQuantityItem] = useState([{
-    //     id: 0,
-    //     quantity: 0
-    // }]);
+    const [loading, setLoading] = useState(true);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        console.log(name, value);
+        setSearch(value);
+    };
+
     const onChangeShow = (event: React.ChangeEvent<HTMLSelectElement>) => {
         console.log(event.target.value);
         const parsing = parseInt(event.target.value);
@@ -39,14 +43,12 @@ const ListItem: React.FC = () => {
         fetchItemsWithParams(1, itemsPerPage, '', '', event.target.value);
     };
     const fetch = async () => {
-        await fetchItems();
+        const res = await fetchItems();
+        if (items.length > 0 || res) {
+            setLoading(false)
+        }
+        return res;
     }
-
-    // const handleInputChange = (value: any, name: any, index: number) => {
-    //     const list: any = [...quantityItem];
-    //     list[index][name] = value;
-    //     setQuantityItem(list);
-    // };
 
     const handleNextPage = (page: number) => {
         setCurrentPage(page);
@@ -81,6 +83,7 @@ const ListItem: React.FC = () => {
             return page >= startPage && page <= endPage;
         });
 
+    const filteredItems = items?.filter(item => item?.name?.toLowerCase().includes(search.toLowerCase()));
     useEffect(() => {
         fetch();
     }, [fetchItems])
@@ -100,16 +103,18 @@ const ListItem: React.FC = () => {
                         </IonRouterLink>
                     </div>
                 </header>
-                <InputCustom
-                    label="Search"
-                    labelPlacement="floating"
-                    placeholder="Search"
-                    fill="outline"
-                    type="Search"
-                    value={search}
-                    icons={<AiOutlineSearch className='w-5 h-5 text-[#280822]' />}
-                    onIonChange={(e: CustomEvent) => setSearch(e.detail.value!)}
-                />
+                <div className='w-full py-2 px-5 rounded-md flex flex-row justify-between items-center bg-[#EFEFEF]'>
+                    <input
+                        style={{ backgroundColor: '#EFEFEF', border: 'none', outline: 'none', width: '100%' }}
+                        placeholder="Search"
+                        type="Search"
+                        value={search}
+                        name="saerch"
+                        // icons={<AiOutlineSearch className='w-5 h-5 text-[#280822]' />}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
+                    />
+                    <AiOutlineSearch className='w-5 h-5 text-[#280822] cursor-pointer' />
+                </div>
                 <div className='w-full flex flex-row  gap-10 justify-between items-center mt-5'>
                     <CustomFilter onClick={handleOpenFilter} value={openFilter} />
                     <CustomSelect onChange={onChangeSort} />
@@ -160,17 +165,25 @@ const ListItem: React.FC = () => {
                                     )
                                 }
                             </div>
-                            <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
-                                {
-                                    items.map((item, index) =>
-                                    (
-                                        <React.Fragment key={index}>
-                                            <ListItemBox onClick={onClick} withLink={false} quantityItem={getSelectedItemById(item.id)?.qty} kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
-                                        </React.Fragment>
-                                    )
-                                    )
-                                }
-                            </div>
+                            {
+                                loading ? (
+                                    <div className="ion-text-center h-screen">
+                                        <IonSpinner />
+                                    </div>
+                                ) : (
+                                    <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
+                                        {
+                                            filteredItems?.map((item, index) =>
+                                            (
+                                                <React.Fragment key={index}>
+                                                    <ListItemBox onClick={onClick} withLink={false} quantityItem={getSelectedItemById(item.id)?.qty} kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
+                                                </React.Fragment>
+                                            )
+                                            )
+                                        }
+                                    </div>
+                                )
+                            }
                             {
                                 meta?.first_page !== meta?.last_page ? (
                                     <div className="flex justify-center items-center mt-5">

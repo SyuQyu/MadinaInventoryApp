@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToast, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonRouterLink, IonSpinner, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import { CustomFilter, CustomSelect, ExploreContainer, InputCustom, ListItemBox } from '../../components';
 import '../../theme/pages/Tab1.css';
 import { useEffect, useState } from 'react';
@@ -26,6 +26,7 @@ const Tab1: React.FC = () => {
   const [selectedDeleteData, setSelectedDeleteData] = useState([] as any);
   const [success, setSuccess] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [loading, setLoading] = useState(true);
   const onChangeShow = (event: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(event.target.value);
     const parsing = parseInt(event.target.value);
@@ -38,37 +39,25 @@ const Tab1: React.FC = () => {
     fetchItemsWithParams(1, itemsPerPage, '', '', event.target.value);
   };
   const fetch = async () => {
-    await fetchItems();
+    const res = await fetchItems();
+    if (items.length > 0 || res) {
+      setLoading(false);
+    }
+    return res;
   }
   useEffect(() => {
     fetch();
   }, [fetchItems])
 
   console.log(meta)
-  // Pagination
-  // const indexOfLastItem = currentPage * itemsPerPage;
-  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
   const filteredItems = items?.filter(item => item?.name?.toLowerCase().includes(search.toLowerCase()));
-  // const currentItems = filteredItems?.slice(indexOfFirstItem, indexOfLastItem);
-
-  // const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  // const pageNumbers = [];
-  // for (let i = 1; i <= Math.ceil(filteredItems.length / itemsPerPage); i++) {
-  //   pageNumbers.push(i);
-  // }
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     console.log(name, value);
     setSearch(value);
   };
-  // const handleInputChangeFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   console.log(name, value);
-  //   setSearchBrand(value);
-  // };
 
   const handleOpenFilter = () => {
     setOpenFilter(!openFilter)
@@ -107,23 +96,48 @@ const Tab1: React.FC = () => {
     if (selectedDeleteData.length > 0) {
       if (deleteData) {
         console.log('delete');
-        await Promise.all(
-          selectedDeleteData.map(async (item: any) => {
-            const res = await deleteItem(item, token);
-            setDeleteResults([...deleteResults, { id: item, response: res }]);
-            return res;
-          })
-        );
-        if (deleteResults?.every((res: any) => res?.message === 'Barang berhasil dihapus.')) {
+        const deleteSelectedData = async () => {
+          const results = await Promise.all(
+            selectedDeleteData.map(async (item: any) => {
+              const res = await deleteItem(item, token);
+              return { id: item, response: res };
+            })
+          );
+          return results;
+        };
+        const res = await deleteSelectedData();
+        if (res.length > 0) {
+          setDeleteResults(res);
+        }
+        console.log(res)
+        if (res?.some((res: any) => res?.response?.message === 'Barang berhasil dihapus.')) {
+          console.log('res masuk true')
           setSelectedDeleteData([]);
           console.log(deleteResults)
           setSuccess(true);
           fetch();
-        } else if (deleteResults?.every((res: any) => res?.message === 'Barang tidak dapat dihapus karena sudah digunakan.')) {
+        } else if (res?.some((res: any) => res?.response?.message === 'Barang tidak dapat dihapus karena sudah digunakan.')) {
+          console.log('res masuk false')
           setSelectedDeleteData([]);
           console.log(deleteResults)
           setFailed(true);
         }
+        // console.log(res)
+        // if (res.length > 0) {
+        //   const success = res.filter((item: any) => item.response.message === true);
+        //   const failed = res.filter((item: any) => item.response.message === false);
+        //   console.log(success, failed, 'success')
+        //   if (success.length > 0) {
+        //     setSuccess(true);
+        //     setSelectedDeleteData([]);
+        //     fetch();
+        //   }
+        //   if (failed.length > 0) {
+        //     setFailed(true);
+        //     setSelectedDeleteData([]);
+        //     fetch();
+        //   }
+        // }
       }
     }
   };
@@ -206,17 +220,25 @@ const Tab1: React.FC = () => {
                   <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 cursor-pointer text-black float-right" />
                 </div>
               </div>
-              <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
-                {
-                  filteredItems.map((item, index) =>
-                  (
-                    <React.Fragment key={index}>
-                      <ListItemBox handleChangeDelete={handleChangeDelete} deleteData={deleteData} kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
-                    </React.Fragment>
-                  )
-                  )
-                }
-              </div>
+              {
+                loading ? (
+                  <div className="ion-text-center h-screen">
+                    <IonSpinner />
+                  </div>
+                ) : (
+                  <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
+                    {
+                      filteredItems.map((item, index) =>
+                      (
+                        <React.Fragment key={index}>
+                          <ListItemBox handleChangeDelete={handleChangeDelete} deleteData={deleteData} kode={item?.code} itemName={item?.name} qty={item?.stock} tipe={item?.item_type?.name} merk={item?.brand?.name} harga={item?.price} detailId={item?.id} />
+                        </React.Fragment>
+                      )
+                      )
+                    }
+                  </div>
+                )
+              }
               <div className={clsx("justify-center items-center mt-5", meta?.first_page !== meta?.last_page ? 'flex' : 'hidden')}>
                 {
                   meta?.first_page !== meta?.last_page ? (

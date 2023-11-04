@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToast, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonRouterLink, IonSpinner, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import { CustomFilter, CustomSelect, ExploreContainer, InputCustom, ListItemBox } from '../../components';
 import '../../theme/pages/Tab1.css';
 import { useEffect, useState } from 'react';
@@ -22,9 +22,10 @@ const History: React.FC = () => {
   const [deleteData, setDeleteData] = useState(false);
   const [selectedDeleteData, setSelectedDeleteData] = useState([] as any);
   const [success, setSuccess] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const onChangeSelectInOut = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setStockInOut(event.target.value);
+    console.log(event.target.value, 'select in out')
     fetchTransactionsWithParams({
       sort: stockInOut,
       type: event.target.value,
@@ -34,6 +35,7 @@ const History: React.FC = () => {
 
   const onChangeSelectSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSort(event.target.value);
+    console.log(event.target.value, 'sort')
     fetchTransactionsWithParams({
       sort: event.target.value,
       type: stockInOut,
@@ -42,7 +44,12 @@ const History: React.FC = () => {
   }
 
   const fetch = async () => {
-    await fetchTransactions(token);
+    const res: any = await fetchTransactions(token);
+    console.log(res, transactions.length, 'res')
+    if (transactions.length > 0 || res) {
+      console.log('masuk set loading')
+      setLoading(false)
+    }
   }
   useEffect(() => {
     fetch();
@@ -132,28 +139,36 @@ const History: React.FC = () => {
         <div className='w-full flex flex-row justify-end items-center mt-5 gap-2'>
           <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 text-black float-right cursor-pointer" />
         </div>
-        <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
-          {
-            filteredItems?.map((item: any, index: any) =>
-            (
-              <React.Fragment key={index}>
-                <ListItemBox
-                  handleChangeDelete={handleChangeDelete}
-                  deleteData={deleteData}
-                  histroy={true}
-                  note={item?.note}
-                  userName={item?.user_name}
-                  createdAt={item?.created_at}
-                  detail={item?.details}
-                  paymentMethod={item?.payment_method}
-                  harga={item?.total_price}
-                  detailId={item?.id}
-                />
-              </React.Fragment>
-            )
-            )
-          }
-        </div>
+        {
+          loading ? (
+            <div className="ion-text-center h-screen">
+              <IonSpinner />
+            </div>
+          ) : (
+            <div className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
+              {
+                filteredItems?.map((item: any, index: any) =>
+                (
+                  <React.Fragment key={index}>
+                    <ListItemBox
+                      handleChangeDelete={handleChangeDelete}
+                      deleteData={deleteData}
+                      histroy={true}
+                      note={item?.note}
+                      userName={item?.user_name}
+                      createdAt={item?.created_at}
+                      detail={item?.details}
+                      paymentMethod={item?.payment_method}
+                      harga={item?.total_price}
+                      detailId={item?.id}
+                    />
+                  </React.Fragment>
+                )
+                )
+              }
+            </div>
+          )
+        }
         <div className={clsx("justify-center items-center mt-5", meta?.first_page !== meta?.last_page ? 'flex' : 'hidden')}>
           {
             meta?.first_page !== meta?.last_page ? (

@@ -34,10 +34,10 @@ type ItemStore = {
     meta: Meta;
     createItem: (item: any, token: string | null) => void;
     updateItem: (id: number, item: any, token: string | null) => void;
-    deleteItem: (id: number, token: string | null) => void;
-    fetchItems: () => Promise<void>;
+    deleteItem: (id: number, token: string | null) => any;
+    fetchItems: () => Promise<any>;
     getItemById: (id: number) => Item | undefined;
-    fetchItemsWithParams: (page: number, limit: number, brands: string, types: string, sort: string) => Promise<void>;
+    fetchItemsWithParams: (page: number, limit: number, brands: string, types: string, sort: string) => Promise<any>;
 };
 
 const useItemStore = create<ItemStore>((set, get) => ({
@@ -130,6 +130,7 @@ const useItemStore = create<ItemStore>((set, get) => ({
             }));
             console.log(itemsData);
             set({ items: itemsData, meta: items.meta });
+            return true;
         } catch (error) {
             console.error(error);
         }
@@ -171,6 +172,7 @@ const useItemStore = create<ItemStore>((set, get) => ({
             }));
             console.log(itemsData, 'fetch with params');
             set({ items: itemsData, meta: items.meta });
+            return true;
         } catch (error) {
             console.error(error);
         }
