@@ -12,7 +12,9 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
     return (
         withLink ? (
             histroy ? (
-                <div className="flex flex-row gap-2 p-2 w-full justify-center items-center bg-[#EFEFEF] rounded-md shadow-md">
+                <div
+                  className={`p-2 w-full justify-center items-center bg-zinc-100 rounded-md shadow-md ${deleteData ? 'flex flex-row gap-2' : ''}`}
+                >
                     <div>
                         {
                             deleteData ? (
@@ -81,7 +83,7 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
                 </div>
 
             ) : (
-                <div className="flex flex-row justify-between items-center gap-2 p-2 w-full bg-[#EFEFEF] rounded-md shadow-md">
+                <div className="flex flex-row justify-between items-center gap-2 p-2 w-full bg-zinc-100 rounded-md shadow-md">
                     {
                         deleteData ? (
                             <input id="brand-checkbox" type="checkbox" value={detailId} className="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={handleChangeDelete} />
@@ -92,11 +94,8 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
                             <p className="text-black font-thin text-xs">{kode}</p>
                             <p className="text-black font-bold text-sm">{itemName}</p>
                             <div className="flex flex-row justify-start items-start gap-2">
-                                <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">Stok {qty}</p>
-                                <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">{tipe}</p>
-                                <p className="text-gray-500/80 font-normal text-xs">{merk}</p>
+                                <p className="text-gray-500/80 font-normal text-xs border-gray-500/80 pr-1">{tipe}</p>
                             </div>
-                            <p className="text-gray-500/80 font-normal text-xs">Harga {harga?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
                         </div>
                     </IonRouterLink>
                     <div className="flex flex-col justify-center gap-4 items-center h-full">
@@ -109,7 +108,7 @@ const ListItemBox = ({ handleChangeDelete = () => { }, deleteData, note, userNam
             )
         ) : (
             <div className="w-full">
-                <div className="relative flex flex-row justify-between items-center gap-2 p-2 w-full bg-[#EFEFEF] rounded-md shadow-md">
+                <div className="relative flex flex-row justify-between items-center gap-2 p-2 w-full bg-zinc-100 rounded-md shadow-md">
                     <div className="flex flex-col justify-between items-start gap-2">
                         <p className="text-black font-thin text-xs">{kode}</p>
                         <p className="text-black font-bold text-sm">{itemName}</p>

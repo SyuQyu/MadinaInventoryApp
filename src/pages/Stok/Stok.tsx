@@ -154,9 +154,9 @@ const Tab1: React.FC = () => {
         <header className='mb-6'>
           <h1 className='text-2xl font-extrabold text-[#280822]'>Stok Barang Toko</h1>
         </header>
-        <div className='w-full py-2 px-5 rounded-md flex flex-row justify-between items-center bg-[#EFEFEF]'>
+        <div className='w-full py-2 px-5 rounded-md flex flex-row justify-between items-center bg-zinc-100'>
           <input
-            style={{ backgroundColor: '#EFEFEF', border: 'none', outline: 'none', width: '100%' }}
+            className="bg-zinc-100 border-0 outline-0 w-full"
             placeholder="Search"
             type="Search"
             value={search}
