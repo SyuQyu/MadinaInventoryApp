@@ -7,6 +7,7 @@ import { HiOutlineHome, HiOutlineQueueList, HiOutlineShoppingBag } from "react-i
 import { BiLogOut } from "react-icons/bi";
 import { GoHistory } from "react-icons/go";
 import { TbTransfer } from "react-icons/tb";
+import { FiSettings } from 'react-icons/fi'
 import useTransactionStore from '../../context/transaksi';
 import useAuth from '../../context/auth';
 function Tabs() {
@@ -44,10 +45,16 @@ function Tabs() {
                         <p className='text-xs md:text-md font-bold text-white'>History</p>
                     </IonRouterLink>
                 </li>
-                <li className="w-full">
+                {/* <li className="w-full">
                     <IonRouterLink onClick={() => logoutUser()} routerLink="/login" className='flex flex-col gap-10 justify-between items-center' style={{ color: 'white' }}>
                         <BiLogOut className='w-full h-5 sm:h-6 md:h-8 mb-2' />
                         <p className='text-xs md:text-md font-bold text-white'>Logout</p>
+                    </IonRouterLink>
+                </li> */}
+                <li className="w-full">
+                    <IonRouterLink router-direction={'forward'} onClick={() => deleteAllSelectedItems()} routerLink="/settings" className='flex flex-col gap-10 justify-between items-center' style={{ color: 'white' }}>
+                        <FiSettings className='w-full h-5 sm:h-6 md:h-8 mb-2' />
+                        <p className='text-xs md:text-md font-bold text-white'>Settings</p>
                     </IonRouterLink>
                 </li>
             </ul>

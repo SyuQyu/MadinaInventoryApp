@@ -13,7 +13,7 @@ import clsx from 'clsx';
 const History: React.FC = () => {
   const { items, fetchItems, fetchItemsWithParams } = useItemStore();
   const [search, setSearch] = useState('');
-  const { token } = useAuth();
+  const { token, dataUser } = useAuth();
   const [sort, setSort] = useState('');
   const { fetchTransactions, transactions, fetchTransactionsWithParams, meta, deleteTransaction } = useTransactionStore();
   const [currentPage, setCurrentPage] = useState(1);
@@ -137,7 +137,11 @@ const History: React.FC = () => {
           <CustomSelect onChange={onChangeSelectSort} />
         </div>
         <div className='w-full flex flex-row justify-end items-center mt-5 gap-2'>
-          <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 text-black float-right cursor-pointer" />
+          {
+            dataUser?.role_id === '1' ? (
+              <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 text-black float-right cursor-pointer" />
+            ) : null
+          }
         </div>
         {
           loading ? (

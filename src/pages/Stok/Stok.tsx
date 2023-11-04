@@ -12,7 +12,7 @@ import useAuth from '../../context/auth';
 import clsx from 'clsx';
 const Tab1: React.FC = () => {
   const { brandSelected, typeSelected, clearData } = useFilterStore();
-  const { token } = useAuth();
+  const { token, dataUser } = useAuth();
   const { items, meta, fetchItems, fetchItemsWithParams, deleteItem } = useItemStore();
   const { brand, type } = useFilterStore();
   const [search, setSearch] = useState('');
@@ -214,10 +214,16 @@ const Tab1: React.FC = () => {
                   )
                 }
                 <div className='w-full flex flex-row justify-end items-center gap-2'>
-                  <IonRouterLink routerLink={`stok/create`} className="text-black">
-                    <AiOutlinePlus className="w-5 h-5 text-black float-right" />
-                  </IonRouterLink>
-                  <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 cursor-pointer text-black float-right" />
+                  {
+                    dataUser?.role_id === '1' ? (
+                      <>
+                        <IonRouterLink routerLink={`stok/create`} className="text-black">
+                          <AiOutlinePlus className="w-5 h-5 text-black float-right" />
+                        </IonRouterLink>
+                        <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 cursor-pointer text-black float-right" />
+                      </>
+                    ) : null
+                  }
                 </div>
               </div>
               {

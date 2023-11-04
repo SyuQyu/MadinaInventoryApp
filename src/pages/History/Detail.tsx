@@ -6,16 +6,17 @@ import { useEffect } from "react";
 import { BiUpArrowAlt } from "react-icons/bi";
 import { BsBoxArrowInDown, BsBoxArrowInUp } from "react-icons/bs";
 import { MdOutlineModeEditOutline } from "react-icons/md";
+import useAuth from "../../context/auth";
 const DetailStok = () => {
     const { id } = useParams<{ id: string }>();
     const { fetchTransactions, transactions, transactionDetails, setSelectedItem } = useTransactionStore();
-
+    const { token, dataUser } = useAuth();
     const item = transactionDetails(parseInt(id));
     const formattedPaymentMethod = item?.payment_method
-      ?.replace('-', ' ')
-      ?.split(' ')
-      ?.map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-      ?.join(' ');
+        ?.replace('-', ' ')
+        ?.split(' ')
+        ?.map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+        ?.join(' ');
 
     const reInsertSelectedItem = () => {
         item?.details.map((item: any) => setSelectedItem({ id: item.item_id, qty: item.qty }))
@@ -33,14 +34,18 @@ const DetailStok = () => {
                                 </p>
                             </div>
                         </IonRouterLink>
-                        <IonRouterLink routerLink={`/history/edit/${id}`} onClick={reInsertSelectedItem} className="w-full text-black">
-                            <div className="w-full text-black flex flex-row gap-1 items-center justify-end">
-                                <p>
-                                    Update History
-                                </p>
-                                <MdOutlineModeEditOutline className="w-4 h-4" />
-                            </div>
-                        </IonRouterLink>
+                        {
+                            dataUser?.role_id === '1' ? (
+                                <IonRouterLink routerLink={`/history/edit/${id}`} onClick={reInsertSelectedItem} className="w-full text-black">
+                                    <div className="w-full text-black flex flex-row gap-1 items-center justify-end">
+                                        <p>
+                                            Update History
+                                        </p>
+                                        <MdOutlineModeEditOutline className="w-4 h-4" />
+                                    </div>
+                                </IonRouterLink>
+                            ) : null
+                        }
                     </div>
                     <h1 className='text-2xl font-extrabold text-[#280822]'>Detail Transaksi</h1>
                 </header>

@@ -13,7 +13,7 @@ import { useParams } from 'react-router';
 import { IoIosArrowBack } from 'react-icons/io';
 const EditHistory: React.FC = () => {
   const { items, meta, fetchItems } = useItemStore();
-  const { token } = useAuth();
+  const { token, dataUser } = useAuth();
   const { setSelectedItem, getSelectedItemById, selectedItems, updateTransaction, deleteSelectedItem, fetchTransactions, transactions, addTransaction, deleteAllSelectedItems, transactionDetails } = useTransaksiStore();
   const [note, setNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');

@@ -12,11 +12,20 @@ import AddItem from '../pages/Stok/AddItem';
 import ListItem from '../pages/transaksi/ListItem';
 import ListItemHistory from '../pages/History/ListItem';
 import EditHistory from '../pages/History/EditHistory';
-export const routes = [
+import Settings from '../pages/Settings';
+// import useAuthStore from '../context/auth';
+// const { isLoggedIn, token, dataUser } = useAuthStore();
+
+export const routesAdmin = [
     {
         path: '/home',
         exact: true,
         component: Home
+    },
+    {
+        path: '/settings',
+        exact: true,
+        component: Settings
     },
     {
         path: '/stok',
@@ -64,4 +73,48 @@ export const routes = [
         exact: true,
         component: ListItemHistory
     },
+];
+export const routesStaff = [
+    {
+        path: '/home',
+        exact: true,
+        component: Home
+    },
+    {
+        path: '/settings',
+        exact: true,
+        component: Settings
+    },
+    {
+        path: '/stok',
+        exact: true,
+        component: Stok
+    },
+    {
+        path: '/stok/detail/:id',
+        component: DetailStok
+    },
+    {
+        path: '/stok/update/:id',
+        component: UpdateItem
+    },
+    {
+        path: '/transaksi',
+        exact: true,
+        component: Transaksi
+    },
+    {
+        path: '/transaksi/list-item',
+        component: ListItem
+    },
+    {
+        path: '/history',
+        exact: true,
+        component: History
+    },
+    {
+        path: '/history/detail/:id',
+        exact: true,
+        component: DetailHistory
+    }
 ];

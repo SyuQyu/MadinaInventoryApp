@@ -35,7 +35,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import { useEffect, useState } from 'react';
 import useAuth from './context/auth';
-import { routes } from './router'
+import { routesAdmin, routesStaff } from './router'
 import { Navigation } from './components';
 import LoginPage from './pages/Login';
 setupIonicReact();
@@ -50,6 +50,27 @@ const App: React.FC = () => {
   console.log(isLoggedIn, token, dataUser, UrlGetter());
   if (isLoggedIn && token && UrlGetter() === 'login') {
     window.location.href = "/home";
+  }
+  const Routing = () => {
+    if (dataUser?.role_id === '1') {
+      return routesAdmin.map((route, index) => (
+        <Route
+          key={index}
+          path={route.path}
+          exact={route.exact}
+          component={route.component}
+        />
+      ))
+    } else {
+      return routesStaff.map((route, index) => (
+        <Route
+          key={index}
+          path={route.path}
+          exact={route.exact}
+          component={route.component}
+        />
+      ))
+    }
   }
   return (
     <IonApp>
@@ -68,16 +89,17 @@ const App: React.FC = () => {
                 ) : (
                   <>
                     {
-                      routes.map((route, index) => (
-                        <Route
-                          key={index}
-                          path={route.path}
-                          exact={route.exact}
+                      // routesAdmin.map((route, index) => (
+                      //   <Route
+                      //     key={index}
+                      //     path={route.path}
+                      //     exact={route.exact}
 
-                        >
-                          <route.component />
-                        </Route>
-                      ))
+                      //   >
+                      //     <route.component />
+                      //   </Route>
+                      // ))
+                      <Routing />
                     }
                     <Redirect to="/home" />
                   </>
