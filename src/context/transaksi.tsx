@@ -38,9 +38,9 @@ type TransactionStore = {
     addTransaction: (transaction: any, token: string | null) => void;
     updateTransaction: (id: number, transaction: any, token: string | null) => void;
     deleteTransaction: (id: number, token: string | null) => void;
-    fetchTransactions: (token: string | null) => Promise<void>;
+    fetchTransactions: (token: string | null) => Promise<any>;
     transactionDetails: (id: number) => any;
-    fetchTransactionsWithParams: ({ page, limit, payment, user, type, sort, token }: any) => Promise<void>;
+    fetchTransactionsWithParams: ({ page, limit, payment, user, type, sort, token }: any) => Promise<any>;
 };
 
 type Meta = {
@@ -228,6 +228,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             }));
             console.log(itemsData);
             set({ transactions: itemsData, meta: data.meta });
+            return true;
         } catch (error) {
             console.error('Error fetching transactions:', error);
         }
@@ -235,27 +236,27 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
     fetchTransactionsWithParams: async ({ page, limit, payment, user, type, sort, token }) => {
         console.log({ page, limit, payment, user, type, sort, token }, 'params')
         try {
-            let params;
+
+            let url = `https://inventory-app.kaladwipa.com/transactions`;
             if (page) {
-                params = new URLSearchParams({ page: page });
+                url += `?page=${page}`;
             }
             if (limit) {
-                params = new URLSearchParams({ limit: limit });
+                url += `${page ? '&' : '?'}limit=${limit}`;
             }
             if (payment) {
-                params = new URLSearchParams({ payment: payment });
+                url += `${page || limit ? '&' : '?'}payment=${payment}`;
             }
             if (user) {
-                params = new URLSearchParams({ user: user });
+                url += `${page || limit || payment ? '&' : '?'}user=${user}`;
             }
-            if (type !== '') {
-                params = new URLSearchParams({ type: type });
+            if (type) {
+                url += `${page || limit || payment || user ? '&' : '?'}type=${type}`;
             }
-            if (sort !== '') {
-                params = new URLSearchParams({ sort: sort });
+            if (sort) {
+                url += `${page || limit || payment || user || type ? '&' : '?'}sort=${sort}`;
             }
-
-            const url = `https://inventory-app.kaladwipa.com/transactions?${params?.toString()}`;
+            
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -300,6 +301,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             }));
             console.log(itemsData, 'fetch with params');
             set({ transactions: itemsData, meta: data.meta });
+            return true;
         } catch (error) {
             console.error(error);
         }
