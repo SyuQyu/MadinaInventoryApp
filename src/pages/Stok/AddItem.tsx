@@ -151,7 +151,9 @@ const AddItem = () => {
                     <div key={index} className="flex flex-col gap-4 w-full">
                         <div className="flex flex-row gap-2 justify-start items-center">
                             <h2 className='text-lg font-extrabold text-[#280822]'>Form {index + 1}</h2>
-                            <button onClick={() => handleRemoveStock(index)}><AiFillMinusCircle className="w-5 h-5 text-red-500" /></button>
+                            {
+                                index !== 0 ? (<button onClick={() => handleRemoveStock(index)}><AiFillMinusCircle className="w-5 h-5 text-red-500" /></button>) : null
+                            }
                         </div>
                         <InputCustom
                             label="Kode"
