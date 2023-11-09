@@ -215,7 +215,7 @@ const Tab1: React.FC = () => {
                 }
                 <div className='w-full flex flex-row justify-end items-center gap-2'>
                   {
-                    dataUser?.role_id === '1' ? (
+                    parseInt(dataUser?.role_id) === 1 ? (
                       <>
                         <IonRouterLink routerLink={`stok/create`} className="text-black">
                           <AiOutlinePlus className="w-5 h-5 text-black float-right" />

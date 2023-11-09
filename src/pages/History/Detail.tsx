@@ -35,7 +35,7 @@ const DetailStok = () => {
                             </div>
                         </IonRouterLink>
                         {
-                            dataUser?.role_id === '1' ? (
+                            parseInt(dataUser?.role_id) === 1 ? (
                                 <IonRouterLink routerLink={`/history/edit/${id}`} onClick={reInsertSelectedItem} className="w-full text-black">
                                     <div className="w-full text-black flex flex-row gap-1 items-center justify-end">
                                         <p>

@@ -23,8 +23,9 @@ type BrandStore = {
     meta: Meta;
     addBrand: (brand: string, token: string) => any;
     updateBrand: (id: number, updatedBrand: string, token: string) => void;
-    deleteBrand: (id: number, token: string | null) => void;
-    fetchBrands: () => Promise<void>;
+    deleteBrand: (id: number, token: string | null) => any;
+    fetchBrands: () => Promise<any>;
+    fetchBrandsWithParams: (page: number, limit: number) => Promise<any>;
 };
 
 const useBrandStore = create<BrandStore>((set) => ({
@@ -73,20 +74,24 @@ const useBrandStore = create<BrandStore>((set) => ({
             set((state) => ({
                 brands: state.brands.map((brand) => (brand.id === id ? updatedBrandResponse : brand)),
             }));
+            return true;
         } catch (error) {
             console.error(error);
         }
     },
     deleteBrand: async (id, token) => {
         try {
-            await fetch(`https://inventory-app.kaladwipa.com/brands/${id}`, {
+            const res = await fetch(`https://inventory-app.kaladwipa.com/brands/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
             });
+            const jsonRes = await res.json()
             set((state) => ({ brands: state.brands.filter((brand) => brand.id !== id) }))
+            console.log(jsonRes);
+            return jsonRes;
         } catch (error) {
             console.error(error);
         }
@@ -95,6 +100,25 @@ const useBrandStore = create<BrandStore>((set) => ({
         const response = await fetch('https://inventory-app.kaladwipa.com/brands');
         const brands = await response.json();
         set({ brands: brands.data, meta: brands.meta });
+        return true;
+    },
+    fetchBrandsWithParams: async (page, limit) => {
+        try {
+            let url = `https://inventory-app.kaladwipa.com/brands`;
+            if (page) {
+                url += `?page=${page}`;
+            }
+            if (limit) {
+                url += `${page ? '&' : '?'}limit=${limit}`;
+            }
+            console.log(page, limit, 'params')
+            const response = await fetch(url);
+            const brands = await response.json();
+            set({ brands: brands.data, meta: brands.meta });
+            return true;
+        } catch (error) {
+            console.error(error);
+        }
     },
 }));
 

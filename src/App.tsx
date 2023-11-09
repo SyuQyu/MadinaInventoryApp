@@ -52,7 +52,7 @@ const App: React.FC = () => {
     window.location.href = "/home";
   }
   const Routing = () => {
-    if (dataUser?.role_id === '1') {
+    if (parseInt(dataUser?.role_id) === 1) {
       return routesAdmin.map((route, index) => (
         <Route
           key={index}

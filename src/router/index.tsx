@@ -13,6 +13,7 @@ import ListItem from '../pages/transaksi/ListItem';
 import ListItemHistory from '../pages/History/ListItem';
 import EditHistory from '../pages/History/EditHistory';
 import Settings from '../pages/Settings';
+import BrandSettings from '../pages/Brand/Brand';
 // import useAuthStore from '../context/auth';
 // const { isLoggedIn, token, dataUser } = useAuthStore();
 
@@ -26,6 +27,10 @@ export const routesAdmin = [
         path: '/settings',
         exact: true,
         component: Settings
+    },
+    {
+        path: '/settings/brands',
+        component: BrandSettings
     },
     {
         path: '/stok',
@@ -84,6 +89,10 @@ export const routesStaff = [
         path: '/settings',
         exact: true,
         component: Settings
+    },
+    {
+        path: '/settings/brands',
+        component: BrandSettings
     },
     {
         path: '/stok',

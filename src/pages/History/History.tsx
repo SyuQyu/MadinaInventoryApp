@@ -138,7 +138,7 @@ const History: React.FC = () => {
         </div>
         <div className='w-full flex flex-row justify-end items-center mt-5 gap-2'>
           {
-            dataUser?.role_id === '1' ? (
+            parseInt(dataUser?.role_id) === 1 ? (
               <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 text-black float-right cursor-pointer" />
             ) : null
           }
