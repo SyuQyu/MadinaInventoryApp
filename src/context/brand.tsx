@@ -21,14 +21,15 @@ type Meta = {
 type BrandStore = {
     brands: Brand[];
     meta: Meta;
-    addBrand: (brand: string, token: string) => any;
-    updateBrand: (id: number, updatedBrand: string, token: string) => void;
+    addBrand: (brand: string, token: string | null) => any;
+    updateBrand: (id: number, updatedBrand: any, token: string | null) => void;
     deleteBrand: (id: number, token: string | null) => any;
     fetchBrands: () => Promise<any>;
     fetchBrandsWithParams: (page: number, limit: number) => Promise<any>;
+    getBrandById: (id: number) => any | undefined;
 };
 
-const useBrandStore = create<BrandStore>((set) => ({
+const useBrandStore = create<BrandStore>((set, get) => ({
     brands: [],
     meta: {
         total: 0,
@@ -68,7 +69,11 @@ const useBrandStore = create<BrandStore>((set) => ({
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(updatedBrand),
+                body: JSON.stringify(
+                    {
+                        name: updatedBrand,
+                    }
+                ),
             });
             const updatedBrandResponse = await response.json();
             set((state) => ({
@@ -95,6 +100,9 @@ const useBrandStore = create<BrandStore>((set) => ({
         } catch (error) {
             console.error(error);
         }
+    },
+    getBrandById: (id: number) => {
+        return get().brands.find((brand) => brand.id === id);
     },
     fetchBrands: async () => {
         const response = await fetch('https://inventory-app.kaladwipa.com/brands');

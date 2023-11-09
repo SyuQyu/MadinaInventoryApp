@@ -14,6 +14,8 @@ import ListItemHistory from '../pages/History/ListItem';
 import EditHistory from '../pages/History/EditHistory';
 import Settings from '../pages/Settings';
 import BrandSettings from '../pages/Brand/Brand';
+import AddBrand from '../pages/Brand/AddBrand';
+import UpdateBrand from '../pages/Brand/UpdateBrand';
 // import useAuthStore from '../context/auth';
 // const { isLoggedIn, token, dataUser } = useAuthStore();
 
@@ -30,7 +32,16 @@ export const routesAdmin = [
     },
     {
         path: '/settings/brands',
+        exact: true,
         component: BrandSettings
+    },
+    {
+        path: '/settings/brands/create',
+        component: AddBrand
+    },
+    {
+        path: '/settings/brands/update/:id',
+        component: UpdateBrand
     },
     {
         path: '/stok',

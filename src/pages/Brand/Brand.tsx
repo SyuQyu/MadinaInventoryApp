@@ -155,7 +155,7 @@ const Tab1: React.FC = () => {
                             {
                                 parseInt(dataUser?.role_id) === 1 ? (
                                     <>
-                                        <IonRouterLink routerLink={`stok/create`} className="text-black">
+                                        <IonRouterLink routerLink={`brands/create`} className="text-black">
                                             <AiOutlinePlus className="w-5 h-5 text-black float-right" />
                                         </IonRouterLink>
                                         <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 cursor-pointer text-black float-right" />
@@ -175,7 +175,7 @@ const Tab1: React.FC = () => {
                                     filteredItems.map((item, index) =>
                                     (
                                         <React.Fragment key={index}>
-                                            <ListItemBox handleChangeDelete={handleChangeDelete} deleteData={deleteData} itemName={item?.name} detailId={item?.id} />
+                                            <ListItemBox handleChangeDelete={handleChangeDelete} deleteData={deleteData} itemName={item?.name} detailId={item?.id} withLink={false} brandType={true} />
                                         </React.Fragment>
                                     )
                                     )
