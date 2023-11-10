@@ -8,6 +8,7 @@ import CustomSort from './CustomSort/CustomSort'
 import CreateableCustomSelect from './CreateableCustomSelect/CreateableCustomSelect'
 import CustomBasicSelect from './CustomBasicSelect/CUstomBasicSelect'
 import CustomFilter from './CustomFilter/CustomFilter'
+import PrintableContent from './PrintableContent/PrintableContent'
 export {
     InputCustom,
     ExploreContainer,
@@ -18,6 +19,7 @@ export {
     CustomSort,
     CustomFilter,
     CreateableCustomSelect,
-    CustomBasicSelect
+    CustomBasicSelect,
+    PrintableContent
 
 }
