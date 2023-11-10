@@ -9,14 +9,28 @@ type ItemType = {
 
 type ItemTypeStore = {
     itemTypes: ItemType[];
+    meta: any;
     addItemType: (itemType: ItemType, token: string | null) => any;
-    updateItemType: (id: number, updatedItemType: ItemType, token: string | null) => void;
+    updateItemType: (id: number, updatedItemType: ItemType, token: string | null) => any;
     deleteItemType: (id: number, token: string | null) => void;
-    fetchItemTypes: () => Promise<void>;
+    fetchItemTypes: () => Promise<any>;
+    getItemTypesById: (id: number) => any | undefined;
+    fetchItemTypesWithParams: (page: number, limit: number) => Promise<any>;
 };
 
-const useItemTypeStore = create<ItemTypeStore>((set) => ({
+const useItemTypeStore = create<ItemTypeStore>((set, get) => ({
     itemTypes: [],
+    meta: {
+        total: 0,
+        per_page: 0,
+        current_page: 0,
+        last_page: 0,
+        first_page: 0,
+        first_page_url: '',
+        last_page_url: '',
+        next_page_url: null,
+        previous_page_url: null,
+    },
     addItemType: async (itemType, token) => {
         try {
             const response = await fetch('https://inventory-app.kaladwipa.com/item-types', {
@@ -44,26 +58,38 @@ const useItemTypeStore = create<ItemTypeStore>((set) => ({
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(updatedItemType),
+                body: JSON.stringify(
+                    {
+                        name: updatedItemType,
+                    }
+                ),
             });
             const updatedItemTypeResponse = await response.json();
+            console.log(updatedItemTypeResponse);
             set((state) => ({
                 itemTypes: state.itemTypes.map((itemType) => (itemType.id === id ? updatedItemTypeResponse : itemType)),
             }));
+            return true;
         } catch (error) {
             console.error(error);
         }
     },
+    getItemTypesById: (id: number) => {
+        return get().itemTypes.find((item) => item.id === id);
+    },
     deleteItemType: async (id, token) => {
         try {
-            await fetch(`https://inventory-app.kaladwipa.com/item-types/${id}`, {
+            const res = await fetch(`https://inventory-app.kaladwipa.com/item-types/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
             });
+            const jsonRes = await res.json()
             set((state) => ({ itemTypes: state.itemTypes.filter((itemType) => itemType.id !== id) }))
+            console.log(jsonRes);
+            return jsonRes;
         } catch (error) {
             console.error(error);
         }
@@ -72,6 +98,25 @@ const useItemTypeStore = create<ItemTypeStore>((set) => ({
         const response = await fetch('https://inventory-app.kaladwipa.com/item-types');
         const itemTypes = await response.json();
         set({ itemTypes });
+        return true;
+    },
+    fetchItemTypesWithParams: async (page, limit) => {
+        try {
+            let url = `https://inventory-app.kaladwipa.com/item-types`;
+            if (page) {
+                url += `?page=${page}`;
+            }
+            if (limit) {
+                url += `${page ? '&' : '?'}limit=${limit}`;
+            }
+            console.log(page, limit, 'params')
+            const response = await fetch(url);
+            const items = await response.json();
+            set({ itemTypes: items.data, meta: items.meta });
+            return true;
+        } catch (error) {
+            console.error(error);
+        }
     },
 }));
 

@@ -30,7 +30,7 @@ const Settings: React.FC = () => {
                                 <p className='w-full text-center text-black'>Brand</p>
                             </div>
                         </IonRouterLink>
-                        <IonRouterLink routerLink='#' className='w-full'>
+                        <IonRouterLink routerLink='settings/types' className='w-full'>
                             <div className='relative items-center flex flex-col justify-between gap-2 rounded-md w-full  border-2 p-4 md:p-6'>
                                 <p className='w-full text-center text-black'>Type</p>
                             </div>

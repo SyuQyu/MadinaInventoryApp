@@ -4,15 +4,13 @@ import '../../theme/pages/Tab1.css';
 import { useEffect, useState } from 'react';
 import { AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
 import { PiTrashSimpleLight } from 'react-icons/pi'
-import useItemStore from '../../context/item';
-import useFilterStore from '../../context/filterTransaksi';
-import useBrandStore from '../../context/brand';
+import useItemTypeStore from '../../context/itemType';
 import React from 'react';
 import useAuth from '../../context/auth';
 import clsx from 'clsx';
 const Tab1: React.FC = () => {
     const { token, dataUser } = useAuth();
-    const { meta, brands, fetchBrands, fetchBrandsWithParams, deleteBrand } = useBrandStore();
+    const { fetchItemTypes, getItemTypesById, itemTypes, meta, fetchItemTypesWithParams, deleteItemType } = useItemTypeStore();
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(50);
@@ -25,22 +23,22 @@ const Tab1: React.FC = () => {
         console.log(event.target.value);
         const parsing = parseInt(event.target.value);
         setItemsPerPage(parsing);
-        fetchBrandsWithParams(1, parsing);
+        fetchItemTypesWithParams(1, parsing);
     };
     const fetch = async () => {
-        const res = await fetchBrands();
-        if (brands.length > 0 || res) {
+        const res = await fetchItemTypes();
+        if (itemTypes.length > 0 || res) {
             setLoading(false);
         }
         return res;
     }
     useEffect(() => {
         fetch();
-    }, [fetchBrands])
+    }, [fetchItemTypes])
 
     console.log(meta)
 
-    const filteredItems = brands?.filter(item => item?.name?.toLowerCase().includes(search.toLowerCase()));
+    const filteredItems = itemTypes?.filter(item => item?.name?.toLowerCase().includes(search.toLowerCase()));
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -60,7 +58,7 @@ const Tab1: React.FC = () => {
     };
     const handleNextPage = (page: number) => {
         setCurrentPage(page);
-        fetchBrandsWithParams(page, itemsPerPage);
+        fetchItemTypesWithParams(page, itemsPerPage);
     };
 
 
@@ -74,7 +72,7 @@ const Tab1: React.FC = () => {
                 const deleteSelectedData = async () => {
                     const results = await Promise.all(
                         selectedDeleteData.map(async (item: any) => {
-                            const res = await deleteBrand(item, token);
+                            const res = await deleteItemType(item, token);
                             return { id: item, response: res };
                         })
                     );
@@ -85,13 +83,13 @@ const Tab1: React.FC = () => {
                     setDeleteResults(res);
                 }
                 console.log(res)
-                if (res?.some((res: any) => res?.response?.message === 'Brand berhasil dihapus')) {
+                if (res?.some((res: any) => res?.response?.message === 'Tipe barang berhasil dihapus')) {
                     console.log('res masuk true')
                     setSelectedDeleteData([]);
                     console.log(deleteResults)
                     setSuccess(true);
                     fetch();
-                } else if (res?.some((res: any) => res?.response?.message === 'Brand tidak dapat dihapus karena masih memiliki barang.')) {
+                } else if (res?.some((res: any) => res?.response?.message === 'Tipe barang tidak dapat dihapus karena masih memiliki barang.')) {
                     console.log('res masuk false')
                     setSelectedDeleteData([]);
                     console.log(deleteResults)
@@ -111,7 +109,7 @@ const Tab1: React.FC = () => {
         <IonContent fullscreen={false}>
             <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col'>
                 <header className='mb-6'>
-                    <h1 className='text-2xl font-extrabold text-[#280822]'>List Brand</h1>
+                    <h1 className='text-2xl font-extrabold text-[#280822]'>List Tipe</h1>
                 </header>
                 <div className='w-full py-2 px-5 rounded-md flex flex-row justify-between items-center bg-zinc-100'>
                     <input
@@ -155,7 +153,7 @@ const Tab1: React.FC = () => {
                             {
                                 parseInt(dataUser?.role_id) === 1 ? (
                                     <>
-                                        <IonRouterLink routerLink={`brands/create`} className="text-black">
+                                        <IonRouterLink routerLink={`types/create`} className="text-black">
                                             <AiOutlinePlus className="w-5 h-5 text-black float-right" />
                                         </IonRouterLink>
                                         <PiTrashSimpleLight onClick={handleOpenDeleteData} className="w-5 h-5 cursor-pointer text-black float-right" />
@@ -175,7 +173,7 @@ const Tab1: React.FC = () => {
                                     filteredItems.map((item, index) =>
                                     (
                                         <React.Fragment key={index}>
-                                            <ListItemBox handleChangeDelete={handleChangeDelete} deleteData={deleteData} itemName={item?.name} detailId={item?.id} withLink={false} brandType={true} urlBrandTypes={`/settings/brands/update`}/>
+                                            <ListItemBox urlBrandTypes={`/settings/types/update`} handleChangeDelete={handleChangeDelete} deleteData={deleteData} itemName={item?.name} detailId={item?.id} withLink={false} brandType={true} />
                                         </React.Fragment>
                                     )
                                     )
@@ -221,7 +219,7 @@ const Tab1: React.FC = () => {
                         isOpen={success}
                         position="top"
                         onDidDismiss={() => setSuccess(false)}
-                        message={`Brand dengan id ${deleteResults.map((item: any) => item.id)} berhasil dihapus`}
+                        message={`Type dengan id ${deleteResults.map((item: any) => item.id)} berhasil dihapus`}
                         duration={5000}
                         color="success"
                     />
@@ -230,7 +228,7 @@ const Tab1: React.FC = () => {
                         isOpen={failed}
                         position="top"
                         onDidDismiss={() => setFailed(false)}
-                        message={`Brand dengan id ${deleteResults.map((item: any) => item.id)} gagal dihapus`}
+                        message={`Type dengan id ${deleteResults.map((item: any) => item.id)} gagal dihapus`}
                         duration={5000}
                         color="danger"
                     />

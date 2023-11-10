@@ -16,6 +16,9 @@ import Settings from '../pages/Settings';
 import BrandSettings from '../pages/Brand/Brand';
 import AddBrand from '../pages/Brand/AddBrand';
 import UpdateBrand from '../pages/Brand/UpdateBrand';
+import TypeSettings from '../pages/Type/Type';
+import AddType from '../pages/Type/AddType';
+import UpdateType from '../pages/Type/UpdateType';
 // import useAuthStore from '../context/auth';
 // const { isLoggedIn, token, dataUser } = useAuthStore();
 
@@ -42,6 +45,19 @@ export const routesAdmin = [
     {
         path: '/settings/brands/update/:id',
         component: UpdateBrand
+    },
+    {
+        path: '/settings/types',
+        exact: true,
+        component: TypeSettings
+    },
+    {
+        path: '/settings/types/create',
+        component: AddType
+    },
+    {
+        path: '/settings/types/update/:id',
+        component: UpdateType
     },
     {
         path: '/stok',
@@ -104,6 +120,11 @@ export const routesStaff = [
     {
         path: '/settings/brands',
         component: BrandSettings
+    },
+    {
+        path: '/settings/types',
+        exact: true,
+        component: TypeSettings
     },
     {
         path: '/stok',
