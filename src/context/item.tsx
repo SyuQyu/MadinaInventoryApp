@@ -128,7 +128,7 @@ const useItemStore = create<ItemStore>((set, get) => ({
                     updated_at: new Date(item.updated_at).toLocaleDateString(),
                 };
             }));
-            console.log(itemsData);
+            // console.log(itemsData);
             set({ items: itemsData, meta: items.meta });
             return true;
         } catch (error) {

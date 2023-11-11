@@ -25,7 +25,6 @@ interface Option {
     readonly value: number;
 }
 
-
 const AddItem = () => {
     const history = useHistory();
     const { createItem } = useItem();
@@ -123,7 +122,6 @@ const AddItem = () => {
         }
     };
 
-
     const [loading, setLoading] = useState(true);
 
     const fetch = async () => {
@@ -158,7 +156,7 @@ const AddItem = () => {
                         <InputCustom
                             label="Kode"
                             labelPlacement="fixed"
-                            placeholder="Kode"
+                            placeholder="Ex: BRG-001"
                             type="text"
                             fill="outline"
                             name="code"
@@ -168,7 +166,7 @@ const AddItem = () => {
                         <InputCustom
                             label="Nama"
                             labelPlacement="fixed"
-                            placeholder="Nama"
+                            placeholder="Masukkan nama"
                             type="text"
                             fill="outline"
                             name="name"
@@ -178,7 +176,7 @@ const AddItem = () => {
                         <InputCustom
                             label="Harga"
                             labelPlacement="fixed"
-                            placeholder="Harga"
+                            placeholder="Masukkan harga"
                             type="number"
                             fill="outline"
                             name="price"
@@ -188,7 +186,7 @@ const AddItem = () => {
                         <InputCustom
                             label="Stok"
                             labelPlacement="fixed"
-                            placeholder="Stok"
+                            placeholder="Masukkan stok"
                             type="number"
                             fill="outline"
                             name="stock"
@@ -198,7 +196,7 @@ const AddItem = () => {
                         <InputCustom
                             label="Stok Minimum"
                             labelPlacement="fixed"
-                            placeholder="Stok Minimum"
+                            placeholder="Masukkan stok minimum"
                             type="number"
                             fill="outline"
                             name="stock_min"
@@ -208,7 +206,7 @@ const AddItem = () => {
                         <InputCustom
                             label="Ukuran"
                             labelPlacement="fixed"
-                            placeholder="Ukuran"
+                            placeholder="Ex: 8mm x 12mm"
                             type="text"
                             fill="outline"
                             name="ukuran"
@@ -255,19 +253,19 @@ const AddItem = () => {
                             onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
                         /> */}
                         <CreateableCustomSelect
-                            label="Pilih Tipe Item"
+                            label="Pilih Tipe Barang"
                             name={"item_type_id"}
                             data={itemTypes}
                             value={stocks[index].item_type_id}
                             onChange={handleInputChangeSelect}
                             index={index}
                             apiCall={addItemType}
-                            placeHolder="Pilih Item Type" />
+                            placeHolder="Pilih Tipe Barang" />
                         <InputCustom
                             label="Deskripsi"
                             labelPlacement="fixed"
                             placeholder="Deskripsi"
-                            type="text"
+                            type="textarea"
                             fill="outline"
                             name="description"
                             value={stock.description}
@@ -278,10 +276,10 @@ const AddItem = () => {
                 <button onClick={handleAddStock}><AiFillPlusCircle className="w-6 h-6 text-green-500 float-right" /></button>
                 <div className="flex flex-row justify-between items-center gap-4">
                     <IonRouterLink routerLink="/stok" className="text-white text-center bg-red-500 rounded-lg w-1/2 md:w-1/2 py-2 px-10">
-                        Cancel
+                        Batal
                     </IonRouterLink>
                     <button onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSubmit(e)} className='text-white bg-green-500 rounded-lg  w-1/2 md:w-1/2 py-2 px-10'>
-                        Save
+                        Simpan
                     </button>
                 </div>
                 <div className="md:h-[20px] h-[5px] text-[1px] text-white">

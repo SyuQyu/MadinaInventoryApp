@@ -1,6 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonRouterLink, IonSpinner, IonTitle, IonToolbar } from '@ionic/react';
 import { CustomFilter, CustomSelect, ExploreContainer, InputCustom, ListItemBox } from '../../components';
-import '../../theme/pages/Tab1.css';
+import '../../theme/pages/styles.css';
 import { useEffect, useState } from 'react';
 import { AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
 import { PiTrashSimpleLight } from 'react-icons/pi'

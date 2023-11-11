@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { CreateableCustomSelect, InputCustom } from "../../components";
+import React, { useState } from "react";
+import { InputCustom } from "../../components";
 import { IonContent, IonRouterLink, IonToast } from "@ionic/react";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 import useAuth from "../../context/auth";
 import useItemTypeStore from "../../context/itemType";
+
 interface Stock {
     name: string;
 }
@@ -13,11 +14,11 @@ interface Option {
     readonly value: number;
 }
 
-
-const AddItem = () => {
-    const { isLoggedIn, token } = useAuth();
-    const { fetchItemTypes, getItemTypesById, itemTypes, meta, fetchItemTypesWithParams, deleteItemType, addItemType } = useItemTypeStore();
+const AddType = () => {
+    const { token } = useAuth();
+    const { addItemType } = useItemTypeStore();
     const [success, setSuccess] = useState(false);
+
     const initialStock: Stock = {
         name: "",
     };
@@ -33,7 +34,6 @@ const AddItem = () => {
         setStocks(list);
         console.log(value)
     };
-
 
     const handleAddStock = () => {
         setStocks([...stocks, {
@@ -58,6 +58,7 @@ const AddItem = () => {
 
             return created;
         });
+
         if (data) {
             setSuccess(true);
         }
@@ -116,4 +117,4 @@ const AddItem = () => {
     );
 };
 
-export default AddItem;
+export default AddType;

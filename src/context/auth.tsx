@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { persist } from "zustand/middleware";
+import { Simulate } from "react-dom/test-utils";
+import error = Simulate.error;
 type AuthState = {
     token: string | null;
     isLoggedIn: boolean;

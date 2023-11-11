@@ -1,50 +1,68 @@
-import React, { useEffect } from 'react';
-import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToolbar } from '@ionic/react';
-import { CustomCard, CustomSelect } from '../components';
-import { MdOutlineSsidChart } from "react-icons/md";
-import { PiHandCoinsDuotone } from 'react-icons/pi';
-import { ImStack } from 'react-icons/im';
+import React, { useState } from 'react';
+import { IonContent, IonRouterLink } from '@ionic/react';
 import useAuth from '../context/auth';
-import useDashboardStore from '../context/dashboard';
 import useTransactionStore from '../context/transaksi';
-import { BiLogOut } from 'react-icons/bi';
-const Settings: React.FC = () => {
-    const { isLoggedIn, token, dataUser, logout } = useAuth();
-    const { data, fetchData, fetchDashbord } = useDashboardStore();
-    const { deleteAllSelectedItems } = useTransactionStore();
+import { BiFolder } from "react-icons/bi";
+import { AiOutlineTrademark } from "react-icons/ai";
+import Alert from "../components/Alert/Alert";
+import { useHistory } from "react-router-dom";
 
-    const logoutUser = () => {
-        logout();
+const Settings: React.FC = () => {
+    const {logout} = useAuth();
+    const {deleteAllSelectedItems} = useTransactionStore();
+    const [isOpen, setIsOpen] = useState(false);
+    const history = useHistory();
+
+    const logoutUser = async () => {
+        setIsOpen(true);
         deleteAllSelectedItems();
     }
+
     return (
         <IonContent>
             <div className='md:px-10 md:py-10 px-2 py-5'>
                 <header className='mb-4'>
-                    <h1 className='text-2xl font-extrabold'>Settings</h1>
+                    <h1 className='text-2xl font-extrabold'>Pengaturan</h1>
                 </header>
+
+                <ul className="w-full text-sm font-medium text-gray-900 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <li className="w-full p-4 border-b border-gray-200 rounded-t-lg dark:border-gray-600 flex">
+                        <AiOutlineTrademark className="w-5 h-5 text-black mr-4"/>
+                        <IonRouterLink routerLink='settings/brands' className='w-full text-black'>
+                            Merek
+                        </IonRouterLink>
+                    </li>
+                    <li className="w-full p-4 border-b border-gray-200 dark:border-gray-600 flex">
+                        <BiFolder className="w-5 h-5 text-black mr-4"/>
+                        <IonRouterLink routerLink='settings/types' className='w-full text-black'>
+                            <span>Tipe Barang</span>
+                        </IonRouterLink>
+                    </li>
+                </ul>
+
                 <div className='w-full flex flex-col justify-center items-center gap-4 h-full'>
                     <div className='flex flex-row justify-between items-center space-x-4 w-full'>
-                        <IonRouterLink routerLink='settings/brands' className='w-full'>
-                            <div className='relative items-center flex flex-col justify-between gap-2 rounded-md w-full  border-2 p-4 md:p-6'>
-                                <p className='w-full text-center text-black'>Brand</p>
-                            </div>
-                        </IonRouterLink>
-                        <IonRouterLink routerLink='settings/types' className='w-full'>
-                            <div className='relative items-center flex flex-col justify-between gap-2 rounded-md w-full  border-2 p-4 md:p-6'>
-                                <p className='w-full text-center text-black'>Type</p>
-                            </div>
-                        </IonRouterLink>
+
                     </div>
-                    <div className="md:w-1/2 w-full">
-                        <IonRouterLink onClick={() => logoutUser()} routerLink="/login">
-                            <button className='bg-red-500 rounded-lg w-full py-2 px-10 text-white'>
-                                {/* <IonRouterLink routerLink="/home" className='text-white bg-red'></IonRouterLink> */}
-                                Logout
-                            </button>
-                        </IonRouterLink>
+                    <div className="md:w-1/2 w-full text-center">
+                        <button className='bg-red-500 rounded-lg w-1/2 py-2 px-10 text-white'
+                                onClick={() => logoutUser()}
+                        >
+                            Logout
+                        </button>
                     </div>
                 </div>
+
+                <Alert
+                    header={'Konfirmasi Logout'}
+                    message={'Apakah anda yakin ingin keluar dari akun saat ini?'}
+                    handleConfirm={() => {
+                        logout();
+                        history.push('/login')
+                    }}
+                    isOpen={isOpen}
+                    handleDismiss={() => setIsOpen(false)}
+                />
             </div>
         </IonContent>
     );

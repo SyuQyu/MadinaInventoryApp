@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { CreateableCustomSelect, InputCustom } from "../../components";
+import { InputCustom } from "../../components";
 import { IonContent, IonRouterLink, IonToast } from "@ionic/react";
-import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 import useAuth from "../../context/auth";
-import useItem from "../../context/item";
-import useItemType from "../../context/itemType";
 import { useParams } from "react-router";
 import useItemTypeStore from "../../context/itemType";
 
 interface Stock {
     name: string;
 }
-const UpdateStok = () => {
+const UpdateType = () => {
     const initialStock: any = {
         name: "",
     };
@@ -23,6 +20,7 @@ const UpdateStok = () => {
     const { getItemTypesById, updateItemType } = useItemTypeStore();
     const [data, setData] = useState<any>();
     const [loading, setLoading] = useState(true);
+
     const fetch = async () => {
         setData(getItemTypesById(parseInt(id)));
         setLoading(false);
@@ -53,7 +51,6 @@ const UpdateStok = () => {
     if (loading) {
         return <div>Loading...</div>;
     }
-
 
     return (
         <IonContent fullscreen={false} className="pb-10">
@@ -107,5 +104,5 @@ const UpdateStok = () => {
     );
 };
 
-export default UpdateStok;
+export default UpdateType;
 

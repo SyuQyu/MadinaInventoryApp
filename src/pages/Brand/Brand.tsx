@@ -1,16 +1,14 @@
-import { IonContent, IonHeader, IonPage, IonRouterLink, IonSpinner, IonTitle, IonToast, IonToolbar } from '@ionic/react';
-import { CustomFilter, CustomSelect, ExploreContainer, InputCustom, ListItemBox } from '../../components';
-import '../../theme/pages/Tab1.css';
+import { IonContent, IonRouterLink, IonSpinner, IonToast } from '@ionic/react';
+import { CustomSelect, ListItemBox } from '../../components';
 import { useEffect, useState } from 'react';
 import { AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
 import { PiTrashSimpleLight } from 'react-icons/pi'
-import useItemStore from '../../context/item';
-import useFilterStore from '../../context/filterTransaksi';
 import useBrandStore from '../../context/brand';
 import React from 'react';
 import useAuth from '../../context/auth';
 import clsx from 'clsx';
-const Tab1: React.FC = () => {
+
+const Brand: React.FC = () => {
     const { token, dataUser } = useAuth();
     const { meta, brands, fetchBrands, fetchBrandsWithParams, deleteBrand } = useBrandStore();
     const [search, setSearch] = useState('');
@@ -34,6 +32,7 @@ const Tab1: React.FC = () => {
         }
         return res;
     }
+
     useEffect(() => {
         fetch();
     }, [fetchBrands])
@@ -58,45 +57,49 @@ const Tab1: React.FC = () => {
         }
         console.log(selectedDeleteData);
     };
+
     const handleNextPage = (page: number) => {
         setCurrentPage(page);
         fetchBrandsWithParams(page, itemsPerPage);
     };
-
 
     const [deleteResults, setDeleteResults] = useState([] as any);
     const handleOpenDeleteData = async () => {
         setDeleteData(!deleteData);
         console.log(deleteData);
         if (selectedDeleteData.length > 0) {
-            if (deleteData) {
-                console.log('delete');
-                const deleteSelectedData = async () => {
-                    const results = await Promise.all(
-                        selectedDeleteData.map(async (item: any) => {
-                            const res = await deleteBrand(item, token);
-                            return { id: item, response: res };
-                        })
-                    );
-                    return results;
-                };
-                const res = await deleteSelectedData();
-                if (res.length > 0) {
-                    setDeleteResults(res);
-                }
-                console.log(res)
-                if (res?.some((res: any) => res?.response?.message === 'Brand berhasil dihapus')) {
-                    console.log('res masuk true')
-                    setSelectedDeleteData([]);
-                    console.log(deleteResults)
-                    setSuccess(true);
-                    fetch();
-                } else if (res?.some((res: any) => res?.response?.message === 'Brand tidak dapat dihapus karena masih memiliki barang.')) {
-                    console.log('res masuk false')
-                    setSelectedDeleteData([]);
-                    console.log(deleteResults)
-                    setFailed(true);
-                }
+            if (!deleteData) return;
+
+            console.log('delete');
+            const deleteSelectedData = async () => {
+                const results = await Promise.all(
+                    selectedDeleteData.map(async (item: any) => {
+                        const res = await deleteBrand(item, token);
+                        return { id: item, response: res };
+                    })
+                );
+                return results;
+            };
+
+            const res = await deleteSelectedData();
+
+            if (res.length > 0) {
+                setDeleteResults(res);
+            }
+
+            console.log(res)
+
+            if (res?.some((res: any) => res?.response?.message === 'Brand berhasil dihapus')) {
+                console.log('res masuk true')
+                setSelectedDeleteData([]);
+                console.log(deleteResults)
+                setSuccess(true);
+                fetch();
+            } else if (res?.some((res: any) => res?.response?.message === 'Brand tidak dapat dihapus karena masih memiliki barang.')) {
+                console.log('res masuk false')
+                setSelectedDeleteData([]);
+                console.log(deleteResults)
+                setFailed(true);
             }
         }
     };
@@ -107,20 +110,20 @@ const Tab1: React.FC = () => {
             const endPage = Math.min(meta.last_page, startPage + 4);
             return page >= startPage && page <= endPage;
         });
+
     return (
         <IonContent fullscreen={false}>
             <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col'>
                 <header className='mb-6'>
-                    <h1 className='text-2xl font-extrabold text-[#280822]'>List Brand</h1>
+                    <h1 className='text-2xl font-extrabold text-[#280822]'>Daftar Merek</h1>
                 </header>
                 <div className='w-full py-2 px-5 rounded-md flex flex-row justify-between items-center bg-zinc-100'>
                     <input
                         className="bg-zinc-100 border-0 outline-0 w-full"
-                        placeholder="Search"
-                        type="Search"
+                        placeholder="Cari berdasarkan nama"
+                        type="text"
                         value={search}
-                        name="saerch"
-                        // icons={<AiOutlineSearch className='w-5 h-5 text-[#280822]' />}
+                        name="search"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                     />
                     <AiOutlineSearch className='w-5 h-5 text-[#280822] cursor-pointer' />
@@ -240,4 +243,4 @@ const Tab1: React.FC = () => {
     );
 };
 
-export default Tab1;
+export default Brand;

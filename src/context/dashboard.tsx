@@ -6,14 +6,14 @@ type DashboardState = {
     isLoading: boolean;
     error: string | null;
     fetchData: (token: string | null, filter: string) => Promise<void>;
-    fetchDashbord: (token: string | null, filter: string) => Promise<void>;
+    fetchDashboard: (token: string | null, filter: string) => Promise<void>;
 };
 
 const useDashboardStore = create<DashboardState>((set) => ({
     data: {},
     isLoading: false,
     error: null,
-    fetchDashbord: async (token, filter = 'today') => {
+    fetchDashboard: async (token, filter = 'today') => {
         try {
             const params = new URLSearchParams({ filter: filter });
             const response = await fetch(`https://inventory-app.kaladwipa.com/dashboard?${params?.toString()}`, {

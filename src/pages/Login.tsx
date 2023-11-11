@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { IonContent, IonInput, IonButton, IonPage, IonRouterLink } from '@ionic/react';
 import { InputCustom } from '../components';
 import '../theme/pages/Login.css';
 import useAuth from '../context/auth';
 const LoginPage: React.FC = () => {
-    const { login, logout } = useAuth();
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const handleLogin = () => {
-        console.log(email, password);
-        login(email, password);
+
+    const handleLogin = async () => {
+        await login(email, password);
     };
 
     return (
         <IonContent fullscreen={false}>
             <div className='h-full w-full flex flex-col gap-10 justify-center items-center p-10'>
-                <div className='w-full md:w-1/4 h-full flex justify-end'>
+                <div className='w-48 md:w-1/4 h-1/2 flex justify-end'>
                     <img src="/images/logo.png" alt="logo" className='w-full h-full object-contain' />
                 </div>
                 <div className='h-full md:w-1/2 w-full flex flex-col justify-start items-center gap-8'>
                     <InputCustom
                         label="Email"
                         labelPlacement="floating"
-                        placeholder="Email"
+                        placeholder="Masukkan email"
                         type="text"
                         fill="outline"
                         value={email}
@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
                     <InputCustom
                         label="Password"
                         labelPlacement="floating"
-                        placeholder="Password"
+                        placeholder="Masukkan password"
                         fill="outline"
                         type="password"
                         value={password}

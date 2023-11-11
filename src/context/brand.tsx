@@ -6,6 +6,7 @@ type Brand = {
     created_at: string;
     updated_at: string;
 };
+
 type Meta = {
     total: number;
     per_page: number;

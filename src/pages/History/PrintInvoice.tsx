@@ -3,6 +3,8 @@ import jsPDF from 'jspdf';
 import React, { useRef } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import ReactToPrint from 'react-to-print';
+import { formatRupiah } from "../../../utils";
+
 interface InvoiceProps {
     invoiceNumber: string;
     date: string;
@@ -11,7 +13,7 @@ interface InvoiceProps {
         quantity: number;
         price: number;
     }[];
-    total: number;
+    total: string;
     setPrint: any;
     paymentMethod: string;
 }
@@ -38,7 +40,9 @@ const PrintInvoice = ({ invoiceNumber, date, items, total, setPrint, paymentMeth
             pdf.save(`invoice-${invoiceNumber}.pdf`);
         });
     };
+
     console.log('print invoice', invoiceNumber, date, items, total, paymentMethod)
+
     return (
         <div className='pt-10 md:px-10 px-5'>
             <div onClick={() => setPrint(false)} className="w-full text-black flex flex-row gap-1 items-center">
@@ -68,7 +72,7 @@ const PrintInvoice = ({ invoiceNumber, date, items, total, setPrint, paymentMeth
                                 <td style={{ border: '1px solid black', textAlign: 'center' }}>{item.qty}</td>
                                 <td style={{ border: '1px solid black', textAlign: 'center' }}>{item?.item?.brand}</td>
                                 <td style={{ border: '1px solid black', textAlign: 'center' }}>
-                                    {item?.item?.price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}
+                                    {formatRupiah(item?.item?.price)}
                                 </td>
                             </tr>
                         ))}

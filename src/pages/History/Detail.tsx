@@ -3,7 +3,7 @@ import { IoIosArrowBack } from 'react-icons/io'
 import useTransactionStore from "../../context/transaksi";
 import { useParams } from "react-router";
 import { useEffect, useRef, useState } from "react";
-import { BiUpArrowAlt } from "react-icons/bi";
+import { BiDownload, BiPrinter, BiUpArrowAlt } from "react-icons/bi";
 import { BsBoxArrowInDown, BsBoxArrowInUp } from "react-icons/bs";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import useAuth from "../../context/auth";
@@ -11,6 +11,7 @@ import { PrintableContent } from "../../components";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import PrintInvoice from "./PrintInvoice";
+import { formatRupiah } from "../../../utils";
 const DetailStok = () => {
     const { id } = useParams<{ id: string }>();
     const { fetchTransactions, transactions, transactionDetails, setSelectedItem } = useTransactionStore();
@@ -49,7 +50,7 @@ const DetailStok = () => {
                         invoiceNumber={generateInvoiceNumber(parseInt(id))}
                         date={item?.created_at}
                         items={item?.details}
-                        total={item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}
+                        total={formatRupiah(item?.total_price)}
                         setPrint={setPrint}
                         paymentMethod={formattedPaymentMethod}
                     />
@@ -79,7 +80,10 @@ const DetailStok = () => {
                                 }
                             </div>
                             <h1 className='text-2xl font-extrabold text-[#280822]'>Detail Transaksi</h1>
-                            <button onClick={() => setPrint(!print)} className='text-2xl font-extrabold text-[#280822]'>Download Invoice</button>
+                            <button onClick={() => setPrint(!print)} className='bg-[#280822] text-white rounded-xl py-2 px-4 mt-4 flex'>
+                                <BiDownload className="w-5 h-5 mr-2" />
+                                <span>Invoice</span>
+                            </button>
                         </header>
                         <div className="w-full h-[200vh] flex flex-col gap-3 rounded-t-[4rem] shadow-2xl pt-10 md:px-10 px-5 ">
                             <dl className="grid grid-cols-3">
@@ -93,7 +97,7 @@ const DetailStok = () => {
 
                                 <dt className="col-span-full font-bold">Total</dt>
                                 <dd className="col-span-full">
-                                    {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}
+                                    {formatRupiah(item?.total_price)}
                                 </dd>
 
                                 <dt className="col-span-full font-bold">Catatan</dt>
@@ -120,11 +124,11 @@ const DetailStok = () => {
                                                         <div className="flex flex-col justify-between items-start gap-2 w-full">
                                                             <p className="text-black font-thin text-xs">{item?.item?.code}</p>
                                                             <p className="text-black font-bold text-sm">{item?.item?.name}</p>
-                                                            <div className="flex flex-row justify-start items-start gap-2">
-                                                                <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">{item?.item?.item_type}</p>
-                                                                <p className="text-gray-500/80 font-normal text-xs">{item?.item?.brand}</p>
+                                                            <div className="flex flex-row justify-start items-center gap-2">
+                                                                <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-2">{item?.item?.item_type}</p>
+                                                                <p className="text-gray-500/80 font-normal text-xs mt-0">{item?.item?.brand}</p>
                                                             </div>
-                                                            <p className="text-gray-500/80 font-normal text-xs">{Math.abs(item?.qty)} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
+                                                            <p className="text-gray-500/80 font-normal text-xs">{formatRupiah(item?.item?.price)} × {Math.abs(item?.qty)} = {formatRupiah(item?.total_price)}</p>
                                                         </div>
                                                         <div className="flex flex-col items-end justify-center gap-0.5">
                                                             <p className="whitespace-nowrap">Stock In</p>
@@ -140,10 +144,10 @@ const DetailStok = () => {
                                                             <p className="text-black font-thin text-xs">{item?.item?.code}</p>
                                                             <p className="text-black font-bold text-sm">{item?.item?.name}</p>
                                                             <div className="flex flex-row justify-start items-start gap-2">
-                                                                <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-1">{item?.item?.item_type}</p>
-                                                                <p className="text-gray-500/80 font-normal text-xs">{item?.item?.brand}</p>
+                                                                <p className="text-gray-500/80 font-normal text-xs border-r-2 border-gray-500/80 pr-2">{item?.item?.item_type}</p>
+                                                                <p className="text-gray-500/80 font-normal text-xs mt-0">{item?.item?.brand}</p>
                                                             </div>
-                                                            <p className="text-gray-500/80 font-normal text-xs">{Math.abs(item?.qty)} x {item?.item?.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)} = {item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}</p>
+                                                            <p className="text-gray-500/80 font-normal text-xs">{formatRupiah(item?.item?.price)} × {Math.abs(item?.qty)} = {formatRupiah(item?.total_price)}</p>
                                                         </div>
                                                         <div className="flex flex-col items-end justify-center gap-0.5">
                                                             <p className="whitespace-nowrap">Stock Out</p>

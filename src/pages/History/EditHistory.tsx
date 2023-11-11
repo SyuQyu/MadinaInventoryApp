@@ -1,6 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonRouterLink, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import { CustomFilter, CustomSelect, ExploreContainer, InputCustom, ListItemBox } from '../../components';
-import '../../theme/pages/Tab1.css';
+import '../../theme/pages/styles.css';
 import { useEffect, useState } from 'react';
 import { AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
 import { PiTrashSimpleLight } from 'react-icons/pi'
@@ -139,7 +139,7 @@ const EditHistory: React.FC = () => {
         isOpen={success}
         position="top"
         onDidDismiss={() => setSuccess(false)}
-        message="Transaksi berhasil diupdate"
+        message="Transaction berhasil diupdate"
         duration={5000}
         color="success"
       />

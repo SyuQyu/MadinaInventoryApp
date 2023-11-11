@@ -19,6 +19,7 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
         brand: false,
         type: false
     });
+
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsChecked(e.target.checked);
         if (e.target.id === "brand-checkbox") {
@@ -34,6 +35,7 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
         selectedBrand(parseInt(e.target.value));
         console.log(e.target.value);
     }
+
     const selectedItemsChecbox = async (e: React.ChangeEvent<HTMLInputElement>) => {
         selectedType(parseInt(e.target.value));
         console.log(e.target.value);
@@ -172,7 +174,6 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                     </>
                 )
             }
-
         </div>
     )
 }

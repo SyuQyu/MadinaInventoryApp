@@ -6,7 +6,7 @@ import ListItemBox from './ListItemBox/ListItemBox'
 import CustomSelect from './CustomSelect/CustomSelect'
 import CustomSort from './CustomSort/CustomSort'
 import CreateableCustomSelect from './CreateableCustomSelect/CreateableCustomSelect'
-import CustomBasicSelect from './CustomBasicSelect/CUstomBasicSelect'
+import CustomBasicSelect from './CustomBasicSelect/CustomBasicSelect'
 import CustomFilter from './CustomFilter/CustomFilter'
 import PrintableContent from './PrintableContent/PrintableContent'
 export {

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { CreateableCustomSelect, InputCustom } from "../../components";
+import React, { useState } from "react";
+import { InputCustom } from "../../components";
 import { IonContent, IonRouterLink, IonToast } from "@ionic/react";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 import useAuth from "../../context/auth";
 import useBrandStore from "../../context/brand";
+
 interface Stock {
     name: string;
 }
@@ -13,8 +14,7 @@ interface Option {
     readonly value: number;
 }
 
-
-const AddItem = () => {
+const AddBrand = () => {
     const { isLoggedIn, token } = useAuth();
     const { addBrand } = useBrandStore();
     const [success, setSuccess] = useState(false);
@@ -57,6 +57,7 @@ const AddItem = () => {
             );
             return created;
         });
+
         if (data) {
             setSuccess(true);
         }
@@ -115,4 +116,4 @@ const AddItem = () => {
     );
 };
 
-export default AddItem;
+export default AddBrand;

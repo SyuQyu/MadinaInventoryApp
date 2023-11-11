@@ -1,15 +1,12 @@
-import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
 import Home from '../pages/Home';
-import Login from '../pages/Login';
-import Stok from '../pages/Stok/Stok';
-import DetailStok from '../pages/Stok/Detail';
-import UpdateItem from '../pages/Stok/UpdateItem';
-import Transaksi from '../pages/transaksi/Transaksi';
+import Stok from '../pages/Stock/Stock';
+import DetailStok from '../pages/Stock/Detail';
+import UpdateItem from '../pages/Stock/UpdateItem';
+import Transaction from '../pages/Transaction/Transaction';
 import History from '../pages/History/History';
 import DetailHistory from '../pages/History/Detail';
-import AddItem from '../pages/Stok/AddItem';
-import ListItem from '../pages/transaksi/ListItem';
+import AddItem from '../pages/Stock/AddItem';
+import ListItem from '../pages/Transaction/ListItem';
 import ListItemHistory from '../pages/History/ListItem';
 import EditHistory from '../pages/History/EditHistory';
 import Settings from '../pages/Settings';
@@ -79,7 +76,7 @@ export const routesAdmin = [
     {
         path: '/transaksi',
         exact: true,
-        component: Transaksi
+        component: Transaction
     },
     {
         path: '/transaksi/list-item',
@@ -106,6 +103,7 @@ export const routesAdmin = [
         component: ListItemHistory
     },
 ];
+
 export const routesStaff = [
     {
         path: '/home',
@@ -142,7 +140,7 @@ export const routesStaff = [
     {
         path: '/transaksi',
         exact: true,
-        component: Transaksi
+        component: Transaction
     },
     {
         path: '/transaksi/list-item',

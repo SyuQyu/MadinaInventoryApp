@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CreateableCustomSelect, InputCustom } from "../../components";
 import { IonContent, IonRouterLink, IonToast } from "@ionic/react";
-import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 import useAuth from "../../context/auth";
 import useItem from "../../context/item";
 import useBrand from "../../context/brand";
@@ -57,6 +56,7 @@ const UpdateStok = () => {
             [name]: value,
         });
     };
+
     const handleInputChangeSelect = (name: any, value: any, index: any) => {
         setStock({
             ...stock,
@@ -66,7 +66,6 @@ const UpdateStok = () => {
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        console.log(stock);
         const updated: any = updateItem(parseInt(id), {
             code: stock.code === "" ? data?.code : stock.code,
             name: stock.name === "" ? data?.name : stock.name,
@@ -94,12 +93,11 @@ const UpdateStok = () => {
         return <div>Loading...</div>;
     }
 
-
     return (
         <IonContent fullscreen={false} className="pb-10">
             <div className='md:px-10 md:py-10 px-2 py-5 h-full flex flex-col gap-4 w-full'>
                 <header className='mb-2'>
-                    <h1 className='text-2xl font-extrabold text-[#280822]'>Update</h1>
+                    <h1 className='text-2xl font-extrabold text-[#280822]'>Update Barang</h1>
                 </header>
                 <div className="flex flex-col gap-4">
                     <InputCustom
@@ -115,7 +113,7 @@ const UpdateStok = () => {
                     <InputCustom
                         label="Kode"
                         labelPlacement="floating"
-                        placeholder="Kode"
+                        placeholder="Ex: BRG-001"
                         type="text"
                         fill="outline"
                         name="code"
@@ -125,7 +123,7 @@ const UpdateStok = () => {
                     <InputCustom
                         label="Nama"
                         labelPlacement="floating"
-                        placeholder="Nama"
+                        placeholder="Masukkan nama"
                         type="text"
                         fill="outline"
                         name="name"
@@ -135,7 +133,7 @@ const UpdateStok = () => {
                     <InputCustom
                         label="Harga"
                         labelPlacement="floating"
-                        placeholder="Harga"
+                        placeholder="Masukkan harga"
                         type="number"
                         fill="outline"
                         name="price"
@@ -145,7 +143,7 @@ const UpdateStok = () => {
                     <InputCustom
                         label="Stok"
                         labelPlacement="floating"
-                        placeholder="Stok"
+                        placeholder="Masukkan stok"
                         type="number"
                         fill="outline"
                         name="stock"
@@ -155,7 +153,7 @@ const UpdateStok = () => {
                     <InputCustom
                         label="Stok Minimum"
                         labelPlacement="floating"
-                        placeholder="Stok Minimum"
+                        placeholder="Masukkan stok minimum"
                         type="number"
                         fill="outline"
                         name="stock_min"
@@ -165,23 +163,13 @@ const UpdateStok = () => {
                     <InputCustom
                         label="Ukuran"
                         labelPlacement="floating"
-                        placeholder="Ukuran"
+                        placeholder="Ex: 8mm x 12mm"
                         type="text"
                         fill="outline"
                         name="ukuran"
                         value={stock.ukuran === "" ? data?.size : stock.ukuran}
                         onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                     />
-                    {/* <InputCustom
-                            label="ID Brand"
-                            labelPlacement="floating"
-                            placeholder="ID Brand"
-                            type="number"
-                            fill="outline"
-                            name="brand_id"
-                            value={stock.brand_id}
-                            onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
-                        /> */}
                     <CreateableCustomSelect
                         name={"brand_id"}
                         label="Pilih Merek"
@@ -213,18 +201,18 @@ const UpdateStok = () => {
                         /> */}
                     <CreateableCustomSelect
                         name={"item_type_id"}
-                        label="Pilih Tipe Item"
+                        label="Pilih Tipe Barang"
                         data={itemTypes}
                         value={stock.item_type_id === 0 ? data?.item_type_id : stock.item_type_id}
                         onChange={handleInputChangeSelect}
                         index={1}
                         apiCall={addItemType}
-                        placeHolder="Pilih Item Type" />
+                        placeHolder="Pilih Tipe Barang" />
                     <InputCustom
                         label="Deskripsi"
                         labelPlacement="floating"
-                        placeholder="Deskripsi"
-                        type="text"
+                        placeholder="Masukkan deskripsi"
+                        type="textarea"
                         fill="outline"
                         name="description"
                         value={stock.description === "" ? data?.description : stock.description}
@@ -233,10 +221,10 @@ const UpdateStok = () => {
                 </div>
                 <div className="flex flex-row justify-between items-center gap-4">
                     <IonRouterLink routerLink="/stok" className="text-white text-center bg-red-500 rounded-lg w-1/2 md:w-1/2 py-2 px-10">
-                        Cancel
+                        Batal
                     </IonRouterLink>
                     <button onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSubmit(e)} className='text-white bg-green-500 rounded-lg  w-1/2 md:w-1/2 py-2 px-10'>
-                        Save
+                        Simpan
                     </button>
                 </div>
                 <div className="md:h-[20px] h-[5px] text-[1px] text-white">

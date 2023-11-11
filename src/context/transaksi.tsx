@@ -58,9 +58,7 @@ type Meta = {
 type selectedItems = {
     id: number;
     qty: number;
-
 }
-
 
 const useTransactionStore = create<TransactionStore>((set, get) => ({
     transactions: [],
@@ -107,10 +105,14 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             }
         });
     },
-
     getSelectedItemById: (id: number) => {
         const selectedItem = get().selectedItems.find((item) => item.id === id);
-        return selectedItem || null;
+        if (selectedItem) {
+            return selectedItem;
+        } else {
+            // Jika item tidak ditemukan, buat item baru dengan qty default
+            return { id: id, qty: 0 };
+        }
     },
     deleteSelectedItem: (id: number) => {
         set((state) => {

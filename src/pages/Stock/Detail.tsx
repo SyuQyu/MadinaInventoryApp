@@ -8,6 +8,7 @@ const DetailStok = () => {
     const { getItemById } = useItemStore();
 
     const item = getItemById(parseInt(id));
+
     return (
         <IonContent fullscreen={false}>
             <div className='w-full h-full flex flex-col'>
