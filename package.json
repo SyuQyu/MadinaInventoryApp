@@ -33,6 +33,7 @@
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-select": "^5.7.7",
+    "react-to-print": "^2.14.15",
     "zustand": "^4.4.4"
   },
   "devDependencies": {

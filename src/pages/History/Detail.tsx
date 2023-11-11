@@ -10,6 +10,7 @@ import useAuth from "../../context/auth";
 import { PrintableContent } from "../../components";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import PrintInvoice from "./PrintInvoice";
 const DetailStok = () => {
     const { id } = useParams<{ id: string }>();
     const { fetchTransactions, transactions, transactionDetails, setSelectedItem } = useTransactionStore();
@@ -25,46 +26,35 @@ const DetailStok = () => {
     const reInsertSelectedItem = () => {
         item?.details.map((item: any) => setSelectedItem({ id: item.item_id, qty: item.qty }))
     }
-    const printRef = useRef<HTMLDivElement>(null);
-    const downloadPDF = () => {
-        const pdf = new jsPDF('p', 'mm', 'a4', true);
 
-        // Use html2canvas to capture the entire document
-        html2canvas(document.body).then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-            const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+    const generateInvoiceNumber = (id: number) => {
+        const currentDate = new Date();
+        const year = String(currentDate.getFullYear()).slice(-2); // get last 2 digits of year
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}${month}${day}`;
 
-            // Calculate the number of pages needed
-            const numPages = Math.ceil(imgHeight / pdfHeight);
+        // Assuming that the ID is a number, you can format it as needed
+        const formattedId = String(id).padStart(4, '0');
 
-            // Loop through each page and add it to the PDF
-            for (let i = 0; i < numPages; i++) {
-                const imgX = (pdfWidth - imgWidth * ratio) / 2;
-                const imgY = i * pdfHeight;
-                pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-
-                // Add a new page if there are more pages to capture
-                if (i < numPages - 1) {
-                    pdf.addPage();
-                }
-            }
-
-            // Save the PDF with a unique name
-            pdf.save(`invoice-${id}.pdf`);
-        });
+        const invoiceNumber = `${formattedDate}${formattedId}`;
+        return invoiceNumber;
     };
 
     return (
         <IonContent fullscreen={false} >
             {
                 print ? (
-                    <PrintableContent item={item} id={id} formattedPaymentMethod={formattedPaymentMethod} />
+                    <PrintInvoice
+                        invoiceNumber={generateInvoiceNumber(parseInt(id))}
+                        date={item?.created_at}
+                        items={item?.details}
+                        total={item?.total_price?.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).slice(0, -3)}
+                        setPrint={setPrint}
+                        paymentMethod={formattedPaymentMethod}
+                    />
                 ) : (
-                    <div className='w-full h-full flex flex-col' ref={printRef}>
+                    <div className='w-full h-full flex flex-col' id="printable">
                         <header className='md:px-10 md:py-10 px-2 py-5 flex flex-col w-full justify-between items-start gap-2'>
                             <div className="flex flex-row justify-between items-center w-full">
                                 <IonRouterLink routerLink={`/history`} className="w-full text-black">
@@ -89,7 +79,7 @@ const DetailStok = () => {
                                 }
                             </div>
                             <h1 className='text-2xl font-extrabold text-[#280822]'>Detail Transaksi</h1>
-                            <button onClick={downloadPDF} className='text-2xl font-extrabold text-[#280822]'>Download Invoice</button>
+                            <button onClick={() => setPrint(!print)} className='text-2xl font-extrabold text-[#280822]'>Download Invoice</button>
                         </header>
                         <div className="w-full h-[200vh] flex flex-col gap-3 rounded-t-[4rem] shadow-2xl pt-10 md:px-10 px-5 ">
                             <dl className="grid grid-cols-3">
