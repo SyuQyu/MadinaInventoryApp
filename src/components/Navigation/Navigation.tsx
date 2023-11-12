@@ -11,7 +11,7 @@ function Tabs() {
 
     return (
         <>
-            <ul className="flex text-sm font-medium text-center text-gray-500 shadow h-full p-2 md:p-5 bg-[#280822]">
+            <ul className="flex text-sm font-medium text-center text-gray-500 shadow h-full p-2 md:p-5 bg-[#280822]" style={{marginBottom: 0}}>
                 <li className="w-full h-full">
                     <IonRouterLink router-direction={'forward'} onClick={() => deleteAllSelectedItems()} routerLink="/home" className='flex flex-col gap-10 justify-between items-center' style={{ color: 'white' }}>
                         <HiOutlineHome className='w-full h-5 sm:h-6 md:h-8 mb-2' />

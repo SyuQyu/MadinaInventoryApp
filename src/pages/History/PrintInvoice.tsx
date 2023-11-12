@@ -98,10 +98,10 @@ const PrintInvoice = ({ invoiceNumber, date, items, total, setPrint, paymentMeth
                 </div>
             </div>
             <div className='md:w-1/2 w-full m-auto py-4 flex flex-col gap-4 px-2'>
-                {/* <button onClick={downloadPDF} className='bg-[#280822] rounded-lg w-full py-2 px-10 text-white'>
+                <button onClick={downloadPDF} className='bg-[#280822] rounded-lg w-full py-2 px-10 text-white'>
                     Print
-                </button> */}
-                <ReactToPrint
+                </button>
+                {/* <ReactToPrint
                     trigger={() => {
                         // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
                         // to the root node of the returned component as it will be overwritten.
@@ -111,7 +111,7 @@ const PrintInvoice = ({ invoiceNumber, date, items, total, setPrint, paymentMeth
                             </button>)
                     }}
                     content={() => printRef.current}
-                />
+                /> */}
             </div>
         </div>
     );
