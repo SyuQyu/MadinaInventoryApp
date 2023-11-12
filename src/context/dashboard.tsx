@@ -1,5 +1,5 @@
-
 import { create } from 'zustand';
+import fetchAPI from "../fetch";
 
 type DashboardState = {
     data: any;
@@ -16,7 +16,7 @@ const useDashboardStore = create<DashboardState>((set) => ({
     fetchDashboard: async (token, filter = 'today') => {
         try {
             const params = new URLSearchParams({ filter: filter });
-            const response = await fetch(`https://inventory-app.kaladwipa.com/dashboard?${params?.toString()}`, {
+            const response = await fetchAPI(`/dashboard?${params?.toString()}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -31,7 +31,7 @@ const useDashboardStore = create<DashboardState>((set) => ({
         set({ isLoading: true });
         try {
             const params = new URLSearchParams({ filter: filter });
-            const response = await fetch(`https://inventory-app.kaladwipa.com/dashboard?${params?.toString()}`, {
+            const response = await fetchAPI(`/dashboard?${params?.toString()}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

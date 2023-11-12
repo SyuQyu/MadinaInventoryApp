@@ -1,29 +1,14 @@
 import { create } from 'zustand';
+import fetchAPI from "../fetch";
+import { Item } from "./item";
 
-type Transaction = {
-    id: number;
+export type Transaction = {
+    id?: number;
     items: selectedItems[];
     payment_method: string;
-    note: string;
-    created_at: string;
-    updated_at: string;
-};
-
-type Item = {
-    id: number;
-    code: string;
-    name: string;
-    description: string | null;
-    price: number;
-    stock: number;
-    size: string | null;
-    stock_min: number;
-    item_type_id: number;
-    brand_id: number;
-    item_type: any;
-    brand: any;
-    created_at: string;
-    updated_at: string;
+    note?: string;
+    created_at?: string;
+    updated_at?: string;
 };
 
 type TransactionStore = {
@@ -35,7 +20,7 @@ type TransactionStore = {
     setSelectedItem: (item: selectedItems) => void;
     getSelectedItemById: (id: number) => selectedItems | null;
     deleteSelectedItem: (id: number) => void;
-    addTransaction: (transaction: any, token: string | null) => void;
+    addTransaction: (transaction: any, token: string | null) => any;
     updateTransaction: (id: number, transaction: any, token: string | null) => void;
     deleteTransaction: (id: number, token: string | null) => void;
     fetchTransactions: (token: string | null) => Promise<any>;
@@ -91,6 +76,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             updated_at: '',
         }
     ],
+    errors: [],
     selectedItems: [],
     setSelectedItem: (item) => {
         console.log(item, get().selectedItems);
@@ -123,10 +109,10 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
     deleteAllSelectedItems: () => {
         set({ selectedItems: [] });
     },
-    addTransaction: async (transaction, token) => {
+    addTransaction: async (transaction: Transaction, token) => {
         try {
             console.log(transaction, 'transaction')
-            const response = await fetch('https://inventory-app.kaladwipa.com/transactions', {
+            const response = await fetchAPI('/transactions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -145,7 +131,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
     updateTransaction: async (id, transaction, token) => {
         console.log(id, transaction, token, 'update')
         try {
-            const response = await fetch(`https://inventory-app.kaladwipa.com/transactions/${id}`, {
+            const response = await fetchAPI(`/transactions/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -170,16 +156,19 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
     },
     deleteTransaction: async (id, token) => {
         try {
-            const res = await fetch(`https://inventory-app.kaladwipa.com/transactions/${id}`, {
+            const res = await fetchAPI(`/transactions/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
             console.log(await res.json(), 'delete')
+
             set((state) => ({
                 transactions: state.transactions.filter((t: any) => t.id !== id),
             }));
+
             return true;
         } catch (error) {
             console.error('Error deleting transaction:', error);
@@ -187,20 +176,21 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
     },
     fetchTransactions: async (token) => {
         try {
-            const response = await fetch('https://inventory-app.kaladwipa.com/transactions', {
+            const response = await fetchAPI('/transactions', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
             const data = await response.json();
             const itemsData = await Promise.all(data?.data?.map(async (item: any) => {
                 const details = await Promise.all(item.details.map(async (detail: any) => {
-                    const itemResponse = await fetch(`https://inventory-app.kaladwipa.com/items/${detail.item_id}`);
+                    const itemResponse = await fetchAPI(`/items/${detail.item_id}`);
                     const itemData = await itemResponse.json();
-                    const brandResponse = await fetch(`https://inventory-app.kaladwipa.com/brands/${itemData.brand_id}`);
+                    const brandResponse = await fetchAPI(`/brands/${itemData.brand_id}`);
                     const brandData = await brandResponse.json();
-                    const itemTypeIdResponse = await fetch(`https://inventory-app.kaladwipa.com/item-types/${itemData.item_type_id}`);
+                    const itemTypeIdResponse = await fetchAPI(`/item-types/${itemData.item_type_id}`);
                     const itemTypeIdData = await itemTypeIdResponse.json();
                     return {
                         ...detail,
@@ -209,17 +199,18 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
                             brand: brandData.name,
                             item_type: itemTypeIdData.name,
                         },
-                        // created_at: new Date(item.created_at).toLocaleDateString(),
-                        // updated_at: new Date(item.updated_at).toLocaleDateString(),
                     };
                 }));
-                const userResponse = await fetch(`https://inventory-app.kaladwipa.com/users/${item.user_id}`, {
+
+                const userResponse = await fetchAPI(`/users/${item.user_id}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+
                 const userData = await userResponse.json();
+
                 return {
                     ...item,
                     user_name: userData.name,
@@ -228,6 +219,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
                     updated_at: new Date(item.updated_at).toLocaleDateString(),
                 };
             }));
+
             console.log(itemsData);
             set({ transactions: itemsData, meta: data.meta });
             return true;
@@ -239,41 +231,48 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
         console.log({ page, limit, payment, user, type, sort, token }, 'params')
         try {
 
-            let url = `https://inventory-app.kaladwipa.com/transactions`;
+            let url = `/transactions`;
+
             if (page) {
                 url += `?page=${page}`;
             }
+
             if (limit) {
                 url += `${page ? '&' : '?'}limit=${limit}`;
             }
+
             if (payment) {
                 url += `${page || limit ? '&' : '?'}payment=${payment}`;
             }
+
             if (user) {
                 url += `${page || limit || payment ? '&' : '?'}user=${user}`;
             }
+
             if (type) {
                 url += `${page || limit || payment || user ? '&' : '?'}type=${type}`;
             }
+
             if (sort) {
                 url += `${page || limit || payment || user || type ? '&' : '?'}sort=${sort}`;
             }
-            
-            const response = await fetch(url, {
+
+            const response = await fetchAPI(url, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
             const data = await response.json();
             console.log(data, url, 'data');
             const itemsData = await Promise.all(data?.data?.map(async (item: any) => {
                 const details = await Promise.all(item.details.map(async (detail: any) => {
-                    const itemResponse = await fetch(`https://inventory-app.kaladwipa.com/items/${detail.item_id}`);
+                    const itemResponse = await fetchAPI(`/items/${detail.item_id}`);
                     const itemData = await itemResponse.json();
-                    const brandResponse = await fetch(`https://inventory-app.kaladwipa.com/brands/${itemData.brand_id}`);
+                    const brandResponse = await fetchAPI(`/brands/${itemData.brand_id}`);
                     const brandData = await brandResponse.json();
-                    const itemTypeIdResponse = await fetch(`https://inventory-app.kaladwipa.com/item-types/${itemData.item_type_id}`);
+                    const itemTypeIdResponse = await fetchAPI(`/item-types/${itemData.item_type_id}`);
                     const itemTypeIdData = await itemTypeIdResponse.json();
                     return {
                         ...detail,
@@ -282,17 +281,18 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
                             brand: brandData.name,
                             item_type: itemTypeIdData.name,
                         },
-                        // created_at: new Date(item.created_at).toLocaleDateString(),
-                        // updated_at: new Date(item.updated_at).toLocaleDateString(),
                     };
                 }));
-                const userResponse = await fetch(`https://inventory-app.kaladwipa.com/users/${item.user_id}`, {
+
+                const userResponse = await fetchAPI(`/users/${item.user_id}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+
                 const userData = await userResponse.json();
+
                 return {
                     ...item,
                     user_name: userData.name,

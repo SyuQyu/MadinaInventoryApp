@@ -16,7 +16,7 @@ const LoginPage: React.FC = () => {
         <IonContent fullscreen={false}>
             <div className='h-full w-full flex flex-col gap-10 justify-center items-center p-10'>
                 <div className='w-48 md:w-1/4 h-1/2 flex justify-end'>
-                    <img src="/images/logo.png" alt="logo" className='w-full h-full object-contain' />
+                    <img src="/images/logo.svg" alt="logo" className='w-full h-full object-contain' />
                 </div>
                 <div className='h-full md:w-1/2 w-full flex flex-col justify-start items-center gap-8'>
                     <InputCustom

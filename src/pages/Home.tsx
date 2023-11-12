@@ -6,7 +6,7 @@ import { PiHandCoinsDuotone } from 'react-icons/pi';
 import { ImStack } from 'react-icons/im';
 import useAuth from '../context/auth';
 import useDashboardStore from '../context/dashboard';
-import { formatRupiah } from "../../utils";
+import { formatNumber, formatRupiah } from "../../utils";
 
 const Home: React.FC = () => {
     const {token, dataUser} = useAuth();
@@ -67,7 +67,7 @@ const Home: React.FC = () => {
                 <div className='flex flex-col justify-between items-center gap-6 w-full mb-4'>
                     <div className='flex flex-wrap justify-between items-center w-full'>
                         <div className='w-1/4 md:w-[10%] h-full flex justify-end'>
-                            <img src="/images/logo.png" alt="logo" className='w-full h-full object-contain'/>
+                            <img src="/images/logo.svg" alt="logo" className='w-full h-full object-contain'/>
                         </div>
                         <div>
                             <p className='md:text-xl text-md font-semibold'>Selamat datang!</p>
@@ -94,7 +94,7 @@ const Home: React.FC = () => {
                     />
                     <CustomCard
                         logo={<PiHandCoinsDuotone className='w-6 h-6 md:h-8' style={{color: '#F64E60'}}/>}
-                        title='Sales'
+                        title='Penjualan'
                         subTitle='Transaction Penjualan'
                         time='30d'
                         percentage={formatRupiah(data?.total_sales)}
@@ -105,7 +105,7 @@ const Home: React.FC = () => {
                         title='Stok Barang'
                         subTitle='Stok Barang Yang Tersedia'
                         percentageColor='text-dark'
-                        percentage={data?.total_stock?.toString()}
+                        percentage={formatNumber(data?.total_stock)}
                     />
                     <CustomCard
                         logo={<MdOutlineSsidChart className='w-6 h-6 md:h-8' style={{color: '#FFA800'}}/>}

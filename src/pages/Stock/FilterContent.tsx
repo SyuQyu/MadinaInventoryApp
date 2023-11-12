@@ -6,7 +6,6 @@ import useItemStore from "../../context/item";
 import { useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import useItemTypeStore from "../../context/itemType";
-import { PiTrashSimpleLight } from "react-icons/pi";
 import useAuth from "../../context/auth";
 
 export default function FilterContent({ valueOpener, setValueOpener, handleChangeOpen = () => { } }: any) {
@@ -22,6 +21,7 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
         brand: false,
         type: false
     });
+
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsChecked(e.target.checked);
         if (e.target.id === "brand-checkbox") {
@@ -41,7 +41,8 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
             removeSelectedBrand(parseInt(value));
         }
     };
-    const selectedItemsChecbox = async (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const selectedItemsCheckbox = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = e.target;
         if (checked) {
             selectedType(parseInt(value));
@@ -60,6 +61,7 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
             setOpen({ ...open, type: true });
         }
     }
+
     const handleClose = (type: string) => {
         console.log(open.brand && brand, 'data handleopen')
         if (brand && type === "brand") {
@@ -100,6 +102,7 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
             await deleteItemType(id, token);
         }
     }
+
     return (
         <div>
             {
@@ -133,8 +136,7 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                                     placeholder="Search"
                                     type="Search Filter"
                                     value={searchBrand}
-                                    name="saerch"
-                                    // icons={<AiOutlineSearch className='w-5 h-5 text-[#280822]' />}
+                                    name="search"
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeSearchBrand(e)}
                                 />
                                 <AiOutlineSearch className='w-5 h-5 text-[#280822] cursor-pointer' />
@@ -148,7 +150,6 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                                                     <input id={`brand-${index}`} type="checkbox" value={brand.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedBrandChecbox} checked />
                                                     <p className="text-black">{brand.name}</p>
                                                 </div>
-                                                <PiTrashSimpleLight onClick={handleDelete('brand', brand.id)} className="w-5 h-5 cursor-pointer text-black float-right" />
                                             </div>
                                             :
                                             <div key={index} className="flex flex-row justify-between w-full items-start gap-2">
@@ -156,7 +157,6 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                                                     <input id={`brand-${index}`} type="checkbox" value={brand.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedBrandChecbox} />
                                                     <p className="text-black">{brand.name}</p>
                                                 </div>
-                                                <PiTrashSimpleLight onClick={handleDelete('brand', brand.id)} className="w-5 h-5 cursor-pointer text-black float-right" />
                                             </div>
                                     ))
                                 }
@@ -181,8 +181,7 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                                     placeholder="Search"
                                     type="Search Filter"
                                     value={searchType}
-                                    name="saerch"
-                                    // icons={<AiOutlineSearch className='w-5 h-5 text-[#280822]' />}
+                                    name="search"
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeSearchType(e)}
                                 />
                                 <AiOutlineSearch className='w-5 h-5 text-[#280822] cursor-pointer' />
@@ -193,18 +192,16 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                                         typeSelected.includes(itemType.id) ?
                                             <div key={index} className="flex flex-row justify-between w-full items-start gap-2">
                                                 <div className="flex flex-row justify-start items-center gap-2 w-full">
-                                                    <input id={`itemType-${index}`} type="checkbox" value={itemType.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedItemsChecbox} checked />
+                                                    <input id={`itemType-${index}`} type="checkbox" value={itemType.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedItemsCheckbox} checked />
                                                     <p className="text-black">{itemType.name}</p>
                                                 </div>
-                                                <PiTrashSimpleLight onClick={handleDelete('type', itemType.id)} className="w-5 h-5 cursor-pointer text-black float-right" />
                                             </div>
                                             :
                                             <div key={index} className="flex flex-row justify-between w-full items-start gap-2">
                                                 <div className="flex flex-row justify-start items-center gap-2 w-full">
-                                                    <input id={`itemType-${index}`} type="checkbox" value={itemType.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedItemsChecbox} />
+                                                    <input id={`itemType-${index}`} type="checkbox" value={itemType.id} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " onChange={selectedItemsCheckbox} />
                                                     <p className="text-black">{itemType.name}</p>
                                                 </div>
-                                                <PiTrashSimpleLight onClick={handleDelete('type', itemType.id)} className="w-5 h-5 cursor-pointer text-black float-right" />
                                             </div>
                                     ))
                                 }
@@ -230,7 +227,6 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                     </>
                 )
             }
-
         </div>
     )
 }

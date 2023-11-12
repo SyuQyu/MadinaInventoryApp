@@ -2,34 +2,21 @@ import React, { useEffect, useState } from "react";
 import { CreateableCustomSelect, InputCustom } from "../../components";
 import { IonContent, IonRouterLink, IonToast } from "@ionic/react";
 import useAuth from "../../context/auth";
-import useItem from "../../context/item";
+import useItem, { Item } from "../../context/item";
 import useBrand from "../../context/brand";
 import useItemType from "../../context/itemType";
 import { useParams } from "react-router";
 
-interface Stock {
-    code: string;
-    name: string;
-    description: string | null;
-    price: number;
-    stock: number;
-    stock_min: number;
-    item_type_id: number;
-    brand_id: number;
-    ukuran: string;
-    jenis_type_id: number;
-}
 const UpdateStok = () => {
-    const initialStock: any = {
+    const initialStock: Item = {
         code: "",
         name: "",
         price: 0,
-        ukuran: "",
+        size: "",
         stock: 0,
         stock_min: 0,
         brand_id: 0,
         item_type_id: 0,
-        jenis_type_id: 0,
         description: "",
     };
 
@@ -66,16 +53,15 @@ const UpdateStok = () => {
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        const updated: any = updateItem(parseInt(id), {
+        const updated: boolean = updateItem(parseInt(id), {
             code: stock.code === "" ? data?.code : stock.code,
             name: stock.name === "" ? data?.name : stock.name,
             price: stock.price === 0 ? data?.price : stock.price,
-            stok: stock.ukuran === "" ? data?.size : stock.ukuran,
+            size: stock.size === "" ? data?.size : stock.size,
             stock: stock.stock === 0 ? data?.stock : stock.stock,
             stock_min: stock.stock_min === 0 ? data?.stock_min : stock.stock_min,
-            brand_id: stock.brand_id === 0 ? data?.brand_id : stock.brand_id?.value,
-            item_type_id: stock.item_type_id === 0 ? data?.item_type_id : stock.item_type_id?.value,
-            jenis_type_id: stock.jenis_type_id === 0 ? data?.jenis_type_id : stock.jenis_type_id,
+            brand_id: stock.brand_id === 0 ? data?.brand_id : stock.brand_id,
+            item_type_id: stock.item_type_id === 0 ? data?.item_type_id : stock.item_type_id,
             description: stock.description === "" ? data?.description : stock.description,
         }, token);
 
@@ -86,7 +72,7 @@ const UpdateStok = () => {
 
     useEffect(() => {
         fetch();
-        console.log(itemTypes, brands);
+        console.log(data);
     }, []);
 
     if (loading) {
@@ -95,7 +81,7 @@ const UpdateStok = () => {
 
     return (
         <IonContent fullscreen={false} className="pb-10">
-            <div className='md:px-10 md:py-10 px-2 py-5 h-full flex flex-col gap-4 w-full'>
+            <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col gap-4'>
                 <header className='mb-2'>
                     <h1 className='text-2xl font-extrabold text-[#280822]'>Update Barang</h1>
                 </header>
@@ -167,7 +153,7 @@ const UpdateStok = () => {
                         type="text"
                         fill="outline"
                         name="ukuran"
-                        value={stock.ukuran === "" ? data?.size : stock.ukuran}
+                        value={stock.size === "" ? data?.size : stock.size}
                         onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                     />
                     <CreateableCustomSelect
@@ -179,26 +165,6 @@ const UpdateStok = () => {
                         index={1}
                         apiCall={addBrand}
                         placeHolder="Pilih Merek" />
-                    <InputCustom
-                        label="ID Jenis Barang"
-                        labelPlacement="floating"
-                        placeholder="ID Jenis Barang"
-                        type="number"
-                        fill="outline"
-                        name="jenis_type_id"
-                        value={stock.jenis_type_id === 0 ? data?.jenis_type_id : stock.jenis_type_id}
-                        onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
-                    />
-                    {/* <InputCustom
-                            label="ID Tipe Barang"
-                            labelPlacement="floating"
-                            placeholder="ID Tipe Barang"
-                            type="number"
-                            fill="outline"
-                            name="item_type_id"
-                            value={stock.item_type_id}
-                            onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
-                        /> */}
                     <CreateableCustomSelect
                         name={"item_type_id"}
                         label="Pilih Tipe Barang"
@@ -219,16 +185,13 @@ const UpdateStok = () => {
                         onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                     />
                 </div>
-                <div className="flex flex-row justify-between items-center gap-4">
+                <div className="flex flex-row justify-between items-center gap-4 pb-4">
                     <IonRouterLink routerLink="/stok" className="text-white text-center bg-red-500 rounded-lg w-1/2 md:w-1/2 py-2 px-10">
                         Batal
                     </IonRouterLink>
                     <button onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSubmit(e)} className='text-white bg-green-500 rounded-lg  w-1/2 md:w-1/2 py-2 px-10'>
                         Simpan
                     </button>
-                </div>
-                <div className="md:h-[20px] h-[5px] text-[1px] text-white">
-                    test
                 </div>
                 <IonToast
                     isOpen={success}

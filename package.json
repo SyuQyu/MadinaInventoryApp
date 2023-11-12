@@ -33,11 +33,12 @@
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-select": "^5.7.7",
-    "rsuite": "^5.43.0",
     "react-to-print": "^2.14.15",
+    "rsuite": "^5.43.0",
     "zustand": "^4.4.4"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.23.3",
     "@capacitor/cli": "5.5.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",

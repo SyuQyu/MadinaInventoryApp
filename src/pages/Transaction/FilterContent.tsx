@@ -100,7 +100,6 @@ export default function FilterContent({ valueOpener, setValueOpener, handleChang
                                     type="Search Filter"
                                     value={searchBrand}
                                     name="saerch"
-                                    // icons={<AiOutlineSearch className='w-5 h-5 text-[#280822]' />}
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeSearchBrand(e)}
                                 />
                                 <AiOutlineSearch className='w-5 h-5 text-[#280822] cursor-pointer' />

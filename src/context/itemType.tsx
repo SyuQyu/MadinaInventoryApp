@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import fetchAPI from "../fetch";
 
 type ItemType = {
     id: number;
@@ -33,7 +34,7 @@ const useItemTypeStore = create<ItemTypeStore>((set, get) => ({
     },
     addItemType: async (itemType, token) => {
         try {
-            const response = await fetch('https://inventory-app.kaladwipa.com/item-types', {
+            const response = await fetchAPI('/item-types', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,7 +53,7 @@ const useItemTypeStore = create<ItemTypeStore>((set, get) => ({
     },
     updateItemType: async (id, updatedItemType, token) => {
         try {
-            const response = await fetch(`https://inventory-app.kaladwipa.com/item-types/${id}`, {
+            const response = await fetchAPI(`/item-types/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,7 +80,7 @@ const useItemTypeStore = create<ItemTypeStore>((set, get) => ({
     },
     deleteItemType: async (id, token) => {
         try {
-            const res = await fetch(`https://inventory-app.kaladwipa.com/item-types/${id}`, {
+            const res = await fetchAPI(`/item-types/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -95,21 +96,25 @@ const useItemTypeStore = create<ItemTypeStore>((set, get) => ({
         }
     },
     fetchItemTypes: async () => {
-        const response = await fetch('https://inventory-app.kaladwipa.com/item-types');
+        const response = await fetchAPI('/item-types');
         const itemTypes = await response.json();
         set({ itemTypes });
         return true;
     },
     fetchItemTypesWithParams: async (page, limit) => {
         try {
-            let url = `https://inventory-app.kaladwipa.com/item-types`;
+            let url = `/item-types`;
+
             if (page) {
                 url += `?page=${page}`;
             }
+
             if (limit) {
                 url += `${page ? '&' : '?'}limit=${limit}`;
             }
+
             console.log(page, limit, 'params')
+
             const response = await fetch(url);
             const items = await response.json();
             set({ itemTypes: items.data, meta: items.meta });

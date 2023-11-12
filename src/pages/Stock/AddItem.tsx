@@ -7,6 +7,7 @@ import useItem from "../../context/item";
 import useAuth from "../../context/auth";
 import useBrand from "../../context/brand";
 import useItemType from "../../context/itemType";
+
 interface Stock {
     code: string;
     name: string;
@@ -28,11 +29,12 @@ interface Option {
 const AddItem = () => {
     const history = useHistory();
     const { createItem } = useItem();
-    const { isLoggedIn, token } = useAuth();
+    const { token } = useAuth();
     const { addBrand, brands, fetchBrands } = useBrand();
     const { addItemType, itemTypes, fetchItemTypes } = useItemType();
     const [success, setSuccess] = useState(false);
     const [valueBrands, setValueBrands] = useState();
+
     const initialStock: Stock = {
         code: "",
         name: "",
@@ -50,7 +52,7 @@ const AddItem = () => {
         code: "",
         name: "",
         price: 0,
-        ukuran: "",
+        size: "",
         stock: 0,
         stock_min: 0,
         brand_id: 0,
@@ -79,7 +81,7 @@ const AddItem = () => {
             code: "",
             name: "",
             price: 0,
-            ukuran: "",
+            size: "",
             stock: 0,
             stock_min: 0,
             brand_id: 0,
@@ -99,24 +101,22 @@ const AddItem = () => {
         e.preventDefault();
         console.log(stocks);
         const data = stocks?.map((stock: any) => {
-            const created = createItem(
+            return createItem(
                 {
                     code: stock.code,
                     name: stock.name,
                     price: stock.price,
-                    size: stock.ukuran,
+                    size: stock.size,
                     stock: stock.stock,
                     stock_min: stock.stock_min,
                     brand_id: stock.brand_id?.value,
                     item_type_id: stock.item_type_id?.value,
-                    jenis_type_id: stock.jenis_type_id,
                     description: stock.description,
                 },
                 token
             );
-
-            return created;
         });
+
         if (data) {
             setSuccess(true);
         }
@@ -210,19 +210,9 @@ const AddItem = () => {
                             type="text"
                             fill="outline"
                             name="ukuran"
-                            value={stock.ukuran}
+                            value={stock.size}
                             onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
                         />
-                        {/* <InputCustom
-                            label="ID Brand"
-                            labelPlacement="fixed"
-                            placeholder="ID Brand"
-                            type="number"
-                            fill="outline"
-                            name="brand_id"
-                            value={stock.brand_id}
-                            onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
-                        /> */}
                         <CreateableCustomSelect
                             label="Pilih Merek"
                             name={"brand_id"}
@@ -232,26 +222,6 @@ const AddItem = () => {
                             index={index}
                             apiCall={addBrand}
                             placeHolder="Pilih Merek" />
-                        <InputCustom
-                            label="ID Jenis Barang"
-                            labelPlacement="fixed"
-                            placeholder="ID Jenis Barang"
-                            type="number"
-                            fill="outline"
-                            name="jenis_type_id"
-                            value={stock.jenis_type_id}
-                            onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
-                        />
-                        {/* <InputCustom
-                            label="ID Tipe Barang"
-                            labelPlacement="fixed"
-                            placeholder="ID Tipe Barang"
-                            type="number"
-                            fill="outline"
-                            name="item_type_id"
-                            value={stock.item_type_id}
-                            onIonChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, index)}
-                        /> */}
                         <CreateableCustomSelect
                             label="Pilih Tipe Barang"
                             name={"item_type_id"}

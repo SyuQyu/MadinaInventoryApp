@@ -18,6 +18,7 @@ const CustomSelect = ({ options = [
     return (
         <>
             <select id={'sort'} onChange={onChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg text-center focus:outline-none block w-full p-1">
+                <BsSortUp className="w-5 h-5 mr-2" />
                 {
                     options?.map((item: any, index: any) => (
                         index === 0 ? (

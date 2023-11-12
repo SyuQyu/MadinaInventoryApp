@@ -20,16 +20,17 @@ const Brand: React.FC = () => {
     const [failed, setFailed] = useState(false);
     const [loading, setLoading] = useState(true);
     const onChangeShow = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log(event.target.value);
-        const parsing = parseInt(event.target.value);
+        const parsing = +event.target.value;
         setItemsPerPage(parsing);
         fetchBrandsWithParams(1, parsing);
     };
     const fetch = async () => {
         const res = await fetchBrands();
+
         if (brands.length > 0 || res) {
             setLoading(false);
         }
+
         return res;
     }
 
@@ -50,11 +51,13 @@ const Brand: React.FC = () => {
     const handleChangeDelete = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = e.target;
         setDeleteResults([]);
+
         if (checked) {
             setSelectedDeleteData((prevData: any) => [...prevData, value]);
         } else {
             setSelectedDeleteData((prevData: any) => prevData.filter((item: any) => item !== value));
         }
+
         console.log(selectedDeleteData);
     };
 
@@ -156,7 +159,7 @@ const Brand: React.FC = () => {
                         </div>
                         <div className='w-full flex flex-row justify-end items-center gap-2'>
                             {
-                                parseInt(dataUser?.role_id) === 1 ? (
+                                +dataUser?.role_id === 1 ? (
                                     <>
                                         <IonRouterLink routerLink={`brands/create`} className="text-black">
                                             <AiOutlinePlus className="w-5 h-5 text-black float-right" />
@@ -169,7 +172,7 @@ const Brand: React.FC = () => {
                     </div>
                     {
                         loading ? (
-                            <div className="ion-text-center h-screen">
+                            <div className="flex items-center text-center h-screen">
                                 <IonSpinner />
                             </div>
                         ) : (

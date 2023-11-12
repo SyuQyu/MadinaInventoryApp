@@ -1,14 +1,13 @@
 import { IonContent, IonSpinner, IonToast } from '@ionic/react';
 import { CustomSelect, ListItemBox } from '../../components';
 import '../../theme/pages/styles.css';
-import { useEffect, useState } from 'react';
-import { AiOutlineSearch } from 'react-icons/ai'
+import React, { useEffect, useState } from 'react';
 import { PiTrashSimpleLight } from 'react-icons/pi'
 import useItemStore from '../../context/item';
 import useTransactionStore from '../../context/transaksi';
-import React from 'react';
 import useAuth from '../../context/auth';
 import clsx from 'clsx';
+import { GoInbox } from "react-icons/go";
 
 const History: React.FC = () => {
     const {items, fetchItems, fetchItemsWithParams} = useItemStore();
@@ -62,8 +61,6 @@ const History: React.FC = () => {
         fetch();
     }, [fetchItems])
 
-    const filteredItems = transactions?.filter((item: any) => item?.note?.toLowerCase().includes(search.toLowerCase()));
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
         setSearch(value);
@@ -82,21 +79,21 @@ const History: React.FC = () => {
         });
 
     const handleOpenDeleteData = async () => {
-        setDeleteData(!deleteData)
+        setDeleteData(!deleteData);
         console.log(deleteData)
         if (selectedDeleteData.length > 0) {
             if (!deleteData) return;
 
             console.log('delete')
             const result = selectedDeleteData.map((item: any) => {
-                const res = deleteTransaction(item, token)
-                return res;
+                return deleteTransaction(item, token);
             })
 
-            await Promise.all(result)
+            await Promise.all(result);
+
             if (result) {
-                setSelectedDeleteData([])
-                setSuccess(true)
+                setSelectedDeleteData([]);
+                setSuccess(true);
                 fetch();
             }
         }
@@ -104,7 +101,7 @@ const History: React.FC = () => {
 
     const handleChangeDelete = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {value} = e.target;
-        setSelectedDeleteData([...selectedDeleteData, value])
+        setSelectedDeleteData([...selectedDeleteData, value]);
         console.log(selectedDeleteData);
     }
 
@@ -112,21 +109,10 @@ const History: React.FC = () => {
         <IonContent fullscreen={false}>
             <div className='md:px-10 md:py-10 px-2 py-5 w-full h-full flex flex-col'>
                 <header className='mb-6'>
-                    <h1 className='text-2xl font-extrabold text-[#280822]'>Histori Stok</h1>
+                    <h1 className='text-2xl font-bold text-[#280822]'>Histori Stok</h1>
                 </header>
-                <div className='w-full py-2 px-5 rounded-md flex flex-row justify-between items-center bg-[#EFEFEF]'>
-                    <input
-                        style={{backgroundColor: '#EFEFEF', border: 'none', outline: 'none', width: '100%'}}
-                        placeholder="Search"
-                        type="Search"
-                        value={search}
-                        name="saerch"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
-                    />
-                    <AiOutlineSearch className='w-5 h-5 text-[#280822] cursor-pointer'/>
-                </div>
 
-                <div className='w-full flex flex-row  gap-10 justify-between items-center mt-5'>
+                <div className='w-full flex flex-row gap-10 justify-between items-center'>
                     <CustomSelect onChange={onChangeSelectInOut} options={[
                         {
                             value: '',
@@ -145,7 +131,7 @@ const History: React.FC = () => {
                 </div>
                 <div className='w-full flex flex-row justify-end items-center mt-5 gap-2'>
                     {
-                        parseInt(dataUser?.role_id) === 1 ? (
+                        +dataUser?.role_id === 1 ? (
                             <PiTrashSimpleLight onClick={handleOpenDeleteData}
                                                 className="w-5 h-5 text-black float-right cursor-pointer"/>
                         ) : null
@@ -153,30 +139,38 @@ const History: React.FC = () => {
                 </div>
                 {
                     loading ? (
-                        <div className="ion-text-center h-screen">
+                        <div className="flex items-center justify-center h-screen">
                             <IonSpinner/>
                         </div>
                     ) : (
                         <div
                             className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
                             {
-                                filteredItems?.map((item: any, index: any) =>
-                                    (
-                                        <React.Fragment key={index}>
-                                            <ListItemBox
-                                                handleChangeDelete={handleChangeDelete}
-                                                deleteData={deleteData}
-                                                history={true}
-                                                note={item?.note}
-                                                userName={item?.user_name}
-                                                createdAt={item?.created_at}
-                                                detail={item?.details}
-                                                paymentMethod={item?.payment_method}
-                                                harga={item?.total_price}
-                                                detailId={item?.id}
-                                            />
-                                        </React.Fragment>
+                                transactions?.length > 0 ? (
+
+                                    transactions?.map((item: any, index: any) =>
+                                        (
+                                            <React.Fragment key={index}>
+                                                <ListItemBox
+                                                    handleChangeDelete={handleChangeDelete}
+                                                    deleteData={deleteData}
+                                                    history={true}
+                                                    note={item?.note}
+                                                    userName={item?.user_name}
+                                                    createdAt={item?.created_at}
+                                                    detail={item?.details}
+                                                    paymentMethod={item?.payment_method}
+                                                    harga={item?.total_price}
+                                                    detailId={item?.id}
+                                                />
+                                            </React.Fragment>
+                                        )
                                     )
+                                ) : (
+                                    <div className='w-full h-full flex flex-col justify-center items-center'>
+                                        <GoInbox className='w-16 h-16 text-[#280822]'/>
+                                        <p className='text-lg font-bold text-[#280822]'>Data Kosong</p>
+                                    </div>
                                 )
                             }
                         </div>

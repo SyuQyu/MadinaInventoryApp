@@ -1,12 +1,5 @@
 import { Redirect, Route } from 'react-router-dom';
-import {
-  IonApp,
-  IonFooter,
-  IonPage,
-  IonRouterOutlet,
-  IonToolbar,
-  setupIonicReact
-} from '@ionic/react';
+import { IonApp, IonFooter, IonPage, IonRouterOutlet, IonToolbar, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
 /* Core CSS required for Ionic components to work properly */
@@ -31,80 +24,80 @@ import useAuth from './context/auth';
 import { routesAdmin, routesStaff } from './router'
 import { Navigation } from './components';
 import LoginPage from './pages/Login';
-setupIonicReact();
 
 /* RSuite CSS */
 import 'rsuite/dist/rsuite.min.css';
+
+setupIonicReact();
+
 const App: React.FC = () => {
-  const { isLoggedIn, token, dataUser } = useAuth();
-  const UrlGetter = () => {
-    const url = window.location.href;
-    const lastSlashIndex = url.lastIndexOf('/');
-    const lastSegment = url.substring(lastSlashIndex + 1).toLowerCase();
-    return lastSegment;
-  }
+    const {isLoggedIn, token, dataUser} = useAuth();
 
-  console.log(isLoggedIn, token, dataUser, UrlGetter());
-
-  if (isLoggedIn && token && UrlGetter() === 'login') {
-    window.location.href = "/home";
-  }
-
-  const Routing = () => {
-    if (parseInt(dataUser?.role_id) === 1) {
-      return routesAdmin.map((route, index) => (
-        <Route
-          key={index}
-          path={route.path}
-          exact={route.exact}
-          component={route.component}
-        />
-      ))
-    } else {
-      return routesStaff.map((route, index) => (
-        <Route
-          key={index}
-          path={route.path}
-          exact={route.exact}
-          component={route.component}
-        />
-      ))
+    const UrlGetter = () => {
+        return window.location.pathname.substring(1).toLowerCase();
     }
-  }
-  return (
-    <IonApp>
-      <IonReactRouter>
-        <IonRouterOutlet>
-          <IonPage>
-            {
-              !isLoggedIn || token === null ? (
-                <>
-                  <Route path={'/login'} exact>
-                    <LoginPage />
-                  </Route>
-                  <Redirect to="/login" />
-                </>
-              ) : (
-                <>
-                  <Routing />
-                  <Redirect to="/home" />
-                </>
-              )
-            }
-            {
-              isLoggedIn && token !== null ? (
-                <IonFooter translucent={true}>
-                  <IonToolbar>
-                    <Navigation />
-                  </IonToolbar>
-                </IonFooter>
-              ) : null
-            }
-          </IonPage>
-        </IonRouterOutlet>
-      </IonReactRouter>
-    </IonApp>
-  )
+
+    console.log(isLoggedIn, token, dataUser, UrlGetter());
+
+    if (isLoggedIn && token && UrlGetter() === 'login') {
+        window.location.href = "/home";
+    }
+
+    const Routing = () => {
+        if (+dataUser?.role_id === 1) {
+            return routesAdmin.map((route, index) => (
+                <Route
+                    key={index}
+                    path={route.path}
+                    exact={route.exact}
+                    component={route.component}
+                />
+            ))
+        } else {
+            return routesStaff.map((route, index) => (
+                <Route
+                    key={index}
+                    path={route.path}
+                    exact={route.exact}
+                    component={route.component}
+                />
+            ))
+        }
+    }
+
+    return (
+        <IonApp>
+            <IonReactRouter>
+                <IonRouterOutlet>
+                    <IonPage>
+                        {
+                            !isLoggedIn || token === null ? (
+                                <>
+                                    <Route path={'/login'} exact>
+                                        <LoginPage/>
+                                    </Route>
+                                    <Redirect to="/login"/>
+                                </>
+                            ) : (
+                                <>
+                                    <Routing/>
+                                </>
+                            )
+                        }
+                        {
+                            isLoggedIn && token !== null ? (
+                                <IonFooter translucent={true}>
+                                    <IonToolbar>
+                                        <Navigation/>
+                                    </IonToolbar>
+                                </IonFooter>
+                            ) : null
+                        }
+                    </IonPage>
+                </IonRouterOutlet>
+            </IonReactRouter>
+        </IonApp>
+    )
 }
 
 export default App;

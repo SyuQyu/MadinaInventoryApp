@@ -3,6 +3,7 @@ import Select, { StylesConfig } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import useBrandStore from '../../context/brand';
 import useAuth from '../../context/auth';
+
 // interface Option {
 //     readonly label: string;
 //     readonly value: number;
@@ -19,7 +20,6 @@ type props = {
     onChange: any;
     label?: string;
 }
-
 
 const colourStyles: StylesConfig = {
     container: (styles) => ({ ...styles, backgroundColor: 'white', width: '100%' }),

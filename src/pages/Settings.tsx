@@ -22,17 +22,17 @@ const Settings: React.FC = () => {
         <IonContent>
             <div className='md:px-10 md:py-10 px-2 py-5'>
                 <header className='mb-4'>
-                    <h1 className='text-2xl font-extrabold'>Pengaturan</h1>
+                    <h1 className='text-2xl font-bold'>Pengaturan</h1>
                 </header>
 
-                <ul className="w-full text-sm font-medium text-gray-900 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    <li className="w-full p-4 border-b border-gray-200 rounded-t-lg dark:border-gray-600 flex">
+                <ul className="w-full text-sm font-medium text-gray-900 bg-white">
+                    <li className="w-full p-4 border-b border-gray-200 rounded-t-lg flex">
                         <AiOutlineTrademark className="w-5 h-5 text-black mr-4"/>
                         <IonRouterLink routerLink='settings/brands' className='w-full text-black'>
                             Merek
                         </IonRouterLink>
                     </li>
-                    <li className="w-full p-4 border-b border-gray-200 dark:border-gray-600 flex">
+                    <li className="w-full p-4 border-b border-gray-200 flex">
                         <BiFolder className="w-5 h-5 text-black mr-4"/>
                         <IonRouterLink routerLink='settings/types' className='w-full text-black'>
                             <span>Tipe Barang</span>

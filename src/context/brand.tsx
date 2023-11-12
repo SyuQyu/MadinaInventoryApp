@@ -114,12 +114,15 @@ const useBrandStore = create<BrandStore>((set, get) => ({
     fetchBrandsWithParams: async (page, limit) => {
         try {
             let url = `https://inventory-app.kaladwipa.com/brands`;
+
             if (page) {
                 url += `?page=${page}`;
             }
+
             if (limit) {
                 url += `${page ? '&' : '?'}limit=${limit}`;
             }
+
             console.log(page, limit, 'params')
             const response = await fetch(url);
             const brands = await response.json();
