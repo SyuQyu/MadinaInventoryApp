@@ -45,6 +45,7 @@ const PrintInvoice = ({ dp, invoiceNumber, date, items, total, setPrint, payment
     const handle = useReactToPrint({
         content: () => printRef.current,
         // copyStyles: false
+        documentTitle: `invoice-${invoiceNumber}.pdf`
     });
 
     const handlePrint = () => {
