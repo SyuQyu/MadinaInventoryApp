@@ -10,9 +10,9 @@ import { CustomBasicSelect } from '../../components';
 import useAuth from '../../context/auth';
 
 const Transaction: React.FC = () => {
-    const {items, meta, fetchItems} = useItemStore();
-    const {token} = useAuth();
-    const {setSelectedItem, getSelectedItemById, selectedItems, deleteSelectedItem, fetchTransactions, transactions, addTransaction, deleteAllSelectedItems} = useTransaksiStore();
+    const { items, meta, fetchItems } = useItemStore();
+    const { token } = useAuth();
+    const { setSelectedItem, getSelectedItemById, selectedItems, deleteSelectedItem, fetchTransactions, transactions, addTransaction, deleteAllSelectedItems } = useTransaksiStore();
     const [note, setNote] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('tunai');
     const [sort, setSort] = useState('');
@@ -33,21 +33,21 @@ const Transaction: React.FC = () => {
         if (item?.qty === 0) return;
 
         if (type === 'plus') {
-            setSelectedItem({id: id, qty: 1})
+            setSelectedItem({ id: id, qty: 1 })
         } else if (type === 'minus') {
-            setSelectedItem({id: id, qty: -1})
+            setSelectedItem({ id: id, qty: -1 })
         }
     }
 
-    const deletedOnClick = (id: number) => {
+    const deletedOnClick = (id: any) => {
         deleteSelectedItem(id);
     }
 
     const selectedIds = selectedItems.map(item => item.id);
-    const filteredItems = items.filter(item => selectedIds.includes(item.id));
+    const filteredItems = items.filter((item: any) => selectedIds.includes(item.id));
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        const response: any = addTransaction({items: selectedItems, payment_method: paymentMethod, note: note}, token)
+        const response: any = addTransaction({ items: selectedItems, payment_method: paymentMethod, note: note }, token)
 
         if (response) {
             setSuccess(true);
@@ -58,8 +58,8 @@ const Transaction: React.FC = () => {
     }
 
     const paymentMethods = [
-        {value: 'tunai', label: 'Tunai'},
-        {value: 'non-tunai', label: 'Non Tunai'}
+        { value: 'tunai', label: 'Tunai' },
+        { value: 'non-tunai', label: 'Non Tunai' }
     ];
 
     const handleInputChangeSelect = (value: any) => {
@@ -85,28 +85,28 @@ const Transaction: React.FC = () => {
                             Tambah Barang
                         </p>
                         <IonRouterLink routerLink={`/transaksi/list-item`} className="text-black">
-                            <AiOutlinePlus className="w-5 h-5 text-black float-right"/>
+                            <AiOutlinePlus className="w-5 h-5 text-black float-right" />
                         </IonRouterLink>
                     </div>
                     {
                         filteredItems.map((item, index) =>
-                            (
-                                <React.Fragment key={index}>
-                                    <ListItemBox
-                                        kode={item?.code}
-                                        deletedOnClick={() => deletedOnClick(item.id)}
-                                        onClick={onClick}
-                                        quantityItem={getSelectedItemById(item.id)?.qty}
-                                        setQuantityItem={setQuantityItem}
-                                        itemName={item?.name}
-                                        qty={item?.stock}
-                                        tipe={item?.item_type?.name}
-                                        merk={item?.brand?.name}
-                                        harga={item?.price}
-                                        detailId={item?.id}
-                                        withLink={false}/>
-                                </React.Fragment>
-                            ))
+                        (
+                            <React.Fragment key={index}>
+                                <ListItemBox
+                                    kode={item?.code}
+                                    deletedOnClick={() => deletedOnClick(item.id)}
+                                    onClick={onClick}
+                                    quantityItem={getSelectedItemById(item.id)?.qty}
+                                    setQuantityItem={setQuantityItem}
+                                    itemName={item?.name}
+                                    qty={item?.stock}
+                                    tipe={item?.item_type?.name}
+                                    merk={item?.brand?.name}
+                                    harga={item?.price}
+                                    detailId={item?.id}
+                                    withLink={false} />
+                            </React.Fragment>
+                        ))
                     }
                 </div>
                 <CustomBasicSelect
@@ -115,8 +115,8 @@ const Transaction: React.FC = () => {
                     data={paymentMethods}
                     value={paymentMethod}
                     onChange={handleInputChangeSelect}
-                    placeHolder="Pilih Tipe Pembayaran"/>
-                <div className='mb-4'/>
+                    placeHolder="Pilih Tipe Pembayaran" />
+                <div className='mb-4' />
                 <InputCustom
                     label="Note"
                     labelPlacement="floating"
@@ -127,7 +127,7 @@ const Transaction: React.FC = () => {
                     onIonChange={(e: CustomEvent) => setNote(e.detail.value!)}
                 />
                 <button onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSubmit(e)}
-                        className='w-full bg-[#280822] text-white rounded-xl py-2 px-4 mt-4'>
+                    className='w-full bg-[#280822] text-white rounded-xl py-2 px-4 mt-4'>
                     Submit
                 </button>
             </div>

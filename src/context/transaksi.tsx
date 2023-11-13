@@ -18,8 +18,8 @@ type TransactionStore = {
     selectedItems: selectedItems[];
     deleteAllSelectedItems: () => void;
     setSelectedItem: (item: selectedItems) => void;
-    getSelectedItemById: (id: number) => selectedItems | null;
-    deleteSelectedItem: (id: number) => void;
+    getSelectedItemById: (id: any) => selectedItems | null;
+    deleteSelectedItem: (id: number | undefined) => void;
     addTransaction: (transaction: any, token: string | null) => any;
     updateTransaction: (id: number, transaction: any, token: string | null) => void;
     deleteTransaction: (id: number, token: string | null) => void;
@@ -91,7 +91,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             }
         });
     },
-    getSelectedItemById: (id: number) => {
+    getSelectedItemById: (id) => {
         const selectedItem = get().selectedItems.find((item) => item.id === id);
         if (selectedItem) {
             return selectedItem;
@@ -100,7 +100,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             return { id: id, qty: 0 };
         }
     },
-    deleteSelectedItem: (id: number) => {
+    deleteSelectedItem: (id) => {
         set((state) => {
             const updatedItems = state.selectedItems.filter((item) => item.id !== id);
             return { selectedItems: updatedItems };

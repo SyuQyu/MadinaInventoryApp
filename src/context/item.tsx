@@ -14,8 +14,8 @@ export type Item = {
     brand_id: number;
     item_type?: any;
     brand?: any;
-    created_at?: string;
-    updated_at?: string;
+    created_at?: any;
+    updated_at?: any;
 };
 
 type Meta = {
@@ -68,7 +68,7 @@ const useItemStore = create<ItemStore>((set, get) => ({
 
             const createdItem = await response.json();
             console.log(createdItem, 'createdItem', item, 'item');
-            set((state) => ({items: [...state.items, createdItem]}));
+            set((state) => ({ items: [...state.items, createdItem] }));
 
             return true;
         } catch (error) {
@@ -129,12 +129,12 @@ const useItemStore = create<ItemStore>((set, get) => ({
                     ...item,
                     brand: await brand.json(),
                     item_type: await itemTypeId.json(),
-                    created_at: new Date(item.created_at).toLocaleDateString(),
-                    updated_at: new Date(item.updated_at).toLocaleDateString(),
+                    created_at: new Date(item?.created_at).toLocaleDateString(),
+                    updated_at: new Date(item?.updated_at).toLocaleDateString(),
                 };
             }));
             // console.log(itemsData);
-            set({items: itemsData, meta: items.meta});
+            set({ items: itemsData, meta: items.meta });
             return true;
         } catch (error) {
             console.error(error);
@@ -171,20 +171,20 @@ const useItemStore = create<ItemStore>((set, get) => ({
 
             const response = await fetchAPI(url);
             const items = await response.json();
-            const itemsData = await Promise.all(items?.data?.map(async (item: Item) => {
+            const itemsData = await Promise.all(items?.data?.map(async (item: any) => {
                 const brand = await fetchAPI(`/brands/${item.brand_id}`);
                 const itemTypeId = await fetchAPI(`/item-types/${item.item_type_id}`);
                 return {
                     ...item,
                     brand: await brand.json(),
                     item_type: await itemTypeId.json(),
-                    created_at: new Date(item.created_at).toLocaleDateString(),
-                    updated_at: new Date(item.updated_at).toLocaleDateString(),
+                    created_at: new Date(item?.created_at).toLocaleDateString(),
+                    updated_at: new Date(item?.updated_at).toLocaleDateString(),
                 };
             }));
 
             console.log(itemsData, 'fetch with params');
-            set({items: itemsData, meta: items.meta});
+            set({ items: itemsData, meta: items.meta });
             return true;
         } catch (error) {
             console.error(error);

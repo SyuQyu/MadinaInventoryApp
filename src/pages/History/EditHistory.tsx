@@ -36,14 +36,14 @@ const EditHistory: React.FC = () => {
     }
   }
 
-  const deletedOnClick = (id: number) => {
+  const deletedOnClick = (id: number | undefined) => {
     deleteSelectedItem(id);
   }
   const itemDetails = transactionDetails(parseInt(idParams));
   const selectedIdOldData: any = itemDetails?.details.map((item: any) => item.item_id)
   const selectedIdAddNewData = selectedItems.map(item => item.id);
-  const filteredItems = items?.filter(item => {
-    return selectedIdAddNewData.includes(item.id)
+  const filteredItems = items?.filter((item: any) => {
+    return selectedIdAddNewData.includes(item?.id)
   });
   // const reInsertSelectedItem = () => {
   //   itemDetails?.details.map((item: any) => setSelectedItem({ id: item.item_id, qty: item.qty }))
