@@ -12,9 +12,9 @@ import FilterContent from './FilterContent';
 import clsx from 'clsx';
 
 const ListItem: React.FC = () => {
-    const {items, meta, fetchItems, fetchItemsWithParams} = useItemStore();
-    const {brandSelected, typeSelected, clearData} = useFilterStore();
-    const {brand, type} = useFilterStore();
+    const { items, meta, fetchItems, fetchItemsWithParams } = useItemStore();
+    const { brandSelected, typeSelected, clearData } = useFilterStore();
+    const { brand, type } = useFilterStore();
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -22,11 +22,11 @@ const ListItem: React.FC = () => {
     const [openFilter, setOpenFilter] = useState(false);
     const [searchType, setSearchType] = useState('');
     const [searchBrand, setSearchBrand] = useState('');
-    const {setSelectedItem, getSelectedItemById} = useTransactionStore();
+    const { setSelectedItem, getSelectedItemById } = useTransactionStore();
     const [loading, setLoading] = useState(true);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         console.log(name, value);
         setSearch(value);
     };
@@ -59,9 +59,9 @@ const ListItem: React.FC = () => {
 
     const onClick = (type: string, id: number) => {
         if (type === 'plus') {
-            setSelectedItem({id: id, qty: 1})
+            setSelectedItem({ id: id, qty: 1 })
         } else if (type === 'minus') {
-            setSelectedItem({id: id, qty: -1})
+            setSelectedItem({ id: id, qty: -1 })
         }
     }
 
@@ -79,7 +79,7 @@ const ListItem: React.FC = () => {
         console.log(brandSelected.length > 0, typeSelected.length > 0)
     }
 
-    const pageNumbers = Array.from({length: meta.last_page}, (_, i) => i + 1)
+    const pageNumbers = Array.from({ length: meta.last_page }, (_, i) => i + 1)
         .filter((page) => {
             const startPage = Math.max(1, currentPage - 2);
             const endPage = Math.min(meta.last_page, startPage + 4);
@@ -103,31 +103,31 @@ const ListItem: React.FC = () => {
                                 <p>
                                     Done
                                 </p>
-                                <IoIosArrowForward className="w-4 h-4"/>
+                                <IoIosArrowForward className="w-4 h-4" />
                             </div>
                         </IonRouterLink>
                     </div>
                 </header>
                 <div className='w-full py-2 px-5 rounded-md flex flex-row justify-between items-center bg-[#EFEFEF]'>
                     <input
-                        style={{backgroundColor: '#EFEFEF', border: 'none', outline: 'none', width: '100%'}}
+                        style={{ backgroundColor: '#EFEFEF', border: 'none', outline: 'none', width: '100%' }}
                         placeholder="Cari berdasarkan nama"
                         type="text"
                         value={search}
                         name="search"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                     />
-                    <AiOutlineSearch className='w-5 h-5 text-[#280822] cursor-pointer'/>
+                    <AiOutlineSearch className='w-5 h-5 text-[#280822] cursor-pointer' />
                 </div>
                 <div className='w-full flex flex-row  gap-10 justify-between items-center mt-5'>
-                    <CustomFilter onClick={handleOpenFilter} value={openFilter}/>
-                    <CustomSelect onChange={onChangeSort}/>
+                    <CustomFilter onClick={handleOpenFilter} value={openFilter} />
+                    <CustomSelect onChange={onChangeSort} />
                 </div>
                 {
                     openFilter ? (
                         <div className='mt-4 px-4'>
                             <FilterContent valueOpener={openFilter} setValueOpener={setOpenFilter}
-                                           handleInputChange={() => handleOpenFilter}/>
+                                handleInputChange={() => handleOpenFilter} />
                         </div>
                     ) : (
                         <>
@@ -137,7 +137,7 @@ const ListItem: React.FC = () => {
                                         <div
                                             className="cursor-pointer relative w-full flex-col justify-center items-center gap-2 h-full">
                                             <div onClick={resetFilter}
-                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg text-center focus:outline-none flex flex-row w-1/2 justify-center items-center p-1">
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg text-center focus:outline-none flex flex-row w-1/2 justify-center items-center p-1">
                                                 Clear Filter
                                             </div>
                                         </div>
@@ -166,7 +166,7 @@ const ListItem: React.FC = () => {
                                                         value: meta?.total,
                                                         label: 'semua'
                                                     },
-                                                ]}/>
+                                                ]} />
                                             </div>
                                         </div>
                                     )
@@ -174,7 +174,7 @@ const ListItem: React.FC = () => {
                             </div>
                             {
                                 loading ? (
-                                    <div className="ion-text-center h-screen">
+                                    <div className="flex items-center justify-center h-screen">
                                         <IonSpinner/>
                                     </div>
                                 ) : (
@@ -182,20 +182,20 @@ const ListItem: React.FC = () => {
                                         className='flex flex-col gap-4 justify-start items-center w-full mt-5 h-full overflow-y-scroll'>
                                         {
                                             filteredItems?.map((item, index) =>
-                                                (
-                                                    <React.Fragment key={index}>
-                                                        <ListItemBox onClick={onClick}
-                                                                     withLink={false}
-                                                                     quantityItem={getSelectedItemById(item.id)?.qty}
-                                                                     kode={item?.code}
-                                                                     itemName={item?.name}
-                                                                     qty={item?.stock}
-                                                                     tipe={item?.item_type?.name}
-                                                                     merk={item?.brand?.name}
-                                                                     harga={item?.price}
-                                                                     detailId={item?.id}/>
-                                                    </React.Fragment>
-                                                )
+                                            (
+                                                <React.Fragment key={index}>
+                                                    <ListItemBox onClick={onClick}
+                                                        withLink={false}
+                                                        quantityItem={getSelectedItemById(item.id)?.qty}
+                                                        kode={item?.code}
+                                                        itemName={item?.name}
+                                                        qty={item?.stock}
+                                                        tipe={item?.item_type?.name}
+                                                        merk={item?.brand?.name}
+                                                        harga={item?.price}
+                                                        detailId={item?.id} />
+                                                </React.Fragment>
+                                            )
                                             )
                                         }
                                     </div>
@@ -208,33 +208,33 @@ const ListItem: React.FC = () => {
                                             <ul className="flex items-center -space-x-px h-8 text-sm">
                                                 <li>
                                                     <p onClick={() => currentPage !== meta?.first_page ? handleNextPage(currentPage - 1) : null}
-                                                       className="flex items-center justify-center px-3 md:h-8 h-6 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 ">
+                                                        className="flex items-center justify-center px-3 md:h-8 h-6 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 ">
                                                         <span className="sr-only">Previous</span>
                                                         <svg className="w-2.5 h-2.5" aria-hidden="true"
-                                                             xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                             viewBox="0 0 6 10">
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 6 10">
                                                             <path stroke="currentColor" strokeLinecap="round"
-                                                                  strokeLinejoin="round" strokeWidth="2"
-                                                                  d="M5 1 1 5l4 4"/>
+                                                                strokeLinejoin="round" strokeWidth="2"
+                                                                d="M5 1 1 5l4 4" />
                                                         </svg>
                                                     </p>
                                                 </li>
                                                 {pageNumbers.map((page) => (
                                                     <li key={page}>
                                                         <p className={clsx('cursor-pointer flex items-center justify-center px-3 md:h-8 h-6 leading-tight ', page === currentPage ? 'text-white bg-[#280822] border-[#280822]' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700')}
-                                                           onClick={() => handleNextPage(page)}>{page}</p>
+                                                            onClick={() => handleNextPage(page)}>{page}</p>
                                                     </li>
                                                 ))}
                                                 <li>
                                                     <p onClick={() => currentPage !== meta?.last_page ? handleNextPage(currentPage + 1) : null}
-                                                       className="flex items-center justify-center px-3 md:h-8 h-6 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ">
+                                                        className="flex items-center justify-center px-3 md:h-8 h-6 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ">
                                                         <span className="sr-only">Next</span>
                                                         <svg className="w-2.5 h-2.5" aria-hidden="true"
-                                                             xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                             viewBox="0 0 6 10">
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 6 10">
                                                             <path stroke="currentColor" strokeLinecap="round"
-                                                                  strokeLinejoin="round" strokeWidth="2"
-                                                                  d="m1 9 4-4-4-4"/>
+                                                                strokeLinejoin="round" strokeWidth="2"
+                                                                d="m1 9 4-4-4-4" />
                                                         </svg>
                                                     </p>
                                                 </li>

@@ -26,6 +26,11 @@ export const routesAdmin = [
         component: Home
     },
     {
+        path: '/',
+        exact: true,
+        component: Home
+    },
+    {
         path: '/settings',
         exact: true,
         component: Settings
@@ -107,6 +112,11 @@ export const routesAdmin = [
 export const routesStaff = [
     {
         path: '/home',
+        exact: true,
+        component: Home
+    },
+    {
+        path: '/',
         exact: true,
         component: Home
     },

@@ -172,7 +172,7 @@ const Brand: React.FC = () => {
                     </div>
                     {
                         loading ? (
-                            <div className="flex items-center text-center h-screen">
+                            <div className="flex items-center justify-center h-screen">
                                 <IonSpinner />
                             </div>
                         ) : (
@@ -181,7 +181,7 @@ const Brand: React.FC = () => {
                                     filteredItems.map((item, index) =>
                                     (
                                         <React.Fragment key={index}>
-                                            <ListItemBox handleChangeDelete={handleChangeDelete} deleteData={deleteData} itemName={item?.name} detailId={item?.id} withLink={false} brandType={true} urlBrandTypes={`/settings/brands/update`}/>
+                                            <ListItemBox handleChangeDelete={handleChangeDelete} deleteData={deleteData} itemName={item?.name} detailId={item?.id} withLink={false} brandType={true} urlBrandTypes={`/settings/brands/update`} />
                                         </React.Fragment>
                                     )
                                     )

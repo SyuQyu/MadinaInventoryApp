@@ -16,7 +16,7 @@ function Tabs() {
     return (
         <>
             <ul className="flex text-sm font-medium text-center text-gray-500 shadow h-full md:p-5 bg-[#280822]" style={{marginBottom: 0}}>
-                <li className={`w-full p-2 ${isActive('/home') ? 'bg-[#381C33]' : ''}`}>
+                <li className={`w-full p-2 ${isActive('/home') ? 'bg-[#381C33]' : isActive('/') ? 'bg-[#381C33]' : null }`}>
                     <IonRouterLink router-direction={'forward'} onClick={() => deleteAllSelectedItems()} routerLink="/home" className='flex flex-col gap-10 justify-between items-center' style={{ color: 'white' }}>
                         <HiOutlineHome className='w-full h-5 sm:h-6 md:h-8 mb-2' />
                         <p className='text-xs md:text-md font-bold text-white'>Beranda</p>

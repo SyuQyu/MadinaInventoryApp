@@ -6,11 +6,11 @@ type AuthState = {
     token: string | null;
     isLoggedIn: boolean;
     dataUser: any;
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<any>;
     logout: () => void;
 };
 
-const useAuth = create<AuthState>() (
+const useAuth = create<AuthState>()(
     persist(
         (set) => ({
             token: null,
@@ -24,22 +24,24 @@ const useAuth = create<AuthState>() (
                     },
                     body: JSON.stringify({ email, password }),
                 });
-                
-                const { data } = await response.json();
-                const token = await data?.token?.token;
-                console.log("called", email, password, response.ok, data, token);
+
                 if (response.ok) {
+                    const { data } = await response.json();
+                    const token = await data?.token?.token;
                     set({ token, isLoggedIn: true, dataUser: data.user });
+                    return true;
                 } else {
-                    throw new Error('Login failed');
+                    const text = await response.text();
+                    console.log('Login failed:', text);
+                    return false;
                 }
             },
             logout: () => {
                 set({ token: null, isLoggedIn: false, dataUser: null });
             },
-        }),{
-            name: "auth-storage",
-        }
+        }), {
+        name: "auth-storage",
+    }
     )
 );
 

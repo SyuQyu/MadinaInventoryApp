@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IonContent, IonInput, IonButton, IonPage, IonRouterLink } from '@ionic/react';
+import { IonContent, IonInput, IonButton, IonPage, IonRouterLink, IonToast } from '@ionic/react';
 import { InputCustom } from '../components';
 import '../theme/pages/Login.css';
 import useAuth from '../context/auth';
@@ -7,9 +7,15 @@ const LoginPage: React.FC = () => {
     const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [success, setSuccess] = useState(false);
+    const [failed, setFailed] = useState(false);
     const handleLogin = async () => {
-        await login(email, password);
+        const res = await login(email, password);
+        if(res) {
+            setSuccess(true);
+        } else {
+            setFailed(true);
+        }
     };
 
     return (
@@ -43,6 +49,22 @@ const LoginPage: React.FC = () => {
                     </button>
                 </div>
             </div>
+            <IonToast
+                isOpen={success}
+                position="top"
+                onDidDismiss={() => setSuccess(false)}
+                message="Login berhasil"
+                duration={2000}
+                color="success"
+            />
+            <IonToast
+                isOpen={failed}
+                position="top"
+                onDidDismiss={() => setFailed(false)}
+                message="Email atau password yang anda masukkan salah"
+                duration={2000}
+                color="danger"
+            />
         </IonContent>
     );
 };

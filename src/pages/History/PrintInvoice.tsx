@@ -1,10 +1,9 @@
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import React, { useRef } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import ReactToPrint, { useReactToPrint } from 'react-to-print';
 import { formatRupiah } from "../../../utils";
-
+import { FileOpener } from '@ionic-native/file-opener';
+import { isPlatform } from '@ionic/react';
 interface InvoiceProps {
     invoiceNumber: string;
     date: string;
@@ -20,37 +19,25 @@ interface InvoiceProps {
 }
 
 const PrintInvoice = ({ dp, invoiceNumber, date, items, total, setPrint, paymentMethod }: InvoiceProps) => {
+
     const printRef = useRef<HTMLDivElement>(null);
-    const downloadPDF = () => {
-        const pdf = new jsPDF('p', 'mm', 'a4', true);
-        const myDiv: any = document.getElementById("printable");
-        // Use html2canvas to capture the entire document
-        html2canvas(myDiv).then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-            const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-            const imgX = (pdfWidth - imgWidth * ratio) / 2;
-            const imgY = (pdfHeight - imgHeight * ratio) / 2;
-            pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-
-
-            // Save the PDF with a unique name
-            pdf.save(`invoice-${invoiceNumber}.pdf`);
-        });
-    };
 
     const handle = useReactToPrint({
         content: () => printRef.current,
         // copyStyles: false
-        documentTitle: `invoice-${invoiceNumber}.pdf`
+        documentTitle: `invoice-${invoiceNumber}.pdf`,
+        onAfterPrint: () => {
+            // if (isPlatform('cordova')) {
+                const fileUrl = `path/to/invoice-${invoiceNumber}.pdf`;
+                FileOpener.open(fileUrl, 'application/pdf')
+                    .then(() => console.log('File opened'))
+                    .catch(e => console.log('Error opening file', e));
+            // }
+        }
     });
 
     const handlePrint = () => {
-        handle()
-        console.log('print', printRef.current)
+        handle();
     }
 
     console.log('print invoice', invoiceNumber, date, items, total, paymentMethod)
@@ -63,10 +50,16 @@ const PrintInvoice = ({ dp, invoiceNumber, date, items, total, setPrint, payment
             </div>
             <h1 className='text-2xl font-extrabold text-[#280822]'>Invoice</h1>
             <hr />
-            <div className='md:w-1/2 w-full m-auto py-4 flex flex-col gap-4 px-2' ref={printRef} id='printable'>
-                <div className=''>
-                    <p className='text-[#280822] font-bold text-xl'>Invoice: INV<span className='font-normal'>{invoiceNumber}</span></p>
-                    <p className='text-[#280822] font-bold'>Date: <span className='font-normal'>{date}</span></p>
+            <div className='md:w-1/2 w-full m-auto py-4 flex flex-col gap-4 px-6' ref={printRef} id='printable'>
+                <div className='flex flex-row justify-between items-center w-full'>
+                    <div className=''>
+                        <p className='text-[#280822] font-bold text-base md:text-xl'>Invoice: INV<span className='font-normal'>{invoiceNumber}</span></p>
+                        <p className='text-[#280822] font-bold'>Date: <span className='font-normal'>{date}</span></p>
+                    </div>
+                    <div className='flex flex-col items-center justify-center'>
+                        <img src="/images/logo.svg" alt="logo" className='w-[60%] md:w-[80%] h-full object-contain' />
+                        <p className='text-[#280822] font-bold text-xs text-center md:text-xl'>Desa Purba Sari</p>
+                    </div>
                 </div>
                 <table className='w-full' style={{ borderCollapse: 'collapse' }}>
                     <thead>
@@ -100,10 +93,10 @@ const PrintInvoice = ({ dp, invoiceNumber, date, items, total, setPrint, payment
                         </p>
                     </div>
                     <div className=''>
-                        <p className='text-[#280822] font-bold'>
+                        <p className='text-[#280822] font-bold text-center'>
                             Total:
                         </p>
-                        <p>
+                        <p className='text-center'>
                             {total}
                         </p>
                     </div>
@@ -125,7 +118,7 @@ const PrintInvoice = ({ dp, invoiceNumber, date, items, total, setPrint, payment
                     ) : null
                 }
                 <div className='flex justify-end items-end mt-10'>
-                    <p className='text-[#280822] text mr-6'>
+                    <p className='text-[#280822] text-center'>
                         Mulyani
                     </p>
                 </div>

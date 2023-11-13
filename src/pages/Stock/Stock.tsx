@@ -20,10 +20,10 @@ import Alert from "../../components/Alert/Alert";
 import { LiaTimesSolid } from "react-icons/lia";
 
 const Stock: React.FC = () => {
-    const {brandSelected, typeSelected, clearData} = useFilterStore();
-    const {token, dataUser} = useAuth();
-    const {items, meta, fetchItems, fetchItemsWithParams, deleteItem} = useItemStore();
-    const {brand, type} = useFilterStore();
+    const { brandSelected, typeSelected, clearData } = useFilterStore();
+    const { token, dataUser } = useAuth();
+    const { items, meta, fetchItems, fetchItemsWithParams, deleteItem } = useItemStore();
+    const { brand, type } = useFilterStore();
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -69,7 +69,7 @@ const Stock: React.FC = () => {
     const filteredItems = items?.filter(item => item?.name?.toLowerCase().includes(search.toLowerCase()));
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         console.log(name, value);
         setSearch(value);
     };
@@ -89,7 +89,7 @@ const Stock: React.FC = () => {
     }
 
     const handleChangeDelete = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {value, checked} = e.target;
+        const { value, checked } = e.target;
         setDeleteResults([]);
         if (checked) {
             setSelectedDeleteData((prevData: any) => [...prevData, value]);
@@ -110,7 +110,7 @@ const Stock: React.FC = () => {
         const results = await Promise.all(
             selectedDeleteData.map(async (item: any) => {
                 const res = await deleteItem(item, token);
-                return {id: item, response: res};
+                return { id: item, response: res };
             })
         );
         return results;
@@ -148,7 +148,7 @@ const Stock: React.FC = () => {
         }
     }
 
-    const pageNumbers = Array.from({length: meta.last_page}, (_, i) => i + 1)
+    const pageNumbers = Array.from({ length: meta.last_page }, (_, i) => i + 1)
         .filter((page) => {
             const startPage = Math.max(1, currentPage - 2);
             const endPage = Math.min(meta.last_page, startPage + 4);
@@ -170,18 +170,18 @@ const Stock: React.FC = () => {
                         name="search"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                     />
-                    <AiOutlineSearch className='w-5 h-5 text-[#280822] cursor-pointer'/>
+                    <AiOutlineSearch className='w-5 h-5 text-[#280822] cursor-pointer' />
                 </div>
 
                 <div className='w-full flex flex-row  gap-10 justify-between items-center mt-5'>
-                    <CustomFilter onClick={handleOpenFilter} value={openFilter}/>
-                    <CustomSelect onChange={onChangeSort}/>
+                    <CustomFilter onClick={handleOpenFilter} value={openFilter} />
+                    <CustomSelect onChange={onChangeSort} />
                 </div>
                 {
                     openFilter ? (
                         <div className='mt-4 px-4'>
                             <FilterContent valueOpener={openFilter} setValueOpener={setOpenFilter}
-                                           handleInputChange={() => handleOpenFilter}/>
+                                handleInputChange={() => handleOpenFilter} />
                         </div>
                     ) : (
                         <>
@@ -191,7 +191,7 @@ const Stock: React.FC = () => {
                                         <div
                                             className="cursor-pointer relative w-full flex-col justify-center items-center gap-2 h-full">
                                             <div onClick={resetFilter}
-                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg text-center focus:outline-none flex flex-row w-1/2 justify-center items-center p-1">
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg text-center focus:outline-none flex flex-row w-1/2 justify-center items-center p-1">
                                                 Clear Filter
                                             </div>
                                         </div>
@@ -218,7 +218,7 @@ const Stock: React.FC = () => {
                                                     value: meta?.total,
                                                     label: 'semua'
                                                 },
-                                            ]}/>
+                                            ]} />
                                         </div>
                                     )
                                 }
@@ -228,13 +228,13 @@ const Stock: React.FC = () => {
                                             <>
                                                 {deleteData ? (
                                                     <LiaTimesSolid onClick={handleOpenDeleteData}
-                                                                   className="w-5 h-5 cursor-pointer text-black float-right"/>
+                                                        className="w-5 h-5 cursor-pointer text-black float-right" />
                                                 ) : null}
                                                 <IonRouterLink routerLink={`stok/create`} className="text-black">
-                                                    <AiOutlinePlus className="w-5 h-5 text-black float-right"/>
+                                                    <AiOutlinePlus className="w-5 h-5 text-black float-right" />
                                                 </IonRouterLink>
                                                 <PiTrashSimpleLight onClick={handleOpenDeleteData}
-                                                                    className={`w-5 h-5 cursor-pointer text-black float-right ${!deleteData ? 'opacity-100' : ''} ${selectedDeleteData.length > 0 ? 'pointer-events-auto' : `${deleteData ? 'pointer-events-none' : ''} opacity-50`}`}/>
+                                                    className={`w-5 h-5 cursor-pointer text-black float-right ${!deleteData ? 'opacity-100' : ''} ${selectedDeleteData.length > 0 ? 'pointer-events-auto' : `${deleteData ? 'pointer-events-none' : ''} opacity-50`}`} />
                                             </>
                                         ) : null
                                     }
@@ -243,7 +243,7 @@ const Stock: React.FC = () => {
                             {
                                 loading ? (
                                     <div className="flex items-center justify-center h-screen">
-                                        <IonSpinner/>
+                                        <IonSpinner />
                                     </div>
                                 ) : (
                                     <div
@@ -251,23 +251,23 @@ const Stock: React.FC = () => {
                                         {
                                             filteredItems.length > 0 ? (
                                                 filteredItems.map((item, index) =>
-                                                    (
-                                                        <React.Fragment key={index}>
-                                                            <ListItemBox handleChangeDelete={handleChangeDelete}
-                                                                         deleteData={deleteData}
-                                                                         kode={item?.code}
-                                                                         itemName={item?.name}
-                                                                         qty={item?.stock}
-                                                                         tipe={item?.item_type?.name}
-                                                                         merk={item?.brand?.name}
-                                                                         harga={item?.price}
-                                                                         detailId={item?.id}/>
-                                                        </React.Fragment>
-                                                    )
+                                                (
+                                                    <React.Fragment key={index}>
+                                                        <ListItemBox handleChangeDelete={handleChangeDelete}
+                                                            deleteData={deleteData}
+                                                            kode={item?.code}
+                                                            itemName={item?.name}
+                                                            qty={item?.stock}
+                                                            tipe={item?.item_type?.name}
+                                                            merk={item?.brand?.name}
+                                                            harga={item?.price}
+                                                            detailId={item?.id} />
+                                                    </React.Fragment>
+                                                )
                                                 )
                                             ) : (
                                                 <div className='w-full flex flex-col justify-center items-center'>
-                                                    <FiInbox className='w-20 h-20 text-[#280822]'/>
+                                                    <FiInbox className='w-20 h-20 text-[#280822]' />
                                                     <p className='text-lg font-bold text-[#280822]'>Data Kosong</p>
                                                 </div>
                                             )
@@ -283,33 +283,33 @@ const Stock: React.FC = () => {
                                             <ul className="flex items-center -space-x-px text-sm mb-0">
                                                 <li>
                                                     <p onClick={() => currentPage !== meta?.first_page ? handleNextPage(currentPage - 1) : null}
-                                                       className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 ">
+                                                        className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 ">
                                                         <span className="sr-only">Previous</span>
                                                         <svg className="w-2.5 h-2.5" aria-hidden="true"
-                                                             xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                             viewBox="0 0 6 10">
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 6 10">
                                                             <path stroke="currentColor" strokeLinecap="round"
-                                                                  strokeLinejoin="round" strokeWidth="2"
-                                                                  d="M5 1 1 5l4 4"/>
+                                                                strokeLinejoin="round" strokeWidth="2"
+                                                                d="M5 1 1 5l4 4" />
                                                         </svg>
                                                     </p>
                                                 </li>
                                                 {pageNumbers.map((page) => (
                                                     <li key={page}>
                                                         <p className={clsx('cursor-pointer flex items-center justify-center px-3 h-8 leading-tight ', page === currentPage ? 'text-white bg-[#280822] border-[#280822]' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700')}
-                                                           onClick={() => handleNextPage(page)}>{page}</p>
+                                                            onClick={() => handleNextPage(page)}>{page}</p>
                                                     </li>
                                                 ))}
                                                 <li>
                                                     <p onClick={() => currentPage !== meta?.last_page ? handleNextPage(currentPage + 1) : null}
-                                                       className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ">
+                                                        className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ">
                                                         <span className="sr-only">Next</span>
                                                         <svg className="w-2.5 h-2.5" aria-hidden="true"
-                                                             xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                             viewBox="0 0 6 10">
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 6 10">
                                                             <path stroke="currentColor" strokeLinecap="round"
-                                                                  strokeLinejoin="round" strokeWidth="2"
-                                                                  d="m1 9 4-4-4-4"/>
+                                                                strokeLinejoin="round" strokeWidth="2"
+                                                                d="m1 9 4-4-4-4" />
                                                         </svg>
                                                     </p>
                                                 </li>

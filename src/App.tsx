@@ -44,7 +44,7 @@ const App: React.FC = () => {
     }
 
     const Routing = () => {
-        if (+dataUser?.role_id === 1) {
+        if (dataUser?.role_id === 1) {
             return routesAdmin.map((route, index) => (
                 <Route
                     key={index}

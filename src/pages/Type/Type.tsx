@@ -170,7 +170,7 @@ const Type: React.FC = () => {
                     </div>
                     {
                         loading ? (
-                            <div className="ion-text-center h-screen">
+                            <div className="flex items-center justify-center h-screen">
                                 <IonSpinner />
                             </div>
                         ) : (
