@@ -1,0 +1,5 @@
+---
+deployment:
+tasks:
+  - export DEPLOYPATH=/home/usercpanel/public_html/git
+  - /bin/cp -r * /home/kals7517/public_html/madina-inventory.my.id
