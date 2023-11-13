@@ -23,6 +23,7 @@
     "@types/react-router-dom": "^5.3.3",
     "autoprefixer": "^10.4.16",
     "clsx": "^2.0.0",
+    "cordova-plugin-preview-any-file": "^0.2.9",
     "html2canvas": "^1.4.1",
     "ionicons": "^7.0.0",
     "jspdf": "^2.5.1",
